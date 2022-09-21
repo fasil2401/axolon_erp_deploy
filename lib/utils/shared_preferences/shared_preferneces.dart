@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSimplePreferences {
   static SharedPreferences? _preferences;
+  static const _keyConnectionAvailable = 'connection_available';
   static const _keyConnectionName = 'connectionName';
   static const _keyServerIp = 'server_ip';
   static const _keyWebPort = 'webPort';
@@ -15,6 +16,11 @@ class UserSimplePreferences {
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
+
+  static Future setIsConnectionAvailable(String availability) async =>
+      await _preferences!.setString(_keyConnectionAvailable, availability);
+
+  static String? getIsConnectionAvailable() => _preferences!.getString(_keyConnectionAvailable);
 
   static Future setConnectionName(String connectionName) async =>
       await _preferences!.setString(_keyConnectionName, connectionName);

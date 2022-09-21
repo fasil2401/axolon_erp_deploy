@@ -92,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
           centerTitle: true,
           title: SizedBox(
             width: width * 0.34,
+            height: height * 0.075,
             child: Image.asset(
               Images.logo,
               fit: BoxFit.contain,
@@ -118,8 +119,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   children: [
                     SizedBox(
-                      height: width * 0.2,
-                      width: width * 0.2,
+                      height: 100,
+                      width: 100,
                       child: Image.asset(
                         Images.user,
                         fit: BoxFit.cover,
@@ -155,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                               style: ElevatedButton.styleFrom(
                                 elevation: 5,
-                                primary: AppColors.primary,
+                                backgroundColor: AppColors.primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.circular(10), // <-- Radius
@@ -167,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Text(
                                     'Log Out',
                                     style: TextStyle(
-                                      fontSize: width * 0.03,
+                                      // fontSize: width * 0.03,
                                       color: AppColors.mutedBlueColor,
                                     ),
                                   ),
@@ -176,12 +177,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Icon(
                                     Icons.logout_rounded,
-                                    size: 15,
+                                    // size: 15,
                                     color: AppColors.mutedBlueColor,
                                   ),
                                 ],
                               ),
                             ),
+                          ),
+                          SizedBox(
+                            width: 5,
                           ),
                         ],
                       ),
@@ -321,8 +325,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       title: Row(
                                         children: [
                                           SizedBox(
-                                            width: width * 0.05,
-                                            height: width * 0.05,
+                                            width: 10,
+                                            height: 10,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 1.5,
                                               valueColor:

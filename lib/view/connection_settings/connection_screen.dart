@@ -294,7 +294,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                               backgroundColor: Colors.white,
                                               data: connectionSettingController
                                                   .qrData.value,
-                                              size: width * 0.5,
+                                              size: width * 0.3,
                                             ),
                                           )),
                                     ),
@@ -605,7 +605,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                         },
                                         child: CircleAvatar(
                                           backgroundColor: AppColors.primary,
-                                          radius: width * 0.06,
+                                          radius: 30,
                                           child: Icon(
                                             Icons.add,
                                             color: Colors.white,
@@ -661,7 +661,8 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                             Get.back();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: AppColors.mutedBlueColor,
+                                            backgroundColor:
+                                                AppColors.mutedBlueColor,
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(
@@ -692,7 +693,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                                 .saveSettings(settingsList);
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: AppColors.primary,
+                                            backgroundColor: AppColors.primary,
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(
