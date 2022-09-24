@@ -24,7 +24,7 @@ class SplashScreenController extends GetxController {
         databaseName: '')
   ];
   enterApp() async {
-    await checkForDefault();
+    // await checkForDefault();
     String isConnected = await UserSimplePreferences.getConnection() ?? 'false';
     String isLoggedIn = await UserSimplePreferences.getLogin() ?? 'false';
     await Future.delayed(Duration(seconds: 4), () {
