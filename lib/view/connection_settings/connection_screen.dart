@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:axolon_erp/controller/app%20controls/connection_setting_controller.dart';
@@ -709,65 +708,73 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                   ],
                                 ),
                                 SizedBox(
-                                  height: height * 0.03,
+                                  height: height * 0.02,
                                 ),
-                                // Row(
-                                //   children: [
-                                //     IconButton(
-                                //       icon: CircleAvatar(
-                                //         backgroundColor: AppColors.error,
-                                //         child: CircleAvatar(
-                                //           backgroundColor: Colors.white,
-                                //           radius: 15,
-                                //           child: Icon(
-                                //             Icons.delete_outline_outlined,
-                                //             color: AppColors.error,
-                                //           ),
-                                //         ),
-                                //       ),
-                                //       onPressed: () {},
-                                //     ),
-                                //     IconButton(
-                                //       icon: CircleAvatar(
-                                //         backgroundColor: AppColors.success,
-                                //         child: CircleAvatar(
-                                //           backgroundColor: Colors.white,
-                                //           radius: 15,
-                                //           child: Icon(
-                                //             Icons.share_outlined,
-                                //             color: AppColors.success,
-                                //           ),
-                                //         ),
-                                //       ),
-                                //       onPressed: () {},
-                                //     ),
-                                //   ],
-                                // ),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 25),
-                                  height: height * 0.06,
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      // await assignControllers();
-                                      await setData();
-                                      takeScreenShot();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primary,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            10), // <-- Radius
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    IconButton(
+                                      icon: CircleAvatar(
+                                        backgroundColor: AppColors.error,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          radius: 15,
+                                          child: Icon(
+                                            Icons.delete_outline_outlined,
+                                            color: AppColors.error,
+                                            size: 17,
+                                          ),
+                                        ),
                                       ),
+                                      onPressed: () {},
                                     ),
-                                    child: Text('Encrypt',
-                                        style: TextStyle(color: Colors.white)),
-                                  ),
+                                    IconButton(
+                                      icon: CircleAvatar(
+                                        backgroundColor: AppColors.success,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          radius: 15,
+                                          child: Icon(
+                                            Icons.share_outlined,
+                                            color: AppColors.success,
+                                            size: 17,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        // await assignControllers();
+                                        await setData();
+                                        takeScreenShot();
+                                      },
+                                    ),
+                                  ],
                                 ),
+                                // Container(
+                                //   margin: const EdgeInsets.symmetric(
+                                //       horizontal: 25),
+                                //   height: height * 0.06,
+                                //   width: MediaQuery.of(context).size.width,
+                                //   decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(20),
+                                //   ),
+                                //   child: ElevatedButton(
+                                //     onPressed: () async {
+                                //       // await assignControllers();
+                                //       await setData();
+                                //       takeScreenShot();
+                                //     },
+                                //     style: ElevatedButton.styleFrom(
+                                //       backgroundColor: AppColors.primary,
+                                //       shape: RoundedRectangleBorder(
+                                //         borderRadius: BorderRadius.circular(
+                                //             10), // <-- Radius
+                                //       ),
+                                //     ),
+                                //     child: Text('Encrypt',
+                                //         style: TextStyle(color: Colors.white)),
+                                //   ),
+                                // ),
                                 SizedBox(
                                   height: height * 0.08,
                                 ),
