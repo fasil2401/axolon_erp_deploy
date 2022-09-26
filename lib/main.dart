@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
       title: 'Axolon ERP',
       debugShowCheckedModeBanner: false,
       theme: ThemeProvider().theme,
-      // home: SplashScreen(),
       initialRoute: RouteManager().routes[0].name,
       getPages: RouteManager().routes,
     );

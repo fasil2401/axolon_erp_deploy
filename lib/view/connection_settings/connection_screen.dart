@@ -711,6 +711,38 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                 SizedBox(
                                   height: height * 0.03,
                                 ),
+                                // Row(
+                                //   children: [
+                                //     IconButton(
+                                //       icon: CircleAvatar(
+                                //         backgroundColor: AppColors.error,
+                                //         child: CircleAvatar(
+                                //           backgroundColor: Colors.white,
+                                //           radius: 15,
+                                //           child: Icon(
+                                //             Icons.delete_outline_outlined,
+                                //             color: AppColors.error,
+                                //           ),
+                                //         ),
+                                //       ),
+                                //       onPressed: () {},
+                                //     ),
+                                //     IconButton(
+                                //       icon: CircleAvatar(
+                                //         backgroundColor: AppColors.success,
+                                //         child: CircleAvatar(
+                                //           backgroundColor: Colors.white,
+                                //           radius: 15,
+                                //           child: Icon(
+                                //             Icons.share_outlined,
+                                //             color: AppColors.success,
+                                //           ),
+                                //         ),
+                                //       ),
+                                //       onPressed: () {},
+                                //     ),
+                                //   ],
+                                // ),
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 25),
@@ -726,7 +758,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                       takeScreenShot();
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      primary: AppColors.primary,
+                                      backgroundColor: AppColors.primary,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
                                             10), // <-- Radius
