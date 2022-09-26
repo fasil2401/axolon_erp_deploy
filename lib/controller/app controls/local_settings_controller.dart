@@ -48,6 +48,11 @@ class LocalSettingsController extends GetxController {
     getLocalSettings();
   }
 
+   deleteConnectionSettings(String connectionName)async{
+    await DbHelper().deleteConnectionSettings(connectionName);
+    getLocalSettings();
+  }
+
   deleteTable() async {
     await DbHelper().deleteSettingsTable();
   }

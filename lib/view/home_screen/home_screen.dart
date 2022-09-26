@@ -115,17 +115,25 @@ class _HomeScreenState extends State<HomeScreen> {
             // physics: NeverScrollableScrollPhysics(),
             children: [
               Container(
-                color: AppColors.mutedBlueColor,
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                color: AppColors.primary,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 child: Row(
                   children: [
-                    SizedBox(
-                      height: 60,
-                      width: 60,
-                      child: Image.asset(
-                        Images.user,
-                        fit: BoxFit.cover,
-                        color: AppColors.primary,
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 40,
+                      child: CircleAvatar(
+                        backgroundColor: AppColors.primary,
+                        radius: 35,
+                        child: SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: Image.asset(
+                            Images.user,
+                            fit: BoxFit.cover,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -140,25 +148,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
-                                color: AppColors.mutedColor),
+                                color: Colors.white),
                           ),
                           SizedBox(
-                            height: 5,
+                            height: 15,
                           ),
-                          IconButton(
-                            icon: CircleAvatar(
-                              backgroundColor: AppColors.primary,
+                          InkWell(
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 16,
                               child: CircleAvatar(
                                 backgroundColor: AppColors.mutedBlueColor,
                                 radius: 15,
                                 child: Icon(
                                   Icons.logout,
                                   color: AppColors.primary,
-                                  size: 17,
+                                  size: 14,
                                 ),
                               ),
                             ),
-                            onPressed: () async {
+                            onTap: () async {
                               await UserSimplePreferences.setLogin('false');
                               Get.offAllNamed(RouteManager().routes[1].name);
                             },
@@ -212,131 +221,148 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              Divider(
-                color: AppColors.mutedColor.withOpacity(0.5),
-                thickness: 0.5,
-              ),
+              // Divider(
+              //   color: AppColors.mutedColor.withOpacity(0.5),
+              //   thickness: 0.5,
+              // ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ExpansionTile(
-                  backgroundColor: Colors.white,
-                  collapsedBackgroundColor: AppColors.mutedBlueColor,
-                  leading: Icon(
-                    Icons.settings_suggest_outlined,
-                    color: AppColors.primary,
-                  ),
-                  title: Text(
-                    'Connection Settings',
-                    style: TextStyle(
-                      fontSize: 16,
+                child: Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    backgroundColor: Colors.transparent,
+                    // collapsedBackgroundColor: AppColors.mutedBlueColor,
+                    leading: Icon(
+                      Icons.settings_suggest_outlined,
                       color: AppColors.primary,
-                      fontWeight: FontWeight.w400,
                     ),
-                  ),
-                  children: [
-                    Column(
-                      children: [
-                        settingsList.isNotEmpty
-                            ? ListView.separated(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: settingsList.length,
-                                itemBuilder: (context, index) {
-                                  var connection = UserSimplePreferences
-                                          .getConnectionName() ??
-                                      '';
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      var connectonName =
-                                          settingsList[index].connectionName;
-                                      var serverIp =
-                                          settingsList[index].serverIp;
-                                      var databaseName =
-                                          settingsList[index].databaseName;
-                                      var erpPort = settingsList[index].erpPort;
-                                      var username =
-                                          settingsList[index].userName;
-                                      var password =
-                                          settingsList[index].password;
-                                      var webPort = settingsList[index].webPort;
-                                      var httpPort =
-                                          settingsList[index].httpPort;
+                    title: Text(
+                      'Connection Settings',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    children: [
+                      Column(
+                        children: [
+                          settingsList.isNotEmpty
+                              ? ListView.separated(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: settingsList.length,
+                                  itemBuilder: (context, index) {
+                                    var connection = UserSimplePreferences
+                                            .getConnectionName() ??
+                                        '';
+                                    return GestureDetector(
+                                      onTap: () async {
+                                        var connectonName =
+                                            settingsList[index].connectionName;
+                                        var serverIp =
+                                            settingsList[index].serverIp;
+                                        var databaseName =
+                                            settingsList[index].databaseName;
+                                        var erpPort =
+                                            settingsList[index].erpPort;
+                                        var username =
+                                            settingsList[index].userName;
+                                        var password =
+                                            settingsList[index].password;
+                                        var webPort =
+                                            settingsList[index].webPort;
+                                        var httpPort =
+                                            settingsList[index].httpPort;
 
-                                      await UserSimplePreferences
-                                          .setConnectionName(connectonName);
-                                      await UserSimplePreferences.setServerIp(
-                                          serverIp);
-                                      await UserSimplePreferences.setDatabase(
-                                          databaseName);
-                                      await UserSimplePreferences.setErpPort(
-                                          erpPort);
-                                      await UserSimplePreferences.setUsername(
-                                          username);
-                                      await UserSimplePreferences
-                                          .setUserPassword(password);
-                                      await UserSimplePreferences.setWebPort(
-                                          webPort);
-                                      await UserSimplePreferences.setHttpPort(
-                                          httpPort);
-                                      Get.back();
-                                      await _webViewController!.loadUrl(
-                                        'http://${serverIp}:${erpPort}/User/mobilelogin?userid=${username}&passwordhash=${password}&dbName=${databaseName}&port=${httpPort}&iscall=1',
-                                      );
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: Card(
-                                        color: settingsList[index]
-                                                    .connectionName! ==
-                                                connection
-                                            ? AppColors.mutedBlueColor
-                                            : Colors.white,
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: ListTile(
-                                          dense: true,
-                                          title: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.settings_outlined,
-                                                color: AppColors.primary,
-                                                size: 18,
-                                              ),
-                                              SizedBox(
-                                                width: 6,
-                                              ),
-                                              Text(
-                                                settingsList[index]
-                                                    .connectionName!,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: AppColors.primary,
-                                                  fontWeight: FontWeight.w400,
+                                        await UserSimplePreferences
+                                            .setConnectionName(connectonName);
+                                        await UserSimplePreferences.setServerIp(
+                                            serverIp);
+                                        await UserSimplePreferences.setDatabase(
+                                            databaseName);
+                                        await UserSimplePreferences.setErpPort(
+                                            erpPort);
+                                        await UserSimplePreferences.setUsername(
+                                            username);
+                                        await UserSimplePreferences
+                                            .setUserPassword(password);
+                                        await UserSimplePreferences.setWebPort(
+                                            webPort);
+                                        await UserSimplePreferences.setHttpPort(
+                                            httpPort);
+                                        Get.back();
+                                        await _webViewController!.loadUrl(
+                                          'http://${serverIp}:${erpPort}/User/mobilelogin?userid=${username}&passwordhash=${password}&dbName=${databaseName}&port=${httpPort}&iscall=1',
+                                        );
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            color: connection ==
+                                                    settingsList[index]
+                                                        .connectionName
+                                                ? AppColors.lightGrey
+                                                : Colors.transparent,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 2),
+                                              child: ListTile(
+                                                dense: true,
+                                                title: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.settings_outlined,
+                                                      color: AppColors.primary,
+                                                      size: 18,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 6,
+                                                    ),
+                                                    Text(
+                                                      settingsList[index]
+                                                          .connectionName!,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color:
+                                                            AppColors.primary,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                right: 10, top: 15),
+                                            alignment: Alignment.centerRight,
+                                            child: Icon(
+                                              Icons.circle,
+                                              size: 12,
+                                              color: connection ==
+                                                      settingsList[index]
+                                                          .connectionName
+                                                  ? AppColors.success
+                                                  : Colors.transparent,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder: (context, index) => SizedBox(
-                                  height: 2,
-                                ),
-                              )
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: Card(
-                                  elevation: 3,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(
+                                    height: 2,
                                   ),
+                                )
+                              : Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
                                   child: ListTile(
                                     dense: true,
                                     title: Row(
@@ -366,37 +392,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
+                          SizedBox(
+                            height: height * 0.03,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => ConnectionScreen(
+                                  connectionModel: ConnectionModel(
+                                      connectionName: 'New Connection',
+                                      webPort: '',
+                                      databaseName: '',
+                                      httpPort: '',
+                                      erpPort: '',
+                                      serverIp: '')));
+                            },
+                            child: CircleAvatar(
+                              backgroundColor: AppColors.primary,
+                              radius: height * 0.025,
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: height * 0.025,
                               ),
-                        SizedBox(
-                          height: height * 0.03,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Get.to(() => ConnectionScreen(
-                                connectionModel: ConnectionModel(
-                                    connectionName: 'New Connection',
-                                    webPort: '',
-                                    databaseName: '',
-                                    httpPort: '',
-                                    erpPort: '',
-                                    serverIp: '')));
-                          },
-                          child: CircleAvatar(
-                            backgroundColor: AppColors.primary,
-                            radius: height * 0.025,
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: height * 0.025,
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: height * 0.03,
-                        ),
-                      ],
-                    )
-                  ],
+                          SizedBox(
+                            height: height * 0.03,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],

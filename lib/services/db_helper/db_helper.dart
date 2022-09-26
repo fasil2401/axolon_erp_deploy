@@ -96,6 +96,11 @@ class DbHelper {
     WHERE ${ConnectionModelImpNames.connectionName} = ?
     ''', [serverIp, webPort, httpPort, erpPort, databaseName, connectionName]);
   }
+  Future<int> deleteConnectionSettings(String name) async {
+    Database? db = await DbHelper._database;
+    return await db!.delete(ConnectionModelImpNames.tableName,
+        where: '${ConnectionModelImpNames.connectionName} = ?', whereArgs: [name]);
+  }
 
   deleteSettingsTable() async {
     Database? db = await DbHelper._database;

@@ -370,40 +370,51 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                             onSaved: (value) {},
                                           ),
                                           SizedBox(height: height * 0.01),
-                                          TextField(
-                                            controller:
-                                                _connectiionNameController,
-                                            style: TextStyle(fontSize: 15),
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              border: InputBorder.none,
-                                              label: Text(
-                                                'Connection Name',
-                                                style: TextStyle(
-                                                  color: AppColors.primary,
+                                          Stack(
+                                            children: [
+                                              TextField(
+                                                controller:
+                                                    _connectiionNameController,
+                                                style: TextStyle(fontSize: 15),
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  border: InputBorder.none,
+                                                  label: Text(
+                                                    'Connection Name',
+                                                    style: TextStyle(
+                                                      color: AppColors.primary,
+                                                    ),
+                                                  ),
+                                                  // isCollapsed: true,
+                                                  hintStyle: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                  ),
                                                 ),
-                                              ),
-                                              // isCollapsed: true,
-                                              hintStyle: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                              ),
-                                              suffix: GestureDetector(
-                                                onTap: () {
-                                                  Get.to(() => QRViewExample());
+                                                onChanged: (value) {
+                                                  connectionSettingController
+                                                      .getConnectionName(value);
                                                 },
-                                                child: const Icon(
-                                                  Icons.qr_code_rounded,
-                                                  color: AppColors.primary,
+                                              ),
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    right: 10, top: 10),
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Get.to(
+                                                        () => QRViewExample());
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.qr_code_rounded,
+                                                    color: AppColors.primary,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            onChanged: (value) {
-                                              connectionSettingController
-                                                  .getConnectionName(value);
-                                            },
+                                            ],
                                           ),
                                           Divider(
                                               color: Colors.black54, height: 1),
@@ -714,12 +725,13 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    IconButton(
-                                      icon: CircleAvatar(
+                                    InkWell(
+                                      child: CircleAvatar(
                                         backgroundColor: AppColors.error,
+                                        radius: 20,
                                         child: CircleAvatar(
                                           backgroundColor: Colors.white,
-                                          radius: 15,
+                                          radius: 18,
                                           child: Icon(
                                             Icons.delete_outline_outlined,
                                             color: AppColors.error,
@@ -727,14 +739,17 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                         ),
                                       ),
-                                      onPressed: () {},
+                                      onTap: () async {
+                                        deleteConnection();
+                                      },
                                     ),
-                                    IconButton(
-                                      icon: CircleAvatar(
+                                    InkWell(
+                                      child: CircleAvatar(
                                         backgroundColor: AppColors.success,
+                                        radius: 20,
                                         child: CircleAvatar(
                                           backgroundColor: Colors.white,
-                                          radius: 15,
+                                          radius: 18,
                                           child: Icon(
                                             Icons.share_outlined,
                                             color: AppColors.success,
@@ -742,7 +757,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                         ),
                                       ),
-                                      onPressed: () async {
+                                      onTap: () async {
                                         // await assignControllers();
                                         await setData();
                                         takeScreenShot();
@@ -794,6 +809,53 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     );
   }
 
+  deleteConnection() async {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text(
+                'Delete',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              content: Text(
+                'Are you Sure, You want to delete this?',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'Wait',
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await localSettingsController.deleteConnectionSettings(
+                        _connectiionNameController.text);
+                    await setPrefereces();
+                    createNew();
+                    Get.offAll(() => ConnectionScreen());
+                  },
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: AppColors.error,
+                    ),
+                  ),
+                ),
+              ],
+            ));
+  }
+
   setData() async {
     await connectionSettingController
         .getConnectionName(_connectiionNameController.text);
@@ -803,5 +865,16 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         .getDatabaseName(_databaseNameController.text);
     await connectionSettingController.getErpPort(_erpPortController.text);
     await connectionSettingController.getHttpPort(_httpPortController.text);
+  }
+
+  setPrefereces() async {
+    await UserSimplePreferences.setUsername('');
+    await UserSimplePreferences.setUserPassword('');
+    await UserSimplePreferences.setConnectionName('');
+    await UserSimplePreferences.setServerIp('');
+    await UserSimplePreferences.setWebPort('');
+    await UserSimplePreferences.setDatabase('');
+    await UserSimplePreferences.setErpPort('');
+    await UserSimplePreferences.setHttpPort('');
   }
 }
