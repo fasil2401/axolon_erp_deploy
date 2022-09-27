@@ -404,6 +404,14 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                             color: Colors.black54,
                                             height: 1,
                                           ),
+                                          Obx(
+                                            () => _buildWarning(
+                                                isVisible:
+                                                    connectionSettingController
+                                                        .nameWarning.value,
+                                                text:
+                                                    'Enter the connection name or scan the QR code'),
+                                          ),
                                           SizedBox(height: height * 0.01),
                                           _buildTextField(
                                             controller: _serverIpController,
@@ -415,6 +423,13 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                           Divider(
                                               color: Colors.black54, height: 1),
+                                          Obx(
+                                            () => _buildWarning(
+                                                isVisible:
+                                                    connectionSettingController
+                                                        .ipWarning.value,
+                                                text: 'Enter the server IP'),
+                                          ),
                                           SizedBox(height: height * 0.01),
                                           _buildTextField(
                                             controller: _webPortController,
@@ -426,6 +441,14 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                           Divider(
                                               color: Colors.black54, height: 1),
+                                          Obx(
+                                            () => _buildWarning(
+                                                isVisible:
+                                                    connectionSettingController
+                                                        .webPortWarning.value,
+                                                text:
+                                                    'Enter the web service port'),
+                                          ),
                                           SizedBox(height: height * 0.01),
                                           _buildTextField(
                                             controller: _databaseNameController,
@@ -437,6 +460,15 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                           Divider(
                                               color: Colors.black54, height: 1),
+                                          Obx(
+                                            () => _buildWarning(
+                                                isVisible:
+                                                    connectionSettingController
+                                                        .databaseNameWarning
+                                                        .value,
+                                                text:
+                                                    'Enter the database name'),
+                                          ),
                                           SizedBox(height: height * 0.01),
                                           Padding(
                                             padding: const EdgeInsets.only(
@@ -460,6 +492,15 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                                       Divider(
                                                           color: Colors.black54,
                                                           height: 1),
+                                                      Obx(
+                                                        () => _buildWarning(
+                                                            isVisible:
+                                                                connectionSettingController
+                                                                    .erpPortWarning
+                                                                    .value,
+                                                            text:
+                                                                'Enter the ERP port'),
+                                                      ),
                                                     ],
                                                   ),
                                                 ),
@@ -481,6 +522,15 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                                       Divider(
                                                           color: Colors.black54,
                                                           height: 1),
+                                                      Obx(
+                                                        () => _buildWarning(
+                                                            isVisible:
+                                                                connectionSettingController
+                                                                    .httpPortWarning
+                                                                    .value,
+                                                            text:
+                                                                'Enter the http port'),
+                                                      )
                                                     ],
                                                   ),
                                                 ),
@@ -542,6 +592,26 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                         child: Buttons.buildElevatedButton(
                                             text: 'Continue',
                                             onPressed: () async {
+                                              await connectionSettingController
+                                                  .validateForm(
+                                                      connectionName:
+                                                          _connectiionNameController
+                                                              .text,
+                                                      serverIp:
+                                                          _serverIpController
+                                                              .text,
+                                                      webPort:
+                                                          _webPortController
+                                                              .text,
+                                                      databaseName:
+                                                          _databaseNameController
+                                                              .text,
+                                                      httpPort:
+                                                          _httpPortController
+                                                              .text,
+                                                      erpPort:
+                                                          _erpPortController
+                                                              .text);
                                               await setData();
                                               // await assignControllers();
                                               connectionSettingController
@@ -614,6 +684,26 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWarning({
+    required String text,
+    required bool isVisible,
+  }) {
+    return Visibility(
+      visible: isVisible,
+      child: Container(
+        alignment: Alignment.centerRight,
+        margin: const EdgeInsets.only(right: 10, top: 5),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: AppColors.error,
+            fontSize: 10,
+          ),
         ),
       ),
     );
@@ -694,6 +784,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   }
 
   setData() async {
+    // await connectionSettingController.validateForm();
     await connectionSettingController
         .getConnectionName(_connectiionNameController.text);
     await connectionSettingController.getServerIp(_serverIpController.text);

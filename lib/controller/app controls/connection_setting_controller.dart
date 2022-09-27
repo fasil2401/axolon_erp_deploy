@@ -29,6 +29,12 @@ class ConnectionSettingController extends GetxController {
   var encryptedDatabaseName = ''.obs;
   var encryptedHttpPort = ''.obs;
   var encryptedErpPort = ''.obs;
+  var nameWarning = false.obs;
+  var ipWarning = false.obs;
+  var webPortWarning = false.obs;
+  var databaseNameWarning = false.obs;
+  var httpPortWarning = false.obs;
+  var erpPortWarning = false.obs;
 
   getQrData() {
     qrData.value = jsonEncode({
@@ -42,51 +48,130 @@ class ConnectionSettingController extends GetxController {
   }
 
   getConnectionName(String connectionName) {
+    if (connectionName.isEmpty) {
+      nameWarning.value = true;
+    } else {
+      nameWarning.value = false;
+    }
     this.connectionName.value = connectionName;
     encryptedName.value = EncryptData.encryptAES(connectionName);
     getQrData();
   }
 
   getServerIp(String serverIp) {
+    if (serverIp.isEmpty) {
+      ipWarning.value = true;
+    } else {
+      ipWarning.value = false;
+    }
     this.serverIp.value = serverIp;
     encryptedIp.value = EncryptData.encryptAES(serverIp);
     getQrData();
   }
 
   getWebPort(String webPort) {
+    if (webPort.isEmpty) {
+      webPortWarning.value = true;
+    } else {
+      webPortWarning.value = false;
+    }
     this.webPort.value = webPort;
     encryptedWebPort.value = EncryptData.encryptAES(webPort);
     getQrData();
   }
 
   getDatabaseName(String databaseName) {
+    if (databaseName.isEmpty) {
+      databaseNameWarning.value = true;
+    } else {
+      databaseNameWarning.value = false;
+    }
     this.databaseName.value = databaseName;
     encryptedDatabaseName.value = EncryptData.encryptAES(databaseName);
     getQrData();
   }
 
   getHttpPort(String httpPort) {
+    if (httpPort.isEmpty) {
+      httpPortWarning.value = true;
+    } else {
+      httpPortWarning.value = false;
+    }
     this.httpPort.value = httpPort;
     encryptedHttpPort.value = EncryptData.encryptAES(httpPort);
     getQrData();
   }
 
   getErpPort(String erpPort) {
+    if (erpPort.isEmpty) {
+      erpPortWarning.value = true;
+    } else {
+      erpPortWarning.value = false;
+    }
     this.erpPort.value = erpPort;
     encryptedErpPort.value = EncryptData.encryptAES(erpPort);
     getQrData();
   }
 
+  validateForm({
+    required String connectionName,
+    required String serverIp,
+    required String webPort,
+    required String databaseName,
+    required String httpPort,
+    required String erpPort,
+  }) {
+    if (connectionName.isEmpty) {
+      nameWarning.value = true;
+    } else {
+      nameWarning.value = false;
+    }
+    if (serverIp.isEmpty) {
+      ipWarning.value = true;
+    } else {
+      ipWarning.value = false;
+    }
+    if (webPort.isEmpty) {
+      webPortWarning.value = true;
+    } else {
+      webPortWarning.value = false;
+    }
+    if (databaseName.isEmpty) {
+      databaseNameWarning.value = true;
+    } else {
+      databaseNameWarning.value = false;
+    }
+    if (httpPort.isEmpty) {
+      httpPortWarning.value = true;
+    } else {
+      httpPortWarning.value = false;
+    }
+    if (erpPort.isEmpty) {
+      erpPortWarning.value = true;
+    } else {
+      erpPortWarning.value = false;
+    }
+  }
+
   saveSettings(List<ConnectionModel> list) async {
-    await UserSimplePreferences.setConnectionName(connectionName.value);
-    await UserSimplePreferences.setServerIp(serverIp.value);
-    await UserSimplePreferences.setWebPort(webPort.value);
-    await UserSimplePreferences.setDatabase(databaseName.value);
-    await UserSimplePreferences.setHttpPort(httpPort.value);
-    await UserSimplePreferences.setErpPort(erpPort.value);
-    await UserSimplePreferences.setConnection('true');
-    // goToLogin();
-    getConfirmation(list);
+    if (nameWarning.value == false &&
+        ipWarning.value == false &&
+        webPortWarning.value == false &&
+        databaseNameWarning.value == false &&
+        httpPortWarning.value == false &&
+        erpPortWarning.value == false) {
+      await UserSimplePreferences.setConnectionName(connectionName.value);
+      await UserSimplePreferences.setServerIp(serverIp.value);
+      await UserSimplePreferences.setWebPort(webPort.value);
+      await UserSimplePreferences.setDatabase(databaseName.value);
+      await UserSimplePreferences.setHttpPort(httpPort.value);
+      await UserSimplePreferences.setErpPort(erpPort.value);
+      await UserSimplePreferences.setConnection('true');
+      // goToLogin();
+      getConfirmation(list);
+    } else {
+      SnackbarServices.errorSnackbar('Please fill all the fields');
+    }
   }
 
   getConfirmation(List<ConnectionModel> list) async {
