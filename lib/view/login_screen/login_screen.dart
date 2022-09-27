@@ -214,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 loginController.saveCredentials();
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: AppColors.primary,
+                                backgroundColor: AppColors.primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.circular(10), // <-- Radius
@@ -274,32 +274,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      // floatingActionButton: Row(
-      //   mainAxisAlignment: MainAxisAlignment.end,
-      //   // crossAxisAlignment: CrossAxisAlignment.center,
-      //   children: [
-      //     Text(
-      //       'Connection Settings',
-      //       style: TextStyle(
-      //           fontWeight: FontWeight.w400, color: AppColors.mutedColor),
-      //     ),
-      //     SizedBox(
-      //       width: 10,
-      //     ),
-      //     FloatingActionButton(
-      //       onPressed: () {
-      //         Get.toNamed(RouteManager().routes[2].name);
-      //       },
-      //       elevation: 2,
-      //       backgroundColor: AppColors.primary,
-      //       child: Icon(
-      //         Icons.settings,
-      //         color: Colors.white,
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }

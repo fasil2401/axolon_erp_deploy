@@ -10,6 +10,7 @@ import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/date_formatter.dart';
 import 'package:axolon_erp/utils/shared_preferences/shared_preferneces.dart';
+import 'package:axolon_erp/view/components/custom_buttons.dart';
 import 'package:axolon_erp/view/scanner/qr_scanner.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -372,27 +373,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           SizedBox(height: height * 0.01),
                                           Stack(
                                             children: [
-                                              TextField(
+                                              _buildTextField(
                                                 controller:
                                                     _connectiionNameController,
-                                                style: TextStyle(fontSize: 15),
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 10),
-                                                  border: InputBorder.none,
-                                                  label: Text(
-                                                    'Connection Name',
-                                                    style: TextStyle(
-                                                      color: AppColors.primary,
-                                                    ),
-                                                  ),
-                                                  // isCollapsed: true,
-                                                  hintStyle: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
+                                                label: 'Connection Name',
                                                 onChanged: (value) {
                                                   connectionSettingController
                                                       .getConnectionName(value);
@@ -417,28 +401,13 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                             ],
                                           ),
                                           Divider(
-                                              color: Colors.black54, height: 1),
+                                            color: Colors.black54,
+                                            height: 1,
+                                          ),
                                           SizedBox(height: height * 0.01),
-                                          TextField(
+                                          _buildTextField(
                                             controller: _serverIpController,
-                                            style: TextStyle(fontSize: 15),
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              border: InputBorder.none,
-                                              label: Text(
-                                                'Server Ip',
-                                                style: TextStyle(
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                              isCollapsed: false,
-                                              hintStyle: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
+                                            label: 'Server IP',
                                             onChanged: (value) {
                                               connectionSettingController
                                                   .getServerIp(value);
@@ -447,27 +416,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           Divider(
                                               color: Colors.black54, height: 1),
                                           SizedBox(height: height * 0.01),
-                                          TextField(
+                                          _buildTextField(
                                             controller: _webPortController,
-                                            keyboardType: TextInputType.number,
-                                            style: TextStyle(fontSize: 15),
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              border: InputBorder.none,
-                                              label: Text(
-                                                'Web Service Port',
-                                                style: TextStyle(
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                              isCollapsed: false,
-                                              hintStyle: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
+                                            label: 'Web Service Port',
                                             onChanged: (value) async {
                                               await connectionSettingController
                                                   .getWebPort(value);
@@ -476,26 +427,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           Divider(
                                               color: Colors.black54, height: 1),
                                           SizedBox(height: height * 0.01),
-                                          TextField(
+                                          _buildTextField(
                                             controller: _databaseNameController,
-                                            style: TextStyle(fontSize: 15),
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              border: InputBorder.none,
-                                              label: Text(
-                                                'Database Name',
-                                                style: TextStyle(
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                              isCollapsed: false,
-                                              hintStyle: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
+                                            label: 'Database Name',
                                             onChanged: (value) async {
                                               await connectionSettingController
                                                   .getDatabaseName(value);
@@ -512,34 +446,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                                 Flexible(
                                                   child: Column(
                                                     children: [
-                                                      TextField(
+                                                      _buildTextField(
                                                         controller:
                                                             _erpPortController,
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          10),
-                                                          border:
-                                                              InputBorder.none,
-                                                          label: Text(
-                                                            'ERP Port',
-                                                            style: TextStyle(
-                                                              color: AppColors
-                                                                  .primary,
-                                                            ),
-                                                          ),
-                                                          isCollapsed: false,
-                                                          hintStyle: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
+                                                        label: 'ERP Port',
                                                         onChanged:
                                                             (value) async {
                                                           await connectionSettingController
@@ -557,36 +467,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                                 Flexible(
                                                   child: Column(
                                                     children: [
-                                                      TextField(
+                                                      _buildTextField(
                                                         controller:
                                                             _httpPortController,
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        style: TextStyle(
-                                                            fontSize: 15),
-                                                        decoration:
-                                                            InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          10),
-                                                          border:
-                                                              InputBorder.none,
-                                                          label: Text(
-                                                            'Http Port',
-                                                            style: TextStyle(
-                                                              color: AppColors
-                                                                  .primary,
-                                                            ),
-                                                          ),
-                                                          isCollapsed: false,
-                                                          hintStyle: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
+                                                        label: 'Http Port',
                                                         onChanged:
                                                             (value) async {
                                                           await connectionSettingController
@@ -625,65 +509,25 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                     ),
                                   ],
                                 ),
-
-                                // SizedBox(
-                                //   height: height * 0.02,
-                                // ),
-                                // Container(
-                                //   margin: const EdgeInsets.symmetric(horizontal: 25),
-                                //   height: height * 0.055,
-                                //   width: MediaQuery.of(context).size.width,
-                                //   decoration: BoxDecoration(
-                                //     borderRadius: BorderRadius.circular(20),
-                                //   ),
-                                //   child: ElevatedButton(
-                                //     onPressed: () {
-                                //       connectionSettingController.saveSettings();
-                                //     },
-                                //     style: ElevatedButton.styleFrom(
-                                //       primary: AppColors.primary,
-                                //       shape: RoundedRectangleBorder(
-                                //         borderRadius:
-                                //             BorderRadius.circular(10), // <-- Radius
-                                //       ),
-                                //     ),
-                                //     child: Text('Continue',
-                                //         style: TextStyle(color: Colors.white)),
-                                //   ),
-                                // ),
-                                // SizedBox(
-                                //   height: height * 0.01,
-                                // ),
                                 Row(
                                   children: [
                                     Expanded(
                                       child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 25),
-                                        height: height * 0.055,
-                                        // width: MediaQuery.of(context).size.width,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Get.back();
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                AppColors.mutedBlueColor,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      10), // <-- Radius
-                                            ),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 25),
+                                          height: height * 0.055,
+                                          // width: MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                           ),
-                                          child: Text('Cancel',
-                                              style: TextStyle(
-                                                  color: AppColors.primary)),
-                                        ),
-                                      ),
+                                          child: Buttons.buildElevatedButton(
+                                              text: 'Cancel',
+                                              onPressed: () {
+                                                Get.back();
+                                              },
+                                              color: AppColors.mutedBlueColor,
+                                              textColor: AppColors.primary)),
                                     ),
                                     Expanded(
                                       child: Container(
@@ -695,25 +539,16 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           borderRadius:
                                               BorderRadius.circular(20),
                                         ),
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            await setData();
-                                            // await assignControllers();
-                                            connectionSettingController
-                                                .saveSettings(settingsList);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppColors.primary,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      10), // <-- Radius
-                                            ),
-                                          ),
-                                          child: Text('Continue',
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                        ),
+                                        child: Buttons.buildElevatedButton(
+                                            text: 'Continue',
+                                            onPressed: () async {
+                                              await setData();
+                                              // await assignControllers();
+                                              connectionSettingController
+                                                  .saveSettings(settingsList);
+                                            },
+                                            color: AppColors.primary,
+                                            textColor: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -765,31 +600,6 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                     ),
                                   ],
                                 ),
-                                // Container(
-                                //   margin: const EdgeInsets.symmetric(
-                                //       horizontal: 25),
-                                //   height: height * 0.06,
-                                //   width: MediaQuery.of(context).size.width,
-                                //   decoration: BoxDecoration(
-                                //     borderRadius: BorderRadius.circular(20),
-                                //   ),
-                                //   child: ElevatedButton(
-                                //     onPressed: () async {
-                                //       // await assignControllers();
-                                //       await setData();
-                                //       takeScreenShot();
-                                //     },
-                                //     style: ElevatedButton.styleFrom(
-                                //       backgroundColor: AppColors.primary,
-                                //       shape: RoundedRectangleBorder(
-                                //         borderRadius: BorderRadius.circular(
-                                //             10), // <-- Radius
-                                //       ),
-                                //     ),
-                                //     child: Text('Encrypt',
-                                //         style: TextStyle(color: Colors.white)),
-                                //   ),
-                                // ),
                                 SizedBox(
                                   height: height * 0.08,
                                 ),
@@ -806,6 +616,33 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  TextField _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required Function(String value) onChanged,
+  }) {
+    return TextField(
+      controller: controller,
+      style: TextStyle(fontSize: 15),
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+        border: InputBorder.none,
+        label: Text(
+          label,
+          style: TextStyle(
+            color: AppColors.primary,
+          ),
+        ),
+        isCollapsed: false,
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
+        ),
+      ),
+      onChanged: onChanged,
     );
   }
 
