@@ -3,6 +3,7 @@ import 'package:axolon_erp/utils/Routes/route_manger.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/shared_preferences/shared_preferneces.dart';
+import 'package:axolon_erp/view/Attendance%20Screen/attendance_screen.dart';
 import 'package:axolon_erp/view/connection_settings/connection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -332,6 +333,32 @@ class HomeScreenDrawer extends StatelessWidget {
               ),
             ),
           ),
+          InkWell(
+            onTap: () {
+              Get.back();
+              Get.to(() => AttendanceScreen());
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 22),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.timeline_outlined,
+                    color: AppColors.primary,
+                  ),
+                  SizedBox(
+                    width: 35,
+                  ),
+                  Text('Attendance',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w400,
+                      )),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
