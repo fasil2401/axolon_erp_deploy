@@ -80,14 +80,14 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         // getting directory of our phone
         final directory = (await getApplicationDocumentsDirectory()).path;
         final imgFile = File(
-          '$directory/${dateFormat.format(DateTime.now()).toString()}axolonERP(${_connectiionNameController.text}).png',
+          '$directory/${DateFormatter.dateFormat.format(DateTime.now()).toString()}axolonERP(${_connectiionNameController.text}).png',
         );
         imgFile.writeAsBytes(pngBytes);
         GallerySaver.saveImage(imgFile.path).then((success) async {
           //In here you can show snackbar or do something in the backend at successfull download
           Get.snackbar(
             'QR Code',
-            'QR Code saved to gallery as ${dateFormat.format(DateTime.now()).toString()}axolonERP(${_connectiionNameController.text}).png',
+            'QR Code saved to gallery as ${DateFormatter.dateFormat.format(DateTime.now()).toString()}axolonERP(${_connectiionNameController.text}).png',
             duration: Duration(seconds: 2),
           );
         });

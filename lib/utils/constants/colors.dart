@@ -10,4 +10,5 @@ class AppColors {
   static const Color mutedBlueColor = Color(0xFFCAD6FF);
   static const Color lightGrey = Color.fromARGB(255, 227, 227, 227);
   static const Color darkGreen = Color.fromARGB(255, 18, 114, 9);
+  static const Color darkRed = Color.fromARGB(255, 122, 1, 1);
 }

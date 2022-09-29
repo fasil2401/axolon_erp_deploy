@@ -5,6 +5,7 @@ import 'package:axolon_erp/utils/shared_preferences/shared_preferneces.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,12 +22,14 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Axolon ERP',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeProvider().theme,
-      initialRoute: RouteManager().routes[0].name,
-      getPages: RouteManager().routes,
-    );
+    return Sizer(builder: (context, orientation, deviceType) {
+      return GetMaterialApp(
+        title: 'Axolon ERP',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeProvider().theme,
+        initialRoute: RouteManager().routes[0].name,
+        getPages: RouteManager().routes,
+      );
+    });
   }
 }
