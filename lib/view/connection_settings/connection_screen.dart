@@ -374,6 +374,8 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           Stack(
                                             children: [
                                               _buildTextField(
+                                                textInputType:
+                                                    TextInputType.text,
                                                 controller:
                                                     _connectiionNameController,
                                                 label: 'Connection Name',
@@ -414,6 +416,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                           SizedBox(height: height * 0.01),
                                           _buildTextField(
+                                            textInputType: TextInputType.text,
                                             controller: _serverIpController,
                                             label: 'Server IP',
                                             onChanged: (value) {
@@ -432,6 +435,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                           SizedBox(height: height * 0.01),
                                           _buildTextField(
+                                            textInputType: TextInputType.number,
                                             controller: _webPortController,
                                             label: 'Web Service Port',
                                             onChanged: (value) async {
@@ -451,6 +455,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                           SizedBox(height: height * 0.01),
                                           _buildTextField(
+                                            textInputType: TextInputType.text,
                                             controller: _databaseNameController,
                                             label: 'Database Name',
                                             onChanged: (value) async {
@@ -479,6 +484,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                                   child: Column(
                                                     children: [
                                                       _buildTextField(
+                                                        textInputType:
+                                                            TextInputType
+                                                                .number,
                                                         controller:
                                                             _erpPortController,
                                                         label: 'ERP Port',
@@ -509,6 +517,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                                   child: Column(
                                                     children: [
                                                       _buildTextField(
+                                                        textInputType:
+                                                            TextInputType
+                                                                .number,
                                                         controller:
                                                             _httpPortController,
                                                         label: 'Http Port',
@@ -713,9 +724,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     required TextEditingController controller,
     required String label,
     required Function(String value) onChanged,
+    required TextInputType textInputType,
   }) {
     return TextField(
       controller: controller,
+      keyboardType: textInputType,
       style: TextStyle(fontSize: 15),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -738,49 +751,50 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
   deleteConnection() async {
     showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text(
-                'Delete',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'Delete',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        content: Text(
+          'Are you Sure, You want to delete this?',
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Wait',
+              style: TextStyle(
+                color: Colors.black,
               ),
-              content: Text(
-                'Are you Sure, You want to delete this?',
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                ),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              await localSettingsController
+                  .deleteConnectionSettings(_connectiionNameController.text);
+              await setPrefereces();
+              createNew();
+              Get.offAll(() => ConnectionScreen());
+            },
+            child: Text(
+              'Delete',
+              style: TextStyle(
+                color: AppColors.error,
               ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Wait',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    await localSettingsController.deleteConnectionSettings(
-                        _connectiionNameController.text);
-                    await setPrefereces();
-                    createNew();
-                    Get.offAll(() => ConnectionScreen());
-                  },
-                  child: Text(
-                    'Delete',
-                    style: TextStyle(
-                      color: AppColors.error,
-                    ),
-                  ),
-                ),
-              ],
-            ));
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   setData() async {

@@ -1,6 +1,8 @@
 import 'package:axolon_erp/controller/app%20controls/attendancde_controller.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/constants/dummy_list.dart';
+import 'package:axolon_erp/view/Attendance%20Screen/components/report_screen.dart';
+import 'package:axolon_erp/view/components/custom_text.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -63,7 +65,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
+                              vertical: 6, horizontal: 10),
                           child: Text(
                             'Job Id:',
                             style: TextStyle(
@@ -75,6 +77,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         Expanded(
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton2(
+                              isExpanded: false,
+                              isDense: true,
                               hint: Text(
                                 'Select Item',
                                 style: TextStyle(
@@ -235,9 +239,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 ),
               ),
             ),
-            Center(
-              child: Text('Report'),
-            ),
+            ReportScreen(),
             Center(
               child: Text('Leave'),
             ),
@@ -251,14 +253,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Timeline',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppColors.mutedColor,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        CustomText.buildTitleText('Time Line'),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -285,38 +280,46 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     );
   }
 
-  Card _buildButton({
+  Widget _buildButton({
     required String text,
     required Color color,
     required IconData icon,
   }) {
     return Card(
+      color: Colors.white,
       elevation: 3,
-      child: Container(
-        height: 15.h,
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: color,
-                // size: 30,
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Text(
-                text,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.mutedColor,
-                  fontSize: 14,
+      child: InkWell(
+        splashColor: color.withOpacity(0.2),
+        splashFactory: InkRipple.splashFactory,
+        onTap: () {
+          print('Button Clicked');
+        },
+        child: Container(
+          height: 15.h,
+          color: Colors.transparent,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: color,
+                  // size: 30,
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.mutedColor,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
