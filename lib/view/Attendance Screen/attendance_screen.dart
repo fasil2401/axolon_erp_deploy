@@ -171,11 +171,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             isLast: index == timeLineList.length - 1,
                             afterLineStyle: LineStyle(
                               color: AppColors.primary,
-                              thickness: 5,
+                              thickness: 3,
                             ),
                             beforeLineStyle: LineStyle(
                               color: AppColors.primary,
-                              thickness: 5,
+                              thickness: 3,
                             ),
                             indicatorStyle: IndicatorStyle(
                               width: 25,
@@ -189,9 +189,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           ? AppColors.darkRed
                                           : AppColors.mutedColor,
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Icon(
-                                    Icons.circle,
+                                    index == 0
+                                        ? Icons.login_rounded
+                                        : index == timeLineList.length - 1
+                                            ? Icons.logout_rounded
+                                            : Icons.coffee_outlined,
                                     color: Colors.white,
                                     size: 10,
                                   ),
