@@ -30,7 +30,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Attendance'),
@@ -41,9 +41,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             Tab(
               text: 'Report',
             ),
-            Tab(
-              text: 'Leave',
-            ),
+            // Tab(
+            //   text: 'Leave',
+            // ),
           ]),
         ),
         body: TabBarView(
@@ -171,15 +171,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             isLast: index == timeLineList.length - 1,
                             afterLineStyle: LineStyle(
                               color: AppColors.primary,
-                              thickness: 10,
+                              thickness: 5,
                             ),
                             beforeLineStyle: LineStyle(
                               color: AppColors.primary,
-                              thickness: 10,
+                              thickness: 5,
                             ),
                             indicatorStyle: IndicatorStyle(
-                              width: 30,
-                              height: 30,
+                              width: 25,
+                              height: 25,
                               indicator: Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
@@ -193,7 +193,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   child: Icon(
                                     Icons.circle,
                                     color: Colors.white,
-                                    size: 15,
+                                    size: 10,
                                   ),
                                 ),
                               ),
@@ -240,9 +240,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               ),
             ),
             ReportScreen(),
-            Center(
-              child: Text('Leave'),
-            ),
+            // Center(
+            //   child: Text('Leave'),
+            // ),
           ],
         ),
       ),
