@@ -2,6 +2,7 @@ import 'package:axolon_erp/services/db_helper/db_helper.dart';
 import 'package:axolon_erp/utils/Routes/route_manger.dart';
 import 'package:axolon_erp/utils/Theme/theme_provider.dart';
 import 'package:axolon_erp/utils/shared_preferences/shared_preferneces.dart';
+import 'package:axolon_erp/view/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeProvider().theme,
         initialRoute: RouteManager().routes[0].name,
         getPages: RouteManager().routes,
+        // home: SplashScreen(),
       );
     });
   }

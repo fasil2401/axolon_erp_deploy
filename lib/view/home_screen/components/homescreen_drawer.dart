@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:axolon_erp/controller/app%20controls/home_controller.dart';
 import 'package:axolon_erp/model/connection_setting_model.dart';
 import 'package:axolon_erp/utils/Routes/route_manger.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
@@ -10,7 +14,7 @@ import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class HomeScreenDrawer extends StatelessWidget {
-  const HomeScreenDrawer({
+  HomeScreenDrawer({
     Key? key,
     required this.width,
     required this.username,
@@ -19,6 +23,8 @@ class HomeScreenDrawer extends StatelessWidget {
     required this.height,
   })  : _webViewController = webViewController,
         super(key: key);
+
+  final homeController = Get.put(HomeController());
 
   final double width;
   final String username;
@@ -37,22 +43,34 @@ class HomeScreenDrawer extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 40,
-                  child: CircleAvatar(
-                    backgroundColor: AppColors.primary,
-                    radius: 35,
-                    child: SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: Image.asset(
-                        Images.user,
-                        fit: BoxFit.cover,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                Obx(
+                  () {
+                    Uint8List bytes =
+                        Base64Codec().decode(homeController.userImage.value);
+                    return CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 40,
+                      child: homeController.userImage.value == ''
+                          ? CircleAvatar(
+                              backgroundColor: AppColors.primary,
+                              radius: 35,
+                              child: SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: Image.asset(
+                                  Images.user,
+                                  fit: BoxFit.cover,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          : CircleAvatar(
+                              backgroundColor: AppColors.primary,
+                              radius: 35,
+                              backgroundImage: MemoryImage(bytes),
+                            ),
+                    );
+                  },
                 ),
                 SizedBox(
                   width: width * 0.05,

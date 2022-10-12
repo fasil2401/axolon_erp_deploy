@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:axolon_erp/controller/Api%20Controls/login_token_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/home_controller.dart';
 import 'package:axolon_erp/controller/app%20controls/local_settings_controller.dart';
 import 'package:axolon_erp/controller/ui%20controls/package_info_controller.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
@@ -23,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int position = 1;
   WebViewController? _webViewController;
   final localSettingsController = Get.put(LocalSettingsController());
+  final homeController = Get.put(HomeController());
   var settingsList = [];
   final _key = UniqueKey();
   String url = '';
@@ -108,12 +114,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        drawer: HomeScreenDrawer(
-            width: width,
-            username: username,
-            settingsList: settingsList,
-            webViewController: _webViewController,
-            height: height),
+        drawer:  HomeScreenDrawer(
+              width: width,
+              username: username,
+              settingsList: settingsList,
+              webViewController: _webViewController,
+              height: height,
+              ),
+        
         body: IndexedStack(
           index: position,
           children: [
