@@ -18,6 +18,8 @@ class PackageInfoController extends GetxController {
   Future init() async {
     final packageInfo = await PackageInfoApi.getInfo();
 
+    print(packageInfo);
+
     final newPackageInfo = {
       ...packageInfo,
     };
