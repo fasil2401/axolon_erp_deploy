@@ -72,7 +72,7 @@ class ConnectionSettingController extends GetxController {
   getWebPort(String webPort) {
     if (webPort.isEmpty) {
       webPortWarning.value = true;
-    } else {
+    } else if (webPort.isNotEmpty && webPort.contains(':')) {
       webPortWarning.value = false;
     }
     this.webPort.value = webPort;

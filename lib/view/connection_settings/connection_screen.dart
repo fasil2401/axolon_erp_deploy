@@ -435,7 +435,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                           ),
                                           SizedBox(height: height * 0.01),
                                           _buildTextField(
-                                            textInputType: TextInputType.number,
+                                            textInputType: TextInputType.text,
                                             controller: _webPortController,
                                             label: 'Web Service Port',
                                             onChanged: (value) async {
@@ -451,7 +451,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                                     connectionSettingController
                                                         .webPortWarning.value,
                                                 text:
-                                                    'Enter the web service port'),
+                                                    'Enter the web service port ex:- 0000:00'),
                                           ),
                                           SizedBox(height: height * 0.01),
                                           _buildTextField(

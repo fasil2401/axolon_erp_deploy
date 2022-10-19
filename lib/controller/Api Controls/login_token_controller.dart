@@ -17,13 +17,15 @@ class LoginTokenController extends GetxController {
     final String erpPort = UserSimplePreferences.getErpPort() ?? '';
     final String userId = UserSimplePreferences.getUsername() ?? '';
     final String password = UserSimplePreferences.getUserPassword() ?? '';
+    final String port = webPort.split(':')[0];
+    print('port is $port');
     final data = jsonEncode({
-      "Instance": '${serverIp}:${erpPort}'  ,
+      "Instance": '${serverIp}:${erpPort}',
       "UserId": userId,
       "Password": password,
       "PasswordHash": "",
       "DbName": database,
-      "Port": webPort,
+      "Port": port,
       "servername": ""
     });
     print(data);
