@@ -45,6 +45,7 @@ class HomeController extends GetxController {
     await loginController.getToken();
     final String employeeId = this.employeeId.value;
     final String token = loginController.token.value;
+    await UserSimplePreferences.setEmployeeId(employeeId);
     dynamic result;
     try {
       var feedback = await ApiServices.fetchData(

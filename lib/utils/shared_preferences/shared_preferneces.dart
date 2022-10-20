@@ -13,6 +13,7 @@ class UserSimplePreferences {
   static const _keyUserPassword = 'password';
   static const _keyIslogedIn = 'islogedin';
   static const _keyConnection = 'isConnected';
+  static const _keyEmployeeId = 'employee_id';
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
@@ -71,4 +72,9 @@ class UserSimplePreferences {
       await _preferences!.setString(_keyConnection, isConnected);
 
   static String? getConnection() => _preferences!.getString(_keyConnection);
+
+  static Future setEmployeeId(String employeeId) async =>
+      await _preferences!.setString(_keyEmployeeId, employeeId);
+  
+  static String? getEmployeeId() => _preferences!.getString(_keyEmployeeId);
 }

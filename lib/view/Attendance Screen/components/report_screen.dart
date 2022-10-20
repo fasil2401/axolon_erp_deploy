@@ -1,8 +1,11 @@
+import 'package:axolon_erp/controller/app%20controls/report_controller.dart';
 import 'package:axolon_erp/model/report_chart_model.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/constants/dummy_list.dart';
 import 'package:axolon_erp/view/components/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ReportScreen extends StatefulWidget {
@@ -16,6 +19,7 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   late TooltipBehavior _tooltip;
+  final reportController = Get.put(ReportController());
 
   @override
   void initState() {
@@ -51,49 +55,109 @@ class _ReportScreenState extends State<ReportScreen> {
               children: [
                 CustomText.buildTitleText('History'),
                 SizedBox(height: 10),
-                ListView.separated(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: historyList.length,
-                  itemBuilder: (context, index) {
-                    String category = historyList[index].category;
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ListTile(
-                        leading: Container(
-                          alignment: Alignment.center,
-                          width: 20,
-                          // height: 20,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            category == 'Check In'
-                                ? Icons.login
-                                : category == 'Check Out'
-                                    ? Icons.logout
-                                    : Icons.coffee_outlined,
-                            color: category == 'Check In'
-                                ? AppColors.darkGreen
-                                : category == 'Check Out'
-                                    ? AppColors.darkRed
-                                    : AppColors.primary,
-                          ),
+                Obx(
+                  () => reportController.isLoading.value
+                      ? _buildShimmer()
+                      : ListView.separated(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: reportController.attendanceHistoy.length,
+                          itemBuilder: (context, index) {
+                            String category = reportController
+                                .attendanceHistoy[index].logFlag;
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ListTile(
+                                leading: Container(
+                                  alignment: Alignment.center,
+                                  width: 20,
+                                  // height: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Icon(
+                                    category == 'CheckIn'
+                                        ? Icons.login
+                                        : category == 'CheckOut'
+                                            ? Icons.logout
+                                            : Icons.coffee_outlined,
+                                    color: category == 'CheckIn'
+                                        ? AppColors.darkGreen
+                                        : category == 'CheckOut'
+                                            ? AppColors.darkRed
+                                            : AppColors.primary,
+                                  ),
+                                ),
+                                title: Text(reportController
+                                    .attendanceHistoy[index].logFlag),
+                                subtitle: Text(reportController
+                                    .attendanceHistoy[index].logDate
+                                    .trim()
+                                    .substring(8)),
+                                trailing: Text(reportController
+                                    .attendanceHistoy[index].logDate
+                                    .trim()
+                                    .substring(0, 8)),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: 2),
                         ),
-                        title: Text(historyList[index].category),
-                        subtitle: Text(historyList[index].date),
-                        trailing: Text(historyList[index].time),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => SizedBox(height: 2),
-                )
+                ),
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Shimmer _buildShimmer() {
+    return Shimmer.fromColors(
+      baseColor: AppColors.lightGrey,
+      highlightColor: AppColors.primary,
+      enabled: true,
+      child: ListView.separated(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: historyList.length,
+        itemBuilder: (context, index) {
+          String category = historyList[index].category;
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ListTile(
+              leading: Container(
+                alignment: Alignment.center,
+                width: 20,
+                // height: 20,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  category == 'Check In'
+                      ? Icons.login
+                      : category == 'Check Out'
+                          ? Icons.logout
+                          : Icons.coffee_outlined,
+                  color: category == 'Check In'
+                      ? AppColors.darkGreen
+                      : category == 'Check Out'
+                          ? AppColors.darkRed
+                          : AppColors.primary,
+                ),
+              ),
+              title: Text(historyList[index].category),
+              subtitle: Text(historyList[index].date),
+              trailing: Text(historyList[index].time),
+            ),
+          );
+        },
+        separatorBuilder: (context, index) => SizedBox(height: 2),
       ),
     );
   }

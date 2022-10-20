@@ -6,6 +6,7 @@ import 'package:axolon_erp/view/components/custom_text.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -157,88 +158,122 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       height: 15,
                     ),
                     _buildTimeLineHead(context),
-                    Container(
-                      width: double.infinity,
-                      child: ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: timeLineList.length,
-                        itemBuilder: (context, index) {
-                          return TimelineTile(
-                            alignment: TimelineAlign.manual,
-                            lineXY: 0.2,
-                            isFirst: index == 0,
-                            isLast: index == timeLineList.length - 1,
-                            afterLineStyle: LineStyle(
-                              color: AppColors.primary,
-                              thickness: 3,
-                            ),
-                            beforeLineStyle: LineStyle(
-                              color: AppColors.primary,
-                              thickness: 3,
-                            ),
-                            indicatorStyle: IndicatorStyle(
-                              width: 25,
-                              height: 25,
-                              indicator: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: index == 0
-                                      ? AppColors.darkGreen
-                                      : index == timeLineList.length - 1
-                                          ? AppColors.darkRed
-                                          : AppColors.mutedColor,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    index == 0
-                                        ? Icons.login_rounded
-                                        : index == timeLineList.length - 1
-                                            ? Icons.logout_rounded
-                                            : Icons.coffee_outlined,
-                                    color: Colors.white,
-                                    size: 10,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            endChild: Container(
-                              height: 30,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.lightGrey,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    timeLineList[index].title,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500,
+                    Obx(
+                      () => attendanceController.isLoading.value
+                          ? _buildShimmer()
+                          : Container(
+                              width: double.infinity,
+                              child: ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount:
+                                    attendanceController.attendanceLog.length,
+                                itemBuilder: (context, index) {
+                                  return TimelineTile(
+                                    alignment: TimelineAlign.manual,
+                                    lineXY: 0.2,
+                                    isFirst: index == 0,
+                                    isLast: index ==
+                                        attendanceController
+                                                .attendanceLog.length -
+                                            1,
+                                    afterLineStyle: LineStyle(
+                                      color: AppColors.primary,
+                                      thickness: 3,
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    'Time: ${timeLineList[index].time}',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500,
+                                    beforeLineStyle: LineStyle(
+                                      color: AppColors.primary,
+                                      thickness: 3,
                                     ),
-                                  ),
-                                ],
+                                    indicatorStyle: IndicatorStyle(
+                                      width: 25,
+                                      height: 25,
+                                      indicator: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: attendanceController
+                                                      .attendanceLog[index]
+                                                      .logFlag ==
+                                                  'CheckIn'
+                                              ? AppColors.darkGreen
+                                              : attendanceController
+                                                          .attendanceLog[index]
+                                                          .logFlag ==
+                                                      'CheckOut'
+                                                  ? AppColors.darkRed
+                                                  : AppColors.mutedColor,
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            attendanceController
+                                                        .attendanceLog[index]
+                                                        .logFlag ==
+                                                    'CheckIn'
+                                                ? Icons.login_rounded
+                                                : attendanceController
+                                                            .attendanceLog[
+                                                                index]
+                                                            .logFlag ==
+                                                        'CheckOut'
+                                                    ? Icons.logout_rounded
+                                                    : Icons.coffee_outlined,
+                                            color: Colors.white,
+                                            size: 10,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    endChild: Container(
+                                      height: 45,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.lightGrey,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            attendanceController
+                                                .attendanceLog[index].logFlag,
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          Text(
+                                            'Time: ${attendanceController.attendanceLog[index].logDate.trim().substring(8)}',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          Text(
+                                            'Location: ${attendanceController.attendanceLog[index].locationId}',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -248,6 +283,96 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             //   child: Text('Leave'),
             // ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Container _buildShimmer() {
+    return Container(
+      width: double.infinity,
+      child: Shimmer.fromColors(
+        baseColor: AppColors.lightGrey,
+        highlightColor: AppColors.primary,
+        enabled: true,
+        child: ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: timeLineList.length,
+          itemBuilder: (context, index) {
+            return TimelineTile(
+              alignment: TimelineAlign.manual,
+              lineXY: 0.2,
+              isFirst: index == 0,
+              isLast: index == timeLineList.length - 1,
+              afterLineStyle: LineStyle(
+                color: AppColors.primary,
+                thickness: 3,
+              ),
+              beforeLineStyle: LineStyle(
+                color: AppColors.primary,
+                thickness: 3,
+              ),
+              indicatorStyle: IndicatorStyle(
+                width: 25,
+                height: 25,
+                indicator: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: index == 0
+                        ? AppColors.darkGreen
+                        : index == timeLineList.length - 1
+                            ? AppColors.darkRed
+                            : AppColors.mutedColor,
+                  ),
+                  child: Center(
+                    child: Icon(
+                      index == 0
+                          ? Icons.login_rounded
+                          : index == timeLineList.length - 1
+                              ? Icons.logout_rounded
+                              : Icons.coffee_outlined,
+                      color: Colors.white,
+                      size: 10,
+                    ),
+                  ),
+                ),
+              ),
+              endChild: Container(
+                height: 45,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.lightGrey,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      timeLineList[index].title,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      'Time: ${timeLineList[index].time}',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

@@ -52,6 +52,7 @@ dependencies:
   sizer: ^2.0.15
   timeline_tile: ^2.0.0
   syncfusion_flutter_charts: ^20.3.47
+  shimmer: ^2.0.0
   
 
 dev_dependencies:
