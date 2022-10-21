@@ -8,6 +8,7 @@ import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/shared_preferences/shared_preferneces.dart';
 import 'package:axolon_erp/view/Attendance%20Screen/attendance_screen.dart';
+import 'package:axolon_erp/view/Sales%20Screen/sales_screen.dart';
 import 'package:axolon_erp/view/connection_settings/connection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -108,6 +109,7 @@ class HomeScreenDrawer extends StatelessWidget {
                           Get.offAllNamed(RouteManager().routes[1].name);
                         },
                       ),
+
                       // Container(
                       //   margin: const EdgeInsets.only(right: 15),
                       //   decoration: BoxDecoration(
@@ -367,12 +369,48 @@ class HomeScreenDrawer extends StatelessWidget {
                   SizedBox(
                     width: 35,
                   ),
-                  Text('Attendance',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w400,
-                      )),
+                  Text(
+                    'Attendance',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          InkWell(
+            onTap: () {
+              Get.back();
+              Get.to(() => SalesSreen());
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 22),
+              child: Row(
+                children: [
+                  RotatedBox(
+                    quarterTurns: 1,
+                    child: Icon(
+                      Icons.sell_outlined,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 35,
+                  ),
+                  Text(
+                    'Sales',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                 ],
               ),
             ),

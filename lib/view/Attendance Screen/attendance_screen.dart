@@ -64,7 +64,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -95,10 +95,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       .map((item) => DropdownMenuItem(
                                             value: item,
                                             child: Text(
-                                              item.code,
+                                              item.name,
                                               style: const TextStyle(
                                                 fontSize: 14,
-                                                color: AppColors.mutedColor,
+                                                color: Colors.black54,
                                               ),
                                             ),
                                           ))
@@ -111,7 +111,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   },
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
-                                    color: AppColors.lightGrey,
+                                    color: Colors.white,
                                   ),
                                   buttonHeight: 20,
                                   buttonWidth: 140,
