@@ -1,7 +1,8 @@
 import 'dart:async';
-
+import 'dart:developer' as developer;
 import 'package:axolon_erp/controller/Api%20Controls/login_token_controller.dart';
 import 'package:axolon_erp/model/employee_attendance_log_model.dart';
+import 'package:axolon_erp/model/get_job_list_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/date_formatter.dart';
@@ -23,6 +24,8 @@ class AttendanceController extends GetxController {
     m.value = DateTime.now().minute;
     s.value = DateTime.now().second;
     Timer.periodic(Duration(seconds: 1), (Timer t) => getTime());
+    selectedDateIso.value = DateTime.now().toIso8601String().toString();
+    getJobList();
     getEmployeeAttendanceLog();
   }
 
@@ -38,6 +41,7 @@ class AttendanceController extends GetxController {
   var isLoading = false.obs;
   var response = 0.obs;
   var attendanceLog = [].obs;
+  var jobList = [].obs;
 
   setJobId(String jodId) {
     jobId.value = jodId;
@@ -66,7 +70,8 @@ class AttendanceController extends GetxController {
     );
     if (newDate != null) {
       selectedDate.value = DateFormatter.dateFormat.format(newDate).toString();
-      selectedDateIso.value = newDate.toIso8601String();
+      selectedDateIso.value = newDate.toIso8601String().toString();
+      getEmployeeAttendanceLog();
     }
 
     update();
@@ -85,24 +90,40 @@ class AttendanceController extends GetxController {
   }
 
   getEmployeeAttendanceLog() async {
-    // final now = DateTime.now();
-    // var dates = DateTime(now.year, now.month, 1).toIso8601String().toString();
-    // print('Hi date +++++=====$dates');
     isLoading.value = true;
     await loginController.getToken();
     final String token = loginController.token.value;
     final String employeeId = UserSimplePreferences.getEmployeeId() ?? '';
-    final String date = DateTime.now().toIso8601String().toString();
     dynamic result;
     try {
       var feedback = await ApiServices.fetchData(
           api:
-              'GetEmployeeAttendanceLog?token=${token}&employeeID=${employeeId}&fromDate=${date}&toDate=${date}');
+              'GetEmployeeAttendanceLog?token=${token}&employeeID=${employeeId}&fromDate=${selectedDateIso.value}&toDate=${selectedDateIso.value}');
       if (feedback != null) {
         result = EmployeeAttendanceLogModel.fromJson(feedback);
         print(result);
         response.value = result.res;
         attendanceLog.value = result.model;
+      }
+    } finally {
+      if (response.value == 1) {}
+      isLoading.value = false;
+    }
+  }
+
+  getJobList() async {
+    isLoading.value = true;
+    await loginController.getToken();
+    final String token = loginController.token.value;
+    dynamic result;
+    try {
+      var feedback =
+          await ApiServices.fetchData(api: 'GetJobList?token=${token}');
+      if (feedback != null) {
+        result = GetJobListModel.fromJson(feedback);
+        developer.log(feedback.toString(), name: 'GetJobList');
+        response.value = result.res;
+        jobList.value = result.model;
       }
     } finally {
       if (response.value == 1) {}

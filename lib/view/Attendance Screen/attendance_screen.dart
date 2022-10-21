@@ -26,7 +26,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     'Job Id 4',
     'Job Id 5hghjcdsjbjvhgvhvh',
   ];
-  String? selectedValue;
+  var selectedValue;
 
   @override
   Widget build(BuildContext context) {
@@ -61,62 +61,67 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     ),
                     Align(
                         alignment: Alignment.centerRight, child: _buildTime()),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 10),
-                          child: Text(
-                            'Job Id:',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 10),
+                            child: Text(
+                              'Job Id:',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton2(
-                              isExpanded: false,
-                              isDense: true,
-                              hint: Text(
-                                'Select Item',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Theme.of(context).hintColor,
+                          Expanded(
+                            child: Obx(
+                              () => DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  isExpanded: false,
+                                  isDense: true,
+                                  hint: Text(
+                                    'Select Job Id',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).hintColor,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  items: attendanceController.jobList
+                                      .map((item) => DropdownMenuItem(
+                                            value: item,
+                                            child: Text(
+                                              item.code,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: AppColors.mutedColor,
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                  value: selectedValue,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedValue = value;
+                                    });
+                                  },
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color: AppColors.lightGrey,
+                                  ),
+                                  buttonHeight: 20,
+                                  buttonWidth: 140,
+                                  itemHeight: 40,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
-                              items: items
-                                  .map((item) => DropdownMenuItem<String>(
-                                        value: item,
-                                        child: Text(
-                                          item,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: AppColors.mutedColor,
-                                          ),
-                                        ),
-                                      ))
-                                  .toList(),
-                              value: selectedValue,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedValue = value as String;
-                                });
-                              },
-                              dropdownDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                color: AppColors.lightGrey,
-                              ),
-                              buttonHeight: 40,
-                              buttonWidth: 140,
-                              itemHeight: 40,
                             ),
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                     Row(
                       children: [
