@@ -14,6 +14,8 @@ class UserSimplePreferences {
   static const _keyIslogedIn = 'islogedin';
   static const _keyConnection = 'isConnected';
   static const _keyEmployeeId = 'employee_id';
+  static const _keyLatitude = 'latitude';
+  static const _keyLongitude = 'longitude';
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
@@ -77,4 +79,16 @@ class UserSimplePreferences {
       await _preferences!.setString(_keyEmployeeId, employeeId);
   
   static String? getEmployeeId() => _preferences!.getString(_keyEmployeeId);
+
+  static Future setLatitude(String latitude) async =>
+      await _preferences!.setString(_keyLatitude, latitude);
+  
+  static String? getLatitude() => _preferences!.getString(_keyLatitude);
+
+  static Future setLongitude(String longitude) async =>
+      await _preferences!.setString(_keyLongitude, longitude);
+  
+  static String? getLongitude() => _preferences!.getString(_keyLongitude);
+  
+  
 }

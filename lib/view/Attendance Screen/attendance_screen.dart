@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:getwidget/getwidget.dart';
 
 class AttendanceScreen extends StatefulWidget {
   AttendanceScreen({super.key});
@@ -108,6 +109,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     setState(() {
                                       selectedValue = value;
                                     });
+                                    attendanceController
+                                        .setJobId(selectedValue);
                                   },
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
@@ -127,17 +130,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       children: [
                         Expanded(
                           child: _buildButton(
-                            text: 'Check In',
-                            icon: Icons.login_rounded,
-                            color: AppColors.darkGreen,
-                          ),
+                              text: 'Check In',
+                              icon: Icons.login_rounded,
+                              color: AppColors.darkGreen,
+                              logFlag: 1),
                         ),
                         Expanded(
                           child: _buildButton(
-                            text: 'Check Out',
-                            icon: Icons.logout_rounded,
-                            color: AppColors.darkRed,
-                          ),
+                              text: 'Check Out',
+                              icon: Icons.logout_rounded,
+                              color: AppColors.darkRed,
+                              logFlag: 2),
                         ),
                       ],
                     ),
@@ -145,17 +148,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       children: [
                         Expanded(
                           child: _buildButton(
-                            text: 'Start Break',
-                            icon: Icons.coffee,
-                            color: AppColors.primary,
-                          ),
+                              text: 'Start Break',
+                              icon: Icons.coffee,
+                              color: AppColors.primary,
+                              logFlag: 3),
                         ),
                         Expanded(
                           child: _buildButton(
-                            text: 'End Break',
-                            icon: Icons.coffee_outlined,
-                            color: AppColors.primary,
-                          ),
+                              text: 'End Break',
+                              icon: Icons.coffee_outlined,
+                              color: AppColors.primary,
+                              logFlag: 4),
                         ),
                       ],
                     ),
@@ -418,6 +421,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     required String text,
     required Color color,
     required IconData icon,
+    required int logFlag,
   }) {
     return Card(
       color: Colors.white,
@@ -426,33 +430,44 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         splashColor: color.withOpacity(0.2),
         splashFactory: InkRipple.splashFactory,
         onTap: () {
-          print('Button Clicked');
+          attendanceController.createAttendanceLog(logFlag, context);
         },
         child: Container(
           height: 15.h,
           color: Colors.transparent,
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  color: color,
-                  // size: 30,
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  text,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.mutedColor,
-                    fontSize: 14,
+            child: Obx(
+              () => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  attendanceController.isLoadingAttendance.value &&
+                          attendanceController.logFlag.value == logFlag
+                      ? GFLoader(
+                          type: GFLoaderType.circle,
+                          size: 15,
+                          loaderColorOne: color,
+                          loaderColorTwo: color,
+                          loaderColorThree: color,
+                        )
+                      : Icon(
+                          icon,
+                          color: color,
+                          // size: 30,
+                        ),
+                  SizedBox(
+                    height: 8,
                   ),
-                ),
-              ],
+                  Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.mutedColor,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:axolon_erp/controller/Api%20Controls/login_token_controller.dart';
 import 'package:axolon_erp/controller/app%20controls/home_controller.dart';
 import 'package:axolon_erp/controller/app%20controls/local_settings_controller.dart';
 import 'package:axolon_erp/controller/ui%20controls/package_info_controller.dart';
@@ -9,6 +5,7 @@ import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/shared_preferences/shared_preferneces.dart';
 import 'package:axolon_erp/view/home_screen/components/homescreen_drawer.dart';
+import 'package:axolon_erp/view/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -25,6 +22,7 @@ final packageInfoCOntroller = Get.put(PackageInfoController());
 class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   bool isReloading = false;
+  bool isError = false;
   int position = 1;
   WebViewController? _webViewController;
   final localSettingsController = Get.put(LocalSettingsController());
@@ -35,10 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    url =
-        'http://${serverIp}:${erpPort}/User/mobilelogin?userid=${username}&passwordhash=${password}&dbName=${databaseName}&port=${httpPort}&iscall=1';
     generateUrl();
     getLocalSettings();
+    url =
+        'http://${serverIp}:${erpPort}/User/mobilelogin?userid=${username}&passwordhash=${password}&dbName=${databaseName}&port=${httpPort}&iscall=1';
+    print(url);
   }
 
   getLocalSettings() async {
@@ -114,43 +113,97 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        drawer:  HomeScreenDrawer(
-              width: width,
-              username: username,
-              settingsList: settingsList,
-              webViewController: _webViewController,
-              height: height,
-              ),
-        
+        drawer: HomeScreenDrawer(
+          width: width,
+          username: username,
+          settingsList: settingsList,
+          webViewController: _webViewController,
+          height: height,
+        ),
         body: IndexedStack(
           index: position,
           children: [
-            WebView(
-              key: _key,
-              initialUrl:
-                  'http://${serverIp}:${erpPort}/User/mobilelogin?userid=${username}&passwordhash=${password}&dbName=${databaseName}&port=${httpPort}&iscall=1',
-              // initialUrl: url,
-              javascriptMode: JavascriptMode.unrestricted,
-              zoomEnabled: true,
-              debuggingEnabled: true,
-              onWebViewCreated: (WebViewController webViewController) {
-                _webViewController = webViewController;
-              },
-              onPageFinished: (finish) {
-                setState(
-                  () {
-                    print(url);
-                    isLoading = false;
-                    // isReloading = false;
-                    position = 0;
-                  },
-                );
-              },
-              onPageStarted: (url) => setState(() {
-                isLoading = true;
-                position = 1;
-              }),
-            ),
+            isError
+                ? SizedBox(
+                    width: width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: width * 0.5,
+                          width: width * 0.5,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: AssetImage(Images.error),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Something went wrong!\nPlease try again later.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              Get.offAll(() => LoginScreen());
+                            },
+                            child: Text(
+                              'Go to Login',
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: AppColors.primary,
+                                fontSize: 12,
+                              ),
+                            ))
+                      ],
+                    ),
+                  )
+                : WebView(
+                    key: _key,
+                    initialUrl:
+                        'http://${serverIp}:${erpPort}/User/mobilelogin?userid=${username}&passwordhash=${password}&dbName=${databaseName}&port=${httpPort}&iscall=1',
+                    // initialUrl: url,
+                    javascriptMode: JavascriptMode.unrestricted,
+                    zoomEnabled: true,
+                    debuggingEnabled: true,
+                    onProgress: (progress) =>
+                        print("WebView is loading (progress : $progress%)"),
+                    onWebViewCreated: (WebViewController webViewController) {
+                      _webViewController = webViewController;
+                    },
+                    onPageFinished: (finish) {
+                      setState(
+                        () {
+                          print(url);
+                          isLoading = false;
+                          // isReloading = false;
+                          position = 0;
+                        },
+                      );
+                    },
+                    onWebResourceError: (
+                      error,
+                    ) =>
+                        setState(() {
+                      isError = true;
+                      position = 0;
+                    }),
+                    onPageStarted: (url) => setState(() {
+                      isLoading = true;
+                      position = 1;
+                    }),
+                  ),
             Container(
               height: height,
               width: width,

@@ -6,6 +6,7 @@ class Images {
   static const String menu = '${base}menu_drawer.png';
   static const String user = '${base}user.png';
   static const String user_head = '${base}user_head.png';
+  static const String error = '${base}error_image.jpg';
 }
 
 class AppIcons {

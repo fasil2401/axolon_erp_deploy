@@ -10,4 +10,11 @@ class Api {
     // final erpPort = '81';
     return 'http://${serverIp}:${port}/V1/Api/';
   }
+
+  static getEmployeeBaseUrl() {
+    final serverIp = UserSimplePreferences.getServerIp() ?? '';
+    final webPort = UserSimplePreferences.getWebPort() ?? '';
+    final port = webPort.split(':')[1];
+    return 'http://${serverIp}:${port}/V1/Employee/';
+  }
 }

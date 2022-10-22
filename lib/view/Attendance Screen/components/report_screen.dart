@@ -29,88 +29,91 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SfCircularChart(
-            title: ChartTitle(
-              text: 'Employee Report',
-              alignment: ChartAlignment.near,
-              textStyle: TextStyle(
-                fontFamily: 'Rubik',
-                color: AppColors.mutedColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            legend: Legend(
-                isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
-            series: _getDefaultDoughnutSeries(),
-            tooltipBehavior: _tooltip,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText.buildTitleText('History'),
-                SizedBox(height: 10),
-                Obx(
-                  () => reportController.isLoading.value
-                      ? _buildShimmer()
-                      : ListView.separated(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: reportController.attendanceHistoy.length,
-                          itemBuilder: (context, index) {
-                            String category = reportController
-                                .attendanceHistoy[index].logFlag;
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ListTile(
-                                leading: Container(
-                                  alignment: Alignment.center,
-                                  width: 20,
-                                  // height: 20,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Icon(
-                                    category == 'CheckIn'
-                                        ? Icons.login
-                                        : category == 'CheckOut'
-                                            ? Icons.logout
-                                            : Icons.coffee_outlined,
-                                    color: category == 'CheckIn'
-                                        ? AppColors.darkGreen
-                                        : category == 'CheckOut'
-                                            ? AppColors.darkRed
-                                            : AppColors.primary,
-                                  ),
-                                ),
-                                title: Text(reportController
-                                    .attendanceHistoy[index].logFlag),
-                                subtitle: Text(reportController
-                                    .attendanceHistoy[index].logDate
-                                    .trim()
-                                    .substring(8)),
-                                trailing: Text(reportController
-                                    .attendanceHistoy[index].logDate
-                                    .trim()
-                                    .substring(0, 8)),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 2),
-                        ),
+    return RefreshIndicator(
+      onRefresh: () => reportController.getEmployeeAttendanceHistory(),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SfCircularChart(
+              title: ChartTitle(
+                text: 'Employee Report',
+                alignment: ChartAlignment.near,
+                textStyle: TextStyle(
+                  fontFamily: 'Rubik',
+                  color: AppColors.mutedColor,
+                  fontWeight: FontWeight.w500,
                 ),
-              ],
+              ),
+              legend: Legend(
+                  isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
+              series: _getDefaultDoughnutSeries(),
+              tooltipBehavior: _tooltip,
             ),
-          )
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText.buildTitleText('History'),
+                  SizedBox(height: 10),
+                  Obx(
+                    () => reportController.isLoading.value
+                        ? _buildShimmer()
+                        : ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: reportController.attendanceHistoy.length,
+                            itemBuilder: (context, index) {
+                              String category = reportController
+                                  .attendanceHistoy[index].logFlag;
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ListTile(
+                                  leading: Container(
+                                    alignment: Alignment.center,
+                                    width: 20,
+                                    // height: 20,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(
+                                      category == 'CheckIn'
+                                          ? Icons.login
+                                          : category == 'CheckOut'
+                                              ? Icons.logout
+                                              : Icons.coffee_outlined,
+                                      color: category == 'CheckIn'
+                                          ? AppColors.darkGreen
+                                          : category == 'CheckOut'
+                                              ? AppColors.darkRed
+                                              : AppColors.primary,
+                                    ),
+                                  ),
+                                  title: Text(reportController
+                                      .attendanceHistoy[index].logFlag),
+                                  subtitle: Text(reportController
+                                      .attendanceHistoy[index].logDate
+                                      .trim()
+                                      .substring(8)),
+                                  trailing: Text(reportController
+                                      .attendanceHistoy[index].logDate
+                                      .trim()
+                                      .substring(0, 8)),
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: 2),
+                          ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

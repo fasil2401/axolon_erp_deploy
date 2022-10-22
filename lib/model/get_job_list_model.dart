@@ -11,11 +11,11 @@ class GetJobListModel {
     });
 
     int res;
-    List<Model> model;
+    List<JobModel> model;
 
     factory GetJobListModel.fromJson(Map<String, dynamic> json) => GetJobListModel(
         res: json["res"],
-        model: List<Model>.from(json["model"].map((x) => Model.fromJson(x))),
+        model: List<JobModel>.from(json["model"].map((x) => JobModel.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -24,8 +24,8 @@ class GetJobListModel {
     };
 }
 
-class Model {
-    Model({
+class JobModel {
+    JobModel({
         this.code,
         this.name,
         this.customerId,
@@ -45,7 +45,7 @@ class Model {
     String? poNumber;
     bool? isServiceJob;
 
-    factory Model.fromJson(Map<String, dynamic> json) => Model(
+    factory JobModel.fromJson(Map<String, dynamic> json) => JobModel(
         code: json["Code"],
         name: json["Name"],
         customerId: json["CustomerID"],

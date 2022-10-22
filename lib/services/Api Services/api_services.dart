@@ -37,4 +37,21 @@ class ApiServices {
       throw Exception('Failed to load data');
     }
   }
+
+  static Future fetchDataRawBodyEmployee({String? api, String? data}) async {
+    print(data);
+    String baseUrl = Api.getEmployeeBaseUrl();
+    var responses = await client.post(
+      Uri.parse('$baseUrl$api'),
+      headers: {"Content-Type": "application/json"},
+      body: data,
+    );
+    if (responses.statusCode == 200) {
+      var jsonResponse = jsonDecode(responses.body);
+      print(jsonResponse);
+      return jsonResponse;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 }
