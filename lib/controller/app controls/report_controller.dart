@@ -16,10 +16,15 @@ class ReportController extends GetxController {
   var isLoading = false.obs;
   var response = 0.obs;
   var attendanceHistoy = [].obs;
-
+  var checkInCount = 10.obs;
+  var checkOutCount = 0.obs;
+  var breakInCount = 0.obs;
+  var breakOutCount = 0.obs;
   getEmployeeAttendanceHistory() async {
+    resetChart();
     final now = DateTime.now();
-    var startDate = DateTime(now.year, now.month, 1).toIso8601String().toString();
+    var startDate =
+        DateTime(now.year, now.month, 1).toIso8601String().toString();
     isLoading.value = true;
     await loginController.getToken();
     final String token = loginController.token.value;
@@ -35,10 +40,32 @@ class ReportController extends GetxController {
         print(result);
         response.value = result.res;
         attendanceHistoy.value = result.model;
+        attendanceHistoy.sort((a, b) => b.logDate.compareTo(a.logDate));
+        for (var element in attendanceHistoy) {
+          if (element.logFlag == 'CheckIn') {
+            checkInCount.value = checkInCount.value + 1;
+          }
+          if (element.logFlag == 'CheckOut') {
+            checkOutCount.value = checkOutCount.value + 1;
+          }
+          if (element.logFlag == 'BreakIn') {
+            breakInCount.value = breakInCount.value + 1;
+          }
+          if (element.logFlag == 'BreakOut') {
+            breakOutCount.value = breakOutCount.value + 1;
+          }
+        }
       }
     } finally {
       if (response.value == 1) {}
       isLoading.value = false;
     }
+  }
+
+  resetChart() {
+    checkInCount.value = 0;
+    checkOutCount.value = 0;
+    breakInCount.value = 0;
+    breakOutCount.value = 0;
   }
 }

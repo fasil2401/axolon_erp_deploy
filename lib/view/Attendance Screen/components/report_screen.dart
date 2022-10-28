@@ -35,21 +35,52 @@ class _ReportScreenState extends State<ReportScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SfCircularChart(
-              title: ChartTitle(
-                text: 'Employee Report',
-                alignment: ChartAlignment.near,
-                textStyle: TextStyle(
-                  fontFamily: 'Rubik',
-                  color: AppColors.mutedColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              legend: Legend(
-                  isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
-              series: _getDefaultDoughnutSeries(),
-              tooltipBehavior: _tooltip,
-            ),
+            Obx(() => SfCircularChart(
+                  title: ChartTitle(
+                    text: 'Employee Report',
+                    alignment: ChartAlignment.near,
+                    textStyle: TextStyle(
+                      fontFamily: 'Rubik',
+                      color: AppColors.mutedColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  legend: Legend(
+                      isVisible: true,
+                      overflowMode: LegendItemOverflowMode.wrap),
+                  series: <DoughnutSeries<ReportChartModel, String>>[
+                    DoughnutSeries<ReportChartModel, String>(
+                        radius: '80%',
+                        explode: true,
+                        explodeOffset: '10%',
+                        dataSource: [
+                          ReportChartModel(
+                              x: 'Check In',
+                              y: reportController.checkInCount.value,
+                              text: '${reportController.checkInCount.value}%'),
+                          ReportChartModel(
+                              x: 'Check Out',
+                              y: reportController.checkOutCount.value,
+                              text: '${reportController.checkOutCount.value}%'),
+                          ReportChartModel(
+                              x: 'Break In',
+                              y: reportController.breakInCount.value,
+                              text: '${reportController.breakInCount.value}%'),
+                          ReportChartModel(
+                              x: 'Break Out',
+                              y: reportController.breakOutCount.value,
+                              text: '${reportController.breakOutCount.value}%'),
+                        ],
+                        xValueMapper: (ReportChartModel data, _) =>
+                            data.x as String,
+                        yValueMapper: (ReportChartModel data, _) => data.y,
+                        dataLabelMapper: (ReportChartModel data, _) =>
+                            data.text,
+                        dataLabelSettings:
+                            const DataLabelSettings(isVisible: true))
+                  ],
+                  tooltipBehavior: _tooltip,
+                )),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Column(
@@ -171,7 +202,7 @@ class _ReportScreenState extends State<ReportScreen> {
           radius: '80%',
           explode: true,
           explodeOffset: '10%',
-          dataSource: <ReportChartModel>[
+          dataSource: [
             ReportChartModel(x: 'Break', y: 20, text: '20%'),
             ReportChartModel(x: 'Lunch', y: 10, text: '10%'),
             ReportChartModel(x: 'Labour', y: 25, text: '25%'),
