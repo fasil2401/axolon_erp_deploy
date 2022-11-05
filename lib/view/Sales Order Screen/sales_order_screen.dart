@@ -1,17 +1,17 @@
 import 'package:axolon_erp/utils/constants/colors.dart';
-import 'package:axolon_erp/view/Sales%20Screen/Components/draggable_button.dart';
+import 'package:axolon_erp/view/Sales%20Order%20Screen/Components/draggable_button.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-class SalesSreen extends StatefulWidget {
-  SalesSreen({super.key});
+class SalesOrderScreen extends StatefulWidget {
+  SalesOrderScreen({super.key});
 
   @override
-  State<SalesSreen> createState() => _SalesSreenState();
+  State<SalesOrderScreen> createState() => _SalesOrderScreenState();
 }
 
-class _SalesSreenState extends State<SalesSreen> {
+class _SalesOrderScreenState extends State<SalesOrderScreen> {
   @override
   void initState() {
     super.initState();
@@ -27,7 +27,7 @@ class _SalesSreenState extends State<SalesSreen> {
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: Theme.of(context).primaryColor,
-        title: const Text('Sales'),
+        title: const Text('Sales Order'),
       ),
       body: Stack(
         children: [

@@ -6,7 +6,6 @@ class LocalSettingsController extends GetxController {
   final connectionSettings = [].obs;
 
   Future<void> getLocalSettings() async {
-    print('enteringggg');
     final List<Map<String, dynamic>> elements =
         await DbHelper().queryAllSettings();
     connectionSettings.assignAll(

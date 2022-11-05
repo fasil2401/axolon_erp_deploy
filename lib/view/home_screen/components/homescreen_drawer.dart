@@ -8,9 +8,13 @@ import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/shared_preferences/shared_preferneces.dart';
 import 'package:axolon_erp/view/Attendance%20Screen/attendance_screen.dart';
-import 'package:axolon_erp/view/Sales%20Screen/sales_screen.dart';
+import 'package:axolon_erp/view/Hr%20Screen/hr_screen.dart';
+import 'package:axolon_erp/view/Inventory%20Screen/inventory_screen.dart';
+import 'package:axolon_erp/view/Sales%20Order%20Screen/sales_order_screen.dart';
+import 'package:axolon_erp/view/SalesScreen/sales_screen.dart';
 import 'package:axolon_erp/view/connection_settings/connection_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -109,47 +113,6 @@ class HomeScreenDrawer extends StatelessWidget {
                           Get.offAllNamed(RouteManager().routes[1].name);
                         },
                       ),
-
-                      // Container(
-                      //   margin: const EdgeInsets.only(right: 15),
-                      //   decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(20),
-                      //   ),
-                      //   child: ElevatedButton(
-                      //     onPressed: () async {
-                      //       await UserSimplePreferences.setLogin('false');
-                      //       Get.offAllNamed(RouteManager().routes[1].name);
-                      //     },
-                      //     style: ElevatedButton.styleFrom(
-                      //       elevation: 5,
-                      //       backgroundColor: AppColors.primary,
-                      //       shape: RoundedRectangleBorder(
-                      //         borderRadius:
-                      //             BorderRadius.circular(10), // <-- Radius
-                      //       ),
-                      //     ),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: [
-                      //         Text(
-                      //           'Log Out',
-                      //           style: TextStyle(
-                      //             // fontSize: width * 0.03,
-                      //             color: AppColors.mutedBlueColor,
-                      //           ),
-                      //         ),
-                      //         SizedBox(
-                      //           width: 5,
-                      //         ),
-                      //         Icon(
-                      //           Icons.logout_rounded,
-                      //           // size: 15,
-                      //           color: AppColors.mutedBlueColor,
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                       SizedBox(
                         width: 5,
                       ),
@@ -159,10 +122,107 @@ class HomeScreenDrawer extends StatelessWidget {
               ],
             ),
           ),
-          // Divider(
-          //   color: AppColors.mutedColor.withOpacity(0.5),
-          //   thickness: 0.5,
-          // ),
+          SizedBox(
+            height: 20,
+          ),
+          InkWell(
+            onTap: () {
+              Get.back();
+              // Get.to(() => AttendanceScreen());
+              Get.to(() => InventoryScreen());
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 22),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.timeline_outlined,
+                    color: AppColors.primary,
+                  ),
+                  SizedBox(
+                    width: 35,
+                  ),
+                  Text(
+                    'Inventory',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          InkWell(
+            onTap: () {
+              Get.back();
+              Get.to(() => SalesScreen());
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 22),
+              child: Row(
+                children: [
+                  RotatedBox(
+                    quarterTurns: 1,
+                    child: Icon(
+                      Icons.sell_outlined,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 35,
+                  ),
+                  Text(
+                    'Sales',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          InkWell(
+            onTap: () {
+              Get.back();
+              // Get.to(() => SalesSreen());
+              Get.to(() => HrScreen());
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 22),
+              child: Row(
+                children: [
+                  RotatedBox(
+                      quarterTurns: 0,
+                      child: SizedBox(
+                          height: 25,
+                          width: 25,
+                          child: SvgPicture.asset('assets/icons/hr.svg',
+                              color: AppColors.primary))),
+                  SizedBox(
+                    width: 35,
+                  ),
+                  Text(
+                    'HR',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Theme(
@@ -172,11 +232,11 @@ class HomeScreenDrawer extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 // collapsedBackgroundColor: AppColors.mutedBlueColor,
                 leading: Icon(
-                  Icons.settings_suggest_outlined,
+                  Icons.workspaces_outlined,
                   color: AppColors.primary,
                 ),
                 title: Text(
-                  'Connection Settings',
+                  'Switch Companies',
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.primary,
@@ -353,68 +413,6 @@ class HomeScreenDrawer extends StatelessWidget {
               ),
             ),
           ),
-          InkWell(
-            onTap: () {
-              Get.back();
-              Get.to(() => AttendanceScreen());
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 22),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.timeline_outlined,
-                    color: AppColors.primary,
-                  ),
-                  SizedBox(
-                    width: 35,
-                  ),
-                  Text(
-                    'Attendance',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          InkWell(
-            onTap: () {
-              Get.back();
-              Get.to(() => SalesSreen());
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 22),
-              child: Row(
-                children: [
-                  RotatedBox(
-                    quarterTurns: 1,
-                    child: Icon(
-                      Icons.sell_outlined,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 35,
-                  ),
-                  Text(
-                    'Sales',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
         ],
       ),
     );

@@ -38,6 +38,25 @@ class ApiServices {
     }
   }
 
+  static Future checkCredentialRawBody({String? api, String? data}) async {
+    print(data);
+    String baseUrl = Api.getBaseUrl();
+    try {
+      var responses = await client.post(
+        Uri.parse('$baseUrl$api'),
+        headers: {"Content-Type": "application/json"},
+        body: data,
+      );
+      if (responses.statusCode == 200) {
+        var jsonResponse = jsonDecode(responses.body);
+        print(jsonResponse);
+        return jsonResponse;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   static Future fetchDataRawBodyEmployee({String? api, String? data}) async {
     print(data);
     String baseUrl = Api.getEmployeeBaseUrl();

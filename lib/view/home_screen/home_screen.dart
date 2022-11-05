@@ -173,12 +173,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     key: _key,
                     initialUrl:
                         'http://${serverIp}:${erpPort}/User/mobilelogin?userid=${username}&passwordhash=${password}&dbName=${databaseName}&port=${httpPort}&iscall=1',
+                    // 'http://86.96.196.11/index.html',
                     // initialUrl: url,
                     javascriptMode: JavascriptMode.unrestricted,
                     zoomEnabled: true,
                     debuggingEnabled: true,
-                    onProgress: (progress) =>
-                        print("WebView is loading (progress : $progress%)"),
+                    onProgress: (progress) => print(
+                        "WebView is loading (progress : $progress%) ::: http://${serverIp}:${erpPort}/User/mobilelogin?userid=${username}&passwordhash=${password}&dbName=${databaseName}&port=${httpPort}&iscall=1 "),
                     onWebViewCreated: (WebViewController webViewController) {
                       _webViewController = webViewController;
                     },

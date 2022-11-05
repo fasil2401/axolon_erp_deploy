@@ -23,8 +23,9 @@ class ReportController extends GetxController {
   getEmployeeAttendanceHistory() async {
     resetChart();
     final now = DateTime.now();
-    var startDate =
-        DateTime(now.year, now.month, 1).toIso8601String().toString();
+    var startDate = DateTime(now.year, 1).toIso8601String().toString();
+    // var startDate =
+    //     DateTime(now.year, now.month, 1).toIso8601String().toString();
     isLoading.value = true;
     await loginController.getToken();
     final String token = loginController.token.value;

@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -49,19 +50,18 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   @override
   void initState() {
     super.initState();
-    print('dataaaaaaaaaaa${widget.jsonData}');
     getLocalSettings();
     prefillData();
   }
 
-  var settingsList = [
-    ConnectionModel(
-        connectionName: 'Select Settings',
-        serverIp: '',
-        webPort: '',
-        httpPort: '',
-        erpPort: '',
-        databaseName: '')
+  var settingsList = <ConnectionModel>[
+    // ConnectionModel(
+    //     connectionName: '',
+    //     serverIp: '',
+    //     webPort: '',
+    //     httpPort: '',
+    //     erpPort: '',
+    //     databaseName: '')
   ];
 
   final qrKey = GlobalKey();
@@ -130,9 +130,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
   fillDataOnScan() async {
     var jsonData = connectionQrModelFromJson(widget.jsonData!);
-    print('object issssssss+++++++++${jsonData.connectionName}');
     var connectionName = EncryptData.decryptAES(jsonData.connectionName);
-    print('connectionName issssssss+++++++++${connectionName}');
     var serverIp = EncryptData.decryptAES(jsonData.serverIp);
     var webPort = EncryptData.decryptAES(jsonData.webPort);
     var databaseName = EncryptData.decryptAES(jsonData.databaseName);
@@ -321,54 +319,65 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          DropdownButtonFormField2(
-                                            isDense: true,
-                                            dropdownFullScreen: true,
-                                            value: settingsList[0],
-                                            style: TextStyle(
-                                              color: AppColors.primary,
-                                              fontSize: 18,
-                                            ),
-                                            decoration: InputDecoration(
-                                              isCollapsed: true,
-                                              contentPadding:
+                                          Visibility(
+                                            visible: settingsList.isNotEmpty,
+                                            child: DropdownButtonFormField2(
+                                              isDense: true,
+                                              dropdownFullScreen: true,
+                                              // value: settingsList[0],
+
+                                              style: TextStyle(
+                                                color: AppColors.primary,
+                                                fontSize: 18,
+                                              ),
+                                              decoration: InputDecoration(
+                                                isCollapsed: true,
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 15),
+                                              ),
+                                              hint: const Text(
+                                                'Select Company',
+                                                style: TextStyle(
+                                                  color: AppColors.primary,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              isExpanded: true,
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                color: AppColors.primary,
+                                              ),
+                                              iconSize: 20,
+                                              // buttonHeight: 37,
+                                              buttonPadding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 15),
-                                            ),
-                                            isExpanded: true,
-                                            icon: const Icon(
-                                              Icons.arrow_drop_down,
-                                              color: AppColors.primary,
-                                            ),
-                                            iconSize: 20,
-                                            // buttonHeight: 37,
-                                            buttonPadding:
-                                                const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                            ),
-                                            dropdownDecoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            items: settingsList
-                                                .map(
-                                                  (item) => DropdownMenuItem(
-                                                    value: item,
-                                                    child: Text(
-                                                      item.connectionName!,
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
+                                                horizontal: 10,
+                                              ),
+                                              dropdownDecoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                              items: settingsList
+                                                  .map(
+                                                    (item) => DropdownMenuItem(
+                                                      value: item,
+                                                      child: Text(
+                                                        item.connectionName!,
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                )
-                                                .toList(),
-                                            onChanged: (value) async {
-                                              var settings =
-                                                  value as ConnectionModel;
-                                              selectSettings(settings);
-                                            },
-                                            onSaved: (value) {},
+                                                  )
+                                                  .toList(),
+                                              onChanged: (value) async {
+                                                var settings =
+                                                    value as ConnectionModel;
+                                                selectSettings(settings);
+                                              },
+                                              onSaved: (value) {},
+                                            ),
                                           ),
                                           SizedBox(height: height * 0.01),
                                           Stack(
@@ -551,23 +560,23 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                         ],
                                       ),
                                     ),
-                                    Positioned(
-                                      top: height * 0.0,
-                                      right: width * 0.065,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          createNew();
-                                        },
-                                        child: CircleAvatar(
-                                          backgroundColor: AppColors.primary,
-                                          radius: 30,
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    // Positioned(
+                                    //   top: height * 0.0,
+                                    //   right: width * 0.065,
+                                    //   child: GestureDetector(
+                                    //     onTap: () {
+                                    //       createNew();
+                                    //     },
+                                    //     child: CircleAvatar(
+                                    //       backgroundColor: AppColors.primary,
+                                    //       radius: 30,
+                                    //       child: Icon(
+                                    //         Icons.add,
+                                    //         color: Colors.white,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                                 Row(
@@ -582,7 +591,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(20),
                                           ),
-                                          child: Buttons.buildElevatedButton(
+                                          child: Buttons.buildElevatedButtonCancel(
                                               text: 'Cancel',
                                               onPressed: () {
                                                 Get.back();
@@ -658,6 +667,21 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                       onTap: () async {
                                         deleteConnection();
                                       },
+                                    ),
+                                    GFButton(
+                                      onPressed: () {
+                                        createNew();
+                                      },
+                                      text: "Add New",
+                                      buttonBoxShadow: true,
+                                      color: AppColors.primary,
+                                      icon: Icon(
+                                        Icons.add,
+                                        color: AppColors.primary,
+                                        size: 20,
+                                      ),
+                                      type: GFButtonType.outline,
+                                      shape: GFButtonShape.pills,
                                     ),
                                     InkWell(
                                       child: CircleAvatar(

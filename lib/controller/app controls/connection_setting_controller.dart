@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:axolon_erp/controller/app%20controls/local_settings_controller.dart';
 import 'package:axolon_erp/model/connection_setting_model.dart';
+import 'package:axolon_erp/model/login_error_model.dart';
+import 'package:axolon_erp/model/login_token_model.dart';
+import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:axolon_erp/utils/Encryption/encryptor.dart';
 import 'package:axolon_erp/utils/Routes/route_manger.dart';
 import 'package:axolon_erp/utils/constants/snackbar.dart';
@@ -14,7 +17,9 @@ class ConnectionSettingController extends GetxController {
   }
 
   final localSettingsController = Get.put(LocalSettingsController());
-
+  var isLoading = false.obs;
+  var response = 0.obs;
+  var message = ''.obs;
   var connectionName = ''.obs;
   var serverIp = ''.obs;
   var webPort = ''.obs;
@@ -154,6 +159,7 @@ class ConnectionSettingController extends GetxController {
   }
 
   saveSettings(List<ConnectionModel> list) async {
+    isLoading.value = true;
     if (nameWarning.value == false &&
         ipWarning.value == false &&
         webPortWarning.value == false &&
@@ -168,7 +174,14 @@ class ConnectionSettingController extends GetxController {
       await UserSimplePreferences.setErpPort(erpPort.value);
       await UserSimplePreferences.setConnection('true');
       // goToLogin();
-      getConfirmation(list);
+      final isValid = await validateConnection();
+      if (isValid) {
+        getConfirmation(list);
+        isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        SnackbarServices.errorSnackbar('Please check your connection settings');
+      }
     } else {
       SnackbarServices.errorSnackbar('Please fill all the fields');
     }
@@ -201,47 +214,46 @@ class ConnectionSettingController extends GetxController {
           databaseName: databaseName.value);
       goToLogin();
     }
-    // if (!isLocalSettings.value) {
-    //   Get.defaultDialog(
-    //     title: '',
-    //     titlePadding: EdgeInsets.zero,
-    //     content: Row(
-    //       children: [
-    //         Padding(
-    //           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-    //           child: Text('Save This Settings For Next Time ?',
-    //               textAlign: TextAlign.start,
-    //               style: TextStyle(color: AppColors.primary)),
-    //         ),
-    //       ],
-    //     ),
-    //     actions: [
-    //       Row(
-    //         mainAxisAlignment: MainAxisAlignment.end,
-    //         children: [
-    //           TextButton(
-    //             child:
-    //                 Text('No', style: TextStyle(color: AppColors.mutedColor)),
-    //             onPressed: () {
-    //               // saveSettings();
-    //               // Get.back();
-    //               goToLogin();
-    //             },
-    //           ),
-    //           TextButton(
-    //             child: Text('Yes', style: TextStyle(color: AppColors.primary)),
-    //             onPressed: () async {
-    //               // Get.back();
-    //               goToLogin();
-    //             },
-    //           ),
-    //         ],
-    //       ),
-    //     ],
-    //   );
-    // } else {
+  }
 
-    // }
+  validateConnection() async {
+    final String database = databaseName.value;
+    final String webPort = this.webPort.value;
+    final String serverIp = this.serverIp.value;
+    final String erpPort = this.erpPort.value;
+    final String userId = 'aa';
+    final String password = 'a';
+    final String port = webPort.split(':')[0];
+    print('port is $port');
+    final data = jsonEncode({
+      "Instance": '${serverIp}:${erpPort}',
+      "UserId": userId,
+      "Password": password,
+      "PasswordHash": "",
+      "DbName": database,
+      "Port": port,
+      "servername": ""
+    });
+    print(data);
+    dynamic result;
+
+    try {
+      var feedback =
+          await ApiServices.checkCredentialRawBody(api: 'Gettoken', data: data);
+      if (feedback != null) {
+        result = LoginError.fromJson(feedback);
+        response.value = result.res;
+        message.value = result.msg;
+      } else {
+        message.value = 'Something went wrong';
+      }
+    } finally {
+      if (message.value.contains('Login failed for user')) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 
   goToLogin() {
