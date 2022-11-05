@@ -3,14 +3,25 @@ import 'package:axolon_erp/utils/Routes/route_manger.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 
 class HrScreenItems {
-  static List<ScreenItemModel> items = [
+  static List<ScreenItemModel> HrItems = [
     ScreenItemModel(
         title: 'Attendance',
         route: '${RouteManager.attendance}',
         icon: AppIcons.attendance),
     ScreenItemModel(
         title: 'Request',
-        route: '${RouteManager.attendance}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.request),
+  ];
+
+  static List<ScreenItemModel> HrReportItems = [
+    ScreenItemModel(
+        title: 'Employee Ledger',
+        route: '${RouteManager.redirect}',
+        icon: AppIcons.report),
+    ScreenItemModel(
+        title: 'Employee Analysis',
+        route: '${RouteManager.redirect}',
+        icon: AppIcons.report),
   ];
 }

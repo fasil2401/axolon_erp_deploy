@@ -7,21 +7,33 @@ class InventoryScreenItems {
     ScreenItemModel(
         title: 'Products',
         route: '${RouteManager.productDetail}',
-        icon: AppIcons.product),
+        icon: AppIcons.box),
     ScreenItemModel(
         title: 'Stock',
-        route: '${RouteManager.attendance}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.stock),
   ];
 
   static List<ScreenItemModel> reportItems = [
     ScreenItemModel(
-        title: 'Ledger',
-        route: '${RouteManager.attendance}',
-        icon: AppIcons.ledger),
+        title: 'Inventory Ledger',
+        route: '${RouteManager.redirect}',
+        icon: AppIcons.report),
     ScreenItemModel(
-        title: 'Signature',
-        route: '${RouteManager.attendance}',
-        icon: AppIcons.stock),
+        title: 'Inventory Summary',
+        route: '${RouteManager.redirect}',
+        icon: AppIcons.report),
+    ScreenItemModel(
+        title: 'Inventory valuation',
+        route: '${RouteManager.redirect}',
+        icon: AppIcons.report),
+    ScreenItemModel(
+        title: 'Inventory aging summary',
+        route: '${RouteManager.redirect}',
+        icon: AppIcons.report),
+    ScreenItemModel(
+        title: 'Top selling products',
+        route: '${RouteManager.redirect}',
+        icon: AppIcons.report),
   ];
 }

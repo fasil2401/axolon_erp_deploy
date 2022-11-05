@@ -22,7 +22,7 @@ class InventoryScreen extends StatelessWidget {
           children: [
             GlassmorphicContainer(
               width: double.infinity,
-              height: 200,
+              height: 120,
               borderRadius: 20,
               blur: 20,
               alignment: Alignment.bottomCenter,
@@ -50,8 +50,8 @@ class InventoryScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,7 +142,7 @@ class InventoryScreen extends StatelessWidget {
             ),
             GlassmorphicContainer(
               width: double.infinity,
-              height: 120,
+              height: 210,
               borderRadius: 20,
               blur: 20,
               alignment: Alignment.bottomCenter,
@@ -186,7 +186,7 @@ class InventoryScreen extends StatelessWidget {
                         crossAxisCount: 4,
                         crossAxisSpacing: 15,
                         mainAxisSpacing: 14,
-                        mainAxisExtent: 60,
+                        mainAxisExtent: 70,
                       ),
                       itemCount: InventoryScreenItems.reportItems.length,
                       itemBuilder: (BuildContext context, int index) {

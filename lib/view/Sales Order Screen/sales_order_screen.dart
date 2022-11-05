@@ -232,7 +232,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: BouncingScrollPhysics(),
-                    itemCount: 2,
+                    itemCount: 0,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),

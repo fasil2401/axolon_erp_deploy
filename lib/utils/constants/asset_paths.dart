@@ -27,4 +27,7 @@ class AppIcons {
   static const String statement = '${base}statement.svg';
   static const String receipt = '${base}receipt.svg';
   static const String request = '${base}request.svg';
+  static const String approved = '${base}approved.svg';
+  static const String report = '${base}report.svg';
+  static const String box = '${base}box.svg';
 }

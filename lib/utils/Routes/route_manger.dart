@@ -1,6 +1,7 @@
 import 'package:axolon_erp/view/Attendance%20Screen/attendance_screen.dart';
 import 'package:axolon_erp/view/Inventory%20Screen/Inner%20Pages/product_screen.dart';
 import 'package:axolon_erp/view/Sales%20Order%20Screen/sales_order_screen.dart';
+import 'package:axolon_erp/view/components/redirect_screen.dart';
 import 'package:axolon_erp/view/connection_settings/connection_screen.dart';
 import 'package:axolon_erp/view/home_screen/home_screen.dart';
 import 'package:axolon_erp/view/login_screen/login_screen.dart';
@@ -12,6 +13,7 @@ class RouteManager {
   static const String attendance = 'attendance';
   static const String productDetail = 'productDetail';
   static const String salesOrder = 'salesOrder';
+  static const String redirect = 'redirect';
   List<GetPage> _routes = [
     GetPage(
       name: '/splash',
@@ -47,6 +49,11 @@ class RouteManager {
     GetPage(
       name: '/$salesOrder',
       page: () => SalesOrderScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: '/$redirect',
+      page: () => RedirectScreen(),
       transition: Transition.cupertino,
     ),
   ];
