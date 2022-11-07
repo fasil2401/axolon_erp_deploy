@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:axolon_erp/controller/app%20controls/home_controller.dart';
-import 'package:axolon_erp/model/connection_setting_model.dart';
+import 'package:axolon_erp/model/Local%20Db%20Model/connection_setting_model.dart';
 import 'package:axolon_erp/utils/Routes/route_manger.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
@@ -304,11 +304,6 @@ class HomeScreenDrawer extends StatelessWidget {
                                             dense: true,
                                             title: Row(
                                               children: [
-                                                Icon(
-                                                  Icons.settings_outlined,
-                                                  color: AppColors.primary,
-                                                  size: 18,
-                                                ),
                                                 SizedBox(
                                                   width: 6,
                                                 ),

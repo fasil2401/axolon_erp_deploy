@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:axolon_erp/controller/app%20controls/local_settings_controller.dart';
-import 'package:axolon_erp/model/connection_setting_model.dart';
+import 'package:axolon_erp/controller/app%20controls/Local%20Db%20Controller/local_settings_controller.dart';
+import 'package:axolon_erp/model/Local%20Db%20Model/connection_setting_model.dart';
 import 'package:axolon_erp/model/login_error_model.dart';
 import 'package:axolon_erp/model/login_token_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';

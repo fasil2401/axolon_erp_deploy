@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:axolon_erp/controller/app%20controls/connection_setting_controller.dart';
-import 'package:axolon_erp/controller/app%20controls/local_settings_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/Local%20Db%20Controller/local_settings_controller.dart';
 import 'package:axolon_erp/controller/ui%20controls/password_controller.dart';
 import 'package:axolon_erp/model/connection_qr_model.dart';
-import 'package:axolon_erp/model/connection_setting_model.dart';
+import 'package:axolon_erp/model/Local%20Db%20Model/connection_setting_model.dart';
 import 'package:axolon_erp/utils/Encryption/encryptor.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';

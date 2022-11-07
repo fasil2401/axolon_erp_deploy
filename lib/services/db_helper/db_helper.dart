@@ -1,4 +1,4 @@
-import 'package:axolon_erp/model/connection_setting_model.dart';
+import 'package:axolon_erp/model/Local%20Db%20Model/connection_setting_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

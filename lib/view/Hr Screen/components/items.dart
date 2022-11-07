@@ -7,7 +7,7 @@ class HrScreenItems {
     ScreenItemModel(
         title: 'Attendance',
         route: '${RouteManager.attendance}',
-        icon: AppIcons.attendance),
+        icon: AppIcons.approved),
     ScreenItemModel(
         title: 'Request',
         route: '${RouteManager.redirect}',

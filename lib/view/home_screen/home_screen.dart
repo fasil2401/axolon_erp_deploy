@@ -1,5 +1,5 @@
 import 'package:axolon_erp/controller/app%20controls/home_controller.dart';
-import 'package:axolon_erp/controller/app%20controls/local_settings_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/Local%20Db%20Controller/local_settings_controller.dart';
 import 'package:axolon_erp/controller/ui%20controls/package_info_controller.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';

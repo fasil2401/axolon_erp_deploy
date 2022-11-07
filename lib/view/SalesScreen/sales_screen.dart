@@ -25,13 +25,13 @@ class SalesScreen extends StatelessWidget {
               borderRadius: 20,
               blur: 20,
               alignment: Alignment.bottomCenter,
-              border: 2,
+              border: 0.5,
               linearGradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.black.withOpacity(0.1),
-                    Colors.black.withOpacity(0.05),
+                    Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0.05),
                   ],
                   stops: [
                     0.1,
@@ -41,8 +41,8 @@ class SalesScreen extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFFFFFFFF).withOpacity(0.5),
-                  Color(0xFFFFFFFF).withOpacity(0.5),
+                  Colors.black.withOpacity(0.5),
+                  Colors.black.withOpacity(0.5),
                 ],
               ),
               child: Column(
@@ -121,13 +121,13 @@ class SalesScreen extends StatelessWidget {
               borderRadius: 20,
               blur: 20,
               alignment: Alignment.bottomCenter,
-              border: 2,
+              border: 0.5,
               linearGradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.black.withOpacity(0.1),
-                    Colors.black.withOpacity(0.05),
+                    Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0.05),
                   ],
                   stops: [
                     0.1,
@@ -137,8 +137,8 @@ class SalesScreen extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFFFFFFFF).withOpacity(0.5),
-                  Color(0xFFFFFFFF).withOpacity(0.5),
+                  Colors.black.withOpacity(0.5),
+                  Colors.black.withOpacity(0.5),
                 ],
               ),
               child: Column(
