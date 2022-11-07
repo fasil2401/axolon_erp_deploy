@@ -8,6 +8,7 @@ class ApiServices {
     String? api,
   }) async {
     String baseUrl = Api.getBaseUrl();
+    print('base url issss ==== ::::$baseUrl');
     print(baseUrl + api!);
     var responses = await client.post(
       Uri.parse('${baseUrl}$api'),
@@ -24,6 +25,7 @@ class ApiServices {
   static Future fetchDataRawBody({String? api, String? data}) async {
     print(data);
     String baseUrl = Api.getBaseUrl();
+    print('base url issss ==== ::::$baseUrl');
     var responses = await client.post(
       Uri.parse('$baseUrl$api'),
       headers: {"Content-Type": "application/json"},
@@ -41,6 +43,7 @@ class ApiServices {
   static Future checkCredentialRawBody({String? api, String? data}) async {
     print(data);
     String baseUrl = Api.getBaseUrl();
+    print('base url issss ==== ::::$baseUrl');
     try {
       var responses = await client.post(
         Uri.parse('$baseUrl$api'),
@@ -60,6 +63,7 @@ class ApiServices {
   static Future fetchDataRawBodyEmployee({String? api, String? data}) async {
     print(data);
     String baseUrl = Api.getEmployeeBaseUrl();
+    print('base url issss ==== ::::$baseUrl');
     var responses = await client.post(
       Uri.parse('$baseUrl$api'),
       headers: {"Content-Type": "application/json"},

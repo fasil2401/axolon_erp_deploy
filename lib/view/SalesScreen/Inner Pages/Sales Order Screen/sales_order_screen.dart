@@ -1,5 +1,5 @@
 import 'package:axolon_erp/utils/constants/colors.dart';
-import 'package:axolon_erp/view/Sales%20Order%20Screen/Components/draggable_button.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/Components/draggable_button.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
@@ -56,7 +56,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                               child: Text(
                                 'SysDocId',
                                 style: TextStyle(
-                                  fontSize: 12.5.sp,
+                                  fontSize: 14,
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'Rubik',
@@ -132,7 +132,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                 child: Text(
                                   'Voucher :',
                                   style: TextStyle(
-                                    fontSize: 12.5.sp,
+                                    fontSize: 14,
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.w500,
                                     // fontFamily: 'Rubik',
@@ -143,7 +143,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                 child: Text(
                                   '',
                                   style: TextStyle(
-                                    fontSize: 12.5.sp,
+                                    fontSize: 14,
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.w400,
                                     // fontFamily: 'Rubik',
@@ -171,7 +171,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                         child: Text(
                           'Customer Id:',
                           style: TextStyle(
-                            fontSize: 12.5.sp,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primary,
                           ),
@@ -313,10 +313,6 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 // mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  _buildDetailTextContent('376.00'),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
                                   _buildDetailTextContent('0.00'),
                                   const SizedBox(
                                     height: 8,
@@ -325,7 +321,11 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                   const SizedBox(
                                     height: 8,
                                   ),
-                                  _buildDetailTextContent('376.00'),
+                                  _buildDetailTextContent('0.00'),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  _buildDetailTextContent('0.00'),
                                 ],
                               ),
                             )
@@ -355,7 +355,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                   'Clear',
                                   style: TextStyle(
                                     color: AppColors.primary,
-                                    fontSize: 10.sp,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
@@ -377,7 +377,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                   'Save',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 10.sp,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
@@ -422,7 +422,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
     return Text(
       ' $text',
       style: TextStyle(
-        fontSize: 14.5.sp,
+        fontSize: 16,
         color: AppColors.primary,
         fontWeight: FontWeight.w400,
       ),
@@ -436,7 +436,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
         Text(
           text,
           style: TextStyle(
-            fontSize: 14.5.sp,
+            fontSize: 16,
             color: AppColors.primary,
             fontWeight: FontWeight.w500,
           ),
@@ -444,7 +444,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
         Text(
           ':',
           style: TextStyle(
-            fontSize: 12.5.sp,
+            fontSize: 14,
             color: AppColors.mutedColor,
             fontWeight: FontWeight.w500,
           ),
@@ -469,7 +469,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
               child: Text(
                 'Code',
                 style: TextStyle(
-                  fontSize: 12.5.sp,
+                  fontSize: 14,
                   color: AppColors.primary,
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Rubik',
@@ -480,7 +480,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
               child: Text(
                 'Name',
                 style: TextStyle(
-                  fontSize: 12.5.sp,
+                  fontSize: 14,
                   color: AppColors.primary,
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Rubik',
@@ -492,7 +492,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
               child: Text(
                 'Quantity',
                 style: TextStyle(
-                  fontSize: 12.5.sp,
+                  fontSize: 14,
                   color: AppColors.primary,
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Rubik',
@@ -505,7 +505,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
               child: Text(
                 'Price',
                 style: TextStyle(
-                  fontSize: 12.5.sp,
+                  fontSize: 14,
                   color: AppColors.primary,
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Rubik',
@@ -517,7 +517,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
             //   child: Text(
             //     'Discount',
             //     style: TextStyle(
-            //       fontSize: 12.5.sp,
+            //       fontSize: 14,
             //       color: AppColors.primary,
             //       fontWeight: FontWeight.w500,
             //       fontFamily: 'Rubik',

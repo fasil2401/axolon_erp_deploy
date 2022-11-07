@@ -1,6 +1,6 @@
 import 'package:axolon_erp/view/Attendance%20Screen/attendance_screen.dart';
 import 'package:axolon_erp/view/Inventory%20Screen/Inner%20Pages/product_screen.dart';
-import 'package:axolon_erp/view/Sales%20Order%20Screen/sales_order_screen.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/sales_order_screen.dart';
 import 'package:axolon_erp/view/components/redirect_screen.dart';
 import 'package:axolon_erp/view/connection_settings/connection_screen.dart';
 import 'package:axolon_erp/view/home_screen/home_screen.dart';
