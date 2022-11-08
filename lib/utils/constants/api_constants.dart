@@ -11,6 +11,13 @@ class Api {
     return 'http://${serverIp}:${port}/V1/Api/';
   }
 
+  static getInventoryBaseUrl() {
+    final serverIp = UserSimplePreferences.getServerIp() ?? '';
+    final webPort = UserSimplePreferences.getWebPort() ?? '';
+    final port = webPort.split(':')[1];
+    return 'http://${serverIp}:${port}/V1/Inventory/';
+  }
+
   static getEmployeeBaseUrl() {
     final serverIp = UserSimplePreferences.getServerIp() ?? '';
     final webPort = UserSimplePreferences.getWebPort() ?? '';

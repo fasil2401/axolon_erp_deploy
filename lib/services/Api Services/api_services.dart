@@ -22,6 +22,23 @@ class ApiServices {
     }
   }
 
+  static Future fetchDataInventory({
+    String? api,
+  }) async {
+    String baseUrl = Api.getInventoryBaseUrl();
+    print(baseUrl + api!);
+    var responses = await client.post(
+      Uri.parse('${baseUrl}$api'),
+    );
+    if (responses.statusCode == 200) {
+      var jsonResponse = jsonDecode(responses.body);
+      print(jsonResponse);
+      return jsonResponse;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   static Future fetchDataRawBody({String? api, String? data}) async {
     print(data);
     String baseUrl = Api.getBaseUrl();
@@ -43,7 +60,6 @@ class ApiServices {
   static Future checkCredentialRawBody({String? api, String? data}) async {
     print(data);
     String baseUrl = Api.getBaseUrl();
-    print('base url issss ==== ::::$baseUrl');
     try {
       var responses = await client.post(
         Uri.parse('$baseUrl$api'),
@@ -64,6 +80,22 @@ class ApiServices {
     print(data);
     String baseUrl = Api.getEmployeeBaseUrl();
     print('base url issss ==== ::::$baseUrl');
+    var responses = await client.post(
+      Uri.parse('$baseUrl$api'),
+      headers: {"Content-Type": "application/json"},
+      body: data,
+    );
+    if (responses.statusCode == 200) {
+      var jsonResponse = jsonDecode(responses.body);
+      print(jsonResponse);
+      return jsonResponse;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  static Future fetchDataRawBodyInventory({String? api, String? data}) async {
+    String baseUrl = Api.getInventoryBaseUrl();
     var responses = await client.post(
       Uri.parse('$baseUrl$api'),
       headers: {"Content-Type": "application/json"},
