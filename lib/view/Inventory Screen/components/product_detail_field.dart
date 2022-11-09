@@ -18,7 +18,9 @@ class ItemDetailsField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
+      controller: controller.text.isEmpty
+          ? TextEditingController(text: ' ')
+          : controller,
       // enabled: false,
       onTap: callback,
       readOnly: true,

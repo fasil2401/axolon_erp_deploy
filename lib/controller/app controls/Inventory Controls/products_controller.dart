@@ -168,7 +168,9 @@ class ProductsController extends GetxController {
                                 InventoryComponents.tableText(
                                     '', TextAlign.left),
                                 InventoryComponents.tableText(
-                                    quantity.toString(), TextAlign.right),
+                                    InventoryCalculations.roundOffQuantity(
+                                        quantity: quantity),
+                                    TextAlign.right),
                               ]),
                             ],
                           ),
@@ -203,7 +205,8 @@ class ProductsController extends GetxController {
                   ),
                   Flexible(
                     child: Text(
-                      totalStock.value.toString(),
+                      InventoryCalculations.roundOffQuantity(
+                          quantity: totalStock.value),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,

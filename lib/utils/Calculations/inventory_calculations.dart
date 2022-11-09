@@ -11,4 +11,9 @@ class InventoryCalculations {
     }
     return stockPerFactor;
   }
+
+  static roundOffQuantity({required double quantity}) { 
+   String roundedQuantity = quantity.toStringAsFixed(2);
+    return roundedQuantity;
+  }
 }

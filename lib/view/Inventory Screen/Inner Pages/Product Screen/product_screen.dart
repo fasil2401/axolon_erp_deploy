@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:axolon_erp/controller/app%20controls/Inventory%20Controls/products_controller.dart';
+import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/Inventory%20Screen/Inner%20Pages/Load%20Shimmer/inventory_shimmer.dart';
@@ -183,8 +184,10 @@ class ProductDetails extends StatelessWidget {
                                 },
                                 maxLines: 1,
                                 controller: TextEditingController(
-                                    text: productsController.totalStock.value
-                                        .toString()),
+                                    text:
+                                        InventoryCalculations.roundOffQuantity(
+                                            quantity: productsController
+                                                .totalStock.value)),
                                 readOnly: true,
                                 style: TextStyle(
                                   fontSize: 13,

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_order_controller.dart';
+import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/Components/draggable_button.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/sales_product_list_screen.dart';
@@ -252,7 +253,8 @@ class SalesOrderScreen extends StatelessWidget {
                                     SizedBox(
                                       width: width * 0.13,
                                       child: Text(
-                                        salesOrder.quantity.toString(),
+                                        InventoryCalculations.roundOffQuantity(
+                                            quantity: salesOrder.quantity),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
