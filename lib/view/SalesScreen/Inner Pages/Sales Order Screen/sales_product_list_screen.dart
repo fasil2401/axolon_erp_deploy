@@ -1,14 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:axolon_erp/controller/app%20controls/Inventory%20Controls/products_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_order_controller.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
+import 'package:axolon_erp/view/Inventory%20Screen/Inner%20Pages/Product%20Screen/inventory_scanning.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/sales_item_snaning.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 
-class ProductListScreen extends StatelessWidget {
-  ProductListScreen({super.key});
+class SalesProductListScreen extends StatelessWidget {
+  SalesProductListScreen({super.key});
 
-  final productsController = Get.put(ProductsController());
+  final productsController = Get.put(SalesOrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +42,15 @@ class ProductListScreen extends StatelessWidget {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      suffixIcon: Icon(
-                        Icons.manage_search_sharp,
-                        color: AppColors.primary,
-                        size: 20,
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          Get.to(() => SalesOrderScanner());
+                        },
+                        child: Icon(
+                          Icons.qr_code_scanner_rounded,
+                          color: AppColors.primary,
+                          size: 20,
+                        ),
                       ),
                     ),
                     onChanged: (value) =>

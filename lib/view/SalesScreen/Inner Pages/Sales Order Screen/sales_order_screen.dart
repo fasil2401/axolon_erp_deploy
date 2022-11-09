@@ -1,22 +1,17 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_order_controller.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/Components/draggable_button.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/sales_product_list_screen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
+import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
-class SalesOrderScreen extends StatefulWidget {
+class SalesOrderScreen extends StatelessWidget {
   SalesOrderScreen({super.key});
 
-  @override
-  State<SalesOrderScreen> createState() => _SalesOrderScreenState();
-}
-
-class _SalesOrderScreenState extends State<SalesOrderScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+  final salesController = Get.put(SalesOrderController());
   var selectedSysdocValue;
   List sysDocList = [];
 
@@ -26,7 +21,6 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Theme.of(context).primaryColor,
         title: const Text('Sales Order'),
       ),
       body: Stack(
@@ -203,11 +197,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                     ))
                                 .toList(),
                             value: selectedSysdocValue,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedSysdocValue = value;
-                              });
-                            },
+                            onChanged: (value) {},
                             dropdownDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(14),
                               color: Colors.white,
@@ -229,47 +219,80 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                   height: 15,
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: BouncingScrollPhysics(),
-                    itemCount: 0,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                                width: width * 0.15,
-                                child: Text(
-                                  'oooo0ccnn',
-                                )),
-                            SizedBox(
-                                width: width * 0.4,
-                                child: Text(
-                                  'Test',
-                                  textAlign: TextAlign.start,
-                                )),
-                            SizedBox(
-                              width: width * 0.13,
-                              child: Text(
-                                '1.0',
-                                textAlign: TextAlign.center,
-                              ),
+                  child: Obx(() => ListView.builder(
+                        shrinkWrap: true,
+                        physics: BouncingScrollPhysics(),
+                        itemCount: salesController.salesOrderList.length,
+                        itemBuilder: (context, index) {
+                          print(index);
+                          var salesOrder =
+                              salesController.salesOrderList[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                        width: width * 0.15,
+                                        child: Text(
+                                          salesOrder.productId,
+                                        )),
+                                    SizedBox(
+                                        width: width * 0.4,
+                                        child: AutoSizeText(
+                                          salesOrder.description,
+                                          maxFontSize: 16,
+                                          minFontSize: 12,
+                                          textAlign: TextAlign.start,
+                                        )),
+                                    SizedBox(
+                                      width: width * 0.13,
+                                      child: Text(
+                                        salesOrder.quantity.toString(),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: width * 0.13,
+                                      child: Text(
+                                        salesOrder.price1.toString(),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Obx(
+                                  () => index ==
+                                              salesController
+                                                      .salesOrderList.length -
+                                                  1 &&
+                                          salesController.isProductLoading.value
+                                      ? Shimmer.fromColors(
+                                          baseColor: Colors.grey[300]!,
+                                          highlightColor: Colors.grey[100]!,
+                                          child: Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 10),
+                                            height: 40,
+                                            width: width,
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                )
+                              ],
                             ),
-                            SizedBox(
-                              width: width * 0.13,
-                              child: Text(
-                                '2.0',
-                                textAlign: TextAlign.center,
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                          );
+                        },
+                      )),
                 ),
                 Divider(
                   thickness: 1,
@@ -313,7 +336,9 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 // mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  _buildDetailTextContent('0.00'),
+                                  Obx(() => _buildDetailTextContent(
+                                      salesController.subTotal.value
+                                          .toString())),
                                   const SizedBox(
                                     height: 8,
                                   ),
@@ -393,7 +418,9 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
           ),
           DraggableCard(
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Get.to(() => SalesProductListScreen());
+              },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.fastLinearToSlowEaseIn,
@@ -499,7 +526,6 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Text(
@@ -512,18 +538,6 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                 ),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 10),
-            //   child: Text(
-            //     'Discount',
-            //     style: TextStyle(
-            //       fontSize: 14,
-            //       color: AppColors.primary,
-            //       fontWeight: FontWeight.w500,
-            //       fontFamily: 'Rubik',
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

@@ -4,7 +4,7 @@ import 'package:axolon_erp/controller/app%20controls/Inventory%20Controls/produc
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/Inventory%20Screen/Inner%20Pages/Load%20Shimmer/inventory_shimmer.dart';
-import 'package:axolon_erp/view/Inventory%20Screen/Inner%20Pages/product_list_screen.dart';
+import 'package:axolon_erp/view/Inventory%20Screen/Inner%20Pages/Product%20Screen/product_list_screen.dart';
 import 'package:axolon_erp/view/Inventory%20Screen/components/product_detail_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -91,8 +91,12 @@ class ProductDetails extends StatelessWidget {
                       ItemDetailsField(
                         controller: TextEditingController(
                             text: productsController
-                                    .singleProduct.value.description ??
-                                'Product Name'),
+                                        .singleProduct.value.description !=
+                                    null
+                                ? productsController
+                                    .singleProduct.value.description!
+                                    .replaceAll("\n", " ")
+                                : 'Product Name'),
                         callback: () async {},
                         label: 'Item Name',
                       ),
@@ -112,10 +116,10 @@ class ProductDetails extends StatelessWidget {
                                   label: Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      productsController
-                                              .unitLabel.value,
-                                      style:
-                                          TextStyle(color: AppColors.primary),
+                                      productsController.unitLabel.value,
+                                      style: TextStyle(
+                                          color: AppColors.primary,
+                                          fontSize: 12),
                                     ),
                                   ),
                                   border: OutlineInputBorder(
@@ -144,7 +148,7 @@ class ProductDetails extends StatelessWidget {
                                             Text(
                                               item.code,
                                               style: TextStyle(
-                                                fontSize: 13,
+                                                fontSize: 12,
                                                 color: AppColors.primary,
                                                 // fontWeight: FontWeight.w400,
                                               ),

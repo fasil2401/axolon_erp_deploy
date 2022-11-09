@@ -51,7 +51,27 @@ class SalesScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
-                    child: _buildHeadText('Sales'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildHeadText('Sales'),
+                        CircleAvatar(
+                            radius: 13,
+                            backgroundColor: Colors.white,
+                            // padding: EdgeInsets.symmetric(
+                            //     vertical: 5, horizontal: 10),
+                            // decoration: BoxDecoration(
+                            //   color: Colors.white,
+                            //   borderRadius: BorderRadius.circular(10),
+                            // ),
+                            child: Icon(
+                              Icons.favorite_border_outlined,
+                              size: 15,
+                              color: Colors.black87,
+                            )),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 8,
