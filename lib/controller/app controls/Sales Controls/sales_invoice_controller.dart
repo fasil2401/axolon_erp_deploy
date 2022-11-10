@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:developer' as developer;
 
-class SalesOrderController extends GetxController {
+class SalesInvoiceController extends GetxController {
   @override
   void onInit() {
     super.onInit();
@@ -28,7 +28,7 @@ class SalesOrderController extends GetxController {
   var message = ''.obs;
   var productList = [].obs;
   var filterList = [].obs;
-  var salesOrderList = [].obs;
+  var salesInvoiceList = [].obs;
   var singleProduct = ProductDetailsModel(
           res: 1, model: [], unitmodel: [], productlocationmodel: [], msg: '')
       .obs;
@@ -150,8 +150,8 @@ class SalesOrderController extends GetxController {
   }
 
   removeItem(int index) {
-    subTotal.value = subTotal.value - salesOrderList[index].model[0].price1;
-    salesOrderList.removeAt(index);
+    subTotal.value = subTotal.value - salesInvoiceList[index].model[0].price1;
+    salesInvoiceList.removeAt(index);
   }
 
   addOrUpdateProductToSales(Products product, bool isAdding,
@@ -394,13 +394,13 @@ class SalesOrderController extends GetxController {
                                 quantity.value;
                             singleProduct.value.model[0].updatedUnitId =
                                 unit.value;
-                            salesOrderList.add(singleProduct.value);
+                            salesInvoiceList.add(singleProduct.value);
                             calculateTotal(singleProduct.value.model[0].price1);
                             quantity.value = 1.0;
                             Get.back();
                             Get.back();
-                            developer.log(salesOrderList.length.toString(),
-                                name: 'salesOrderList.length');
+                            developer.log(salesInvoiceList.length.toString(),
+                                name: 'salesInvoiceList.length');
                           } else {
                             SnackbarServices.errorSnackbar(
                                 'Quantity is not available');
@@ -409,11 +409,11 @@ class SalesOrderController extends GetxController {
                       : () async {
                           single.model[0].updatedQuantity = quantity.value;
                           single.model[0].updatedUnitId = unit.value;
-                          salesOrderList.insert(index, single);
-                          salesOrderList.removeAt(index + 1);
+                          salesInvoiceList.insert(index, single);
+                          salesInvoiceList.removeAt(index + 1);
                           Get.back();
-                          developer.log(salesOrderList.length.toString(),
-                              name: 'salesOrderList.length');
+                          developer.log(salesInvoiceList.length.toString(),
+                              name: 'salesInvoiceList.length');
                           // refresh();
                         }),
               ElevatedButton(

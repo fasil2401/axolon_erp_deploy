@@ -52,9 +52,11 @@ class SingleProduct {
      this.isTrackLot,
     this.upc,
     this.unitId,
+    this.updatedUnitId,
     this.taxGroupId,
     this.locationId,
     this.quantity,
+    this.updatedQuantity,
     this.specialPrice,
     this.price1,
     this.price2,
@@ -78,9 +80,11 @@ class SingleProduct {
   bool? isTrackLot;
   String? upc;
   String? unitId;
+  String? updatedUnitId;
   String? taxGroupId;
   String? locationId;
   dynamic quantity;
+  dynamic updatedQuantity;
   dynamic specialPrice;
   dynamic price1;
   dynamic price2;

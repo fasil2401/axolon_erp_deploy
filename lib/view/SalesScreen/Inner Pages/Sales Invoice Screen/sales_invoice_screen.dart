@@ -1,19 +1,18 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_order_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_invoice_controller.dart';
 import 'package:axolon_erp/model/Inventory%20Model/get_all_products_model.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/draggable_button.dart';
-import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/sales_product_list_screen.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Invoice%20Screen/sales_invoice_product_list_screen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
 
-class SalesOrderScreen extends StatelessWidget {
-  SalesOrderScreen({super.key});
-  final salesController = Get.put(SalesOrderController());
+class SalesInvoiceScreen extends StatelessWidget {
+  SalesInvoiceScreen({super.key});
+  final salesController = Get.put(SalesInvoiceController());
   var selectedSysdocValue;
   List sysDocList = [];
 
@@ -23,7 +22,7 @@ class SalesOrderScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sales Order'),
+        title: const Text('Sales Invoice'),
       ),
       body: Stack(
         children: [
@@ -224,10 +223,10 @@ class SalesOrderScreen extends StatelessWidget {
                   child: Obx(() => ListView.builder(
                         shrinkWrap: true,
                         physics: BouncingScrollPhysics(),
-                        itemCount: salesController.salesOrderList.length,
+                        itemCount: salesController.salesInvoiceList.length,
                         itemBuilder: (context, index) {
-                          var salesOrder =
-                              salesController.salesOrderList[index].model[0];
+                          var salesInvoice =
+                              salesController.salesInvoiceList[index].model[0];
                           return Slidable(
                             key: const Key('sales_order_list'),
                             startActionPane: ActionPane(
@@ -242,7 +241,7 @@ class SalesOrderScreen extends StatelessWidget {
                                             Products(),
                                             false,
                                             salesController
-                                                .salesOrderList[index],
+                                                .salesInvoiceList[index],
                                             index)),
                               ],
                             ),
@@ -267,13 +266,13 @@ class SalesOrderScreen extends StatelessWidget {
                                   SizedBox(
                                       width: width * 0.15,
                                       child: Text(
-                                        salesController.salesOrderList[index]
+                                        salesController.salesInvoiceList[index]
                                             .model[0].productId,
                                       )),
                                   SizedBox(
                                       width: width * 0.4,
                                       child: AutoSizeText(
-                                        salesController.salesOrderList[index]
+                                        salesController.salesInvoiceList[index]
                                             .model[0].description,
                                         maxFontSize: 16,
                                         minFontSize: 12,
@@ -285,7 +284,7 @@ class SalesOrderScreen extends StatelessWidget {
                                           InventoryCalculations
                                               .roundOffQuantity(
                                             quantity: salesController
-                                                .salesOrderList[index]
+                                                .salesInvoiceList[index]
                                                 .model[0]
                                                 .updatedQuantity,
                                           ),
@@ -295,8 +294,10 @@ class SalesOrderScreen extends StatelessWidget {
                                   SizedBox(
                                     width: width * 0.13,
                                     child: Obx(() => Text(
-                                          salesController.salesOrderList[index]
-                                              .model[0].price1
+                                          salesController
+                                              .salesInvoiceList[index]
+                                              .model[0]
+                                              .price1
                                               .toString(),
                                           textAlign: TextAlign.center,
                                         )),
@@ -435,7 +436,7 @@ class SalesOrderScreen extends StatelessWidget {
           DraggableCard(
             child: InkWell(
               onTap: () {
-                Get.to(() => SalesProductListScreen());
+                Get.to(() => SalesInvoiceProductListScreen());
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),

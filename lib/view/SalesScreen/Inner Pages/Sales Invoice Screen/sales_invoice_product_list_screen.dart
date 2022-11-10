@@ -1,17 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_invoice_controller.dart';
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_order_controller.dart';
 import 'package:axolon_erp/model/Inventory%20Model/product_details_model.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Invoice%20Screen/sales_Invoice_item_scanning.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/sales_item_snaning.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class SalesProductListScreen extends StatelessWidget {
-  SalesProductListScreen({super.key});
+class SalesInvoiceProductListScreen extends StatelessWidget {
+  SalesInvoiceProductListScreen({super.key});
 
-  final productsController = Get.put(SalesOrderController());
+  final productsController = Get.put(SalesInvoiceController());
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class SalesProductListScreen extends StatelessWidget {
                       ),
                       suffixIcon: InkWell(
                         onTap: () {
-                          Get.to(() => SalesOrderScanner());
+                          Get.to(() => SalesInvoiceScanner());
                         },
                         child: Icon(
                           Icons.qr_code_scanner_rounded,
@@ -82,7 +84,8 @@ class SalesProductListScreen extends StatelessWidget {
                                                 model: [],
                                                 unitmodel: [],
                                                 productlocationmodel: [],
-                                                msg: ''), 1);
+                                                msg: ''),
+                                            1);
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
