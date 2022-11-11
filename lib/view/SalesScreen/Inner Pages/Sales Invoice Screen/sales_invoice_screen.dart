@@ -10,10 +10,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
-class SalesInvoiceScreen extends StatelessWidget {
+class SalesInvoiceScreen extends StatefulWidget {
   SalesInvoiceScreen({super.key});
+
+  @override
+  State<SalesInvoiceScreen> createState() => _SalesInvoiceScreenState();
+}
+
+class _SalesInvoiceScreenState extends State<SalesInvoiceScreen> {
   final salesController = Get.put(SalesInvoiceController());
+
   var selectedSysdocValue;
+
+  var selectedValue;
+
   List sysDocList = [];
 
   @override
@@ -45,7 +55,7 @@ class SalesInvoiceScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             isCollapsed: true,
                             contentPadding:
-                                const EdgeInsets.symmetric(vertical: 1),
+                                const EdgeInsets.symmetric(vertical: 5),
                             label: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
@@ -68,22 +78,22 @@ class SalesInvoiceScreen extends StatelessWidget {
                             Icons.arrow_drop_down,
                             color: AppColors.primary,
                           ),
-                          iconSize: 30,
-                          buttonHeight: 20,
                           buttonPadding:
                               const EdgeInsets.only(left: 20, right: 10),
                           dropdownDecoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          items: sysDocList
+                          items: salesController.sysDocList
                               .map(
                                 (item) => DropdownMenuItem(
                                   value: item,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item.code,
+                                        "${item.code} - ",
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: AppColors.primary,
@@ -93,11 +103,12 @@ class SalesInvoiceScreen extends StatelessWidget {
                                       ),
                                       SizedBox(
                                         width: width * 0.3,
-                                        child: Text(
-                                          item,
+                                        child: AutoSizeText(
+                                          item.name,
+                                          minFontSize: 10,
+                                          maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            fontSize: 14,
                                             color: AppColors.primary,
                                             fontWeight: FontWeight.w400,
                                             fontFamily: 'Rubik',
@@ -109,7 +120,11 @@ class SalesInvoiceScreen extends StatelessWidget {
                                 ),
                               )
                               .toList(),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            selectedSysdocValue = value;
+                            salesController
+                                .getVoucherNumber(selectedSysdocValue.code);
+                          },
                           onSaved: (value) {
                             // selectedValue = value;
                           },
@@ -135,15 +150,15 @@ class SalesInvoiceScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                child: Text(
-                                  '',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w400,
-                                    // fontFamily: 'Rubik',
-                                  ),
-                                ),
+                                child: Obx(() => Text(
+                                      salesController.voucherNumber.value,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.w400,
+                                        // fontFamily: 'Rubik',
+                                      ),
+                                    )),
                               ),
                             ],
                           ),
@@ -173,41 +188,48 @@ class SalesInvoiceScreen extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton2(
-                            isExpanded: false,
-                            isDense: true,
-                            hint: Text(
-                              'Customer Id',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).hintColor,
+                        child: Obx(() => DropdownButtonHideUnderline(
+                              child: DropdownButton2(
+                                isExpanded: true,
+                                isDense: true,
+                                hint: Text(
+                                  salesController.isCustomerLoading.value
+                                      ? 'Please wait...'
+                                      : 'Customer Id',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                items: salesController.customerList
+                                    .map((item) => DropdownMenuItem(
+                                          value: item,
+                                          child: AutoSizeText(
+                                            item.name,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                                value: selectedValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedValue = value;
+                                  });
+                                },
+                                dropdownDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: Colors.white,
+                                ),
+                                buttonHeight: 20,
+                                buttonWidth: 140,
+                                itemHeight: 40,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            items: sysDocList
-                                .map((item) => DropdownMenuItem(
-                                      value: item,
-                                      child: Text(
-                                        item.name,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                    ))
-                                .toList(),
-                            value: selectedSysdocValue,
-                            onChanged: (value) {},
-                            dropdownDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: Colors.white,
-                            ),
-                            buttonHeight: 20,
-                            buttonWidth: 140,
-                            itemHeight: 40,
-                          ),
-                        ),
+                            )),
                       ),
                     ],
                   ),
@@ -223,10 +245,10 @@ class SalesInvoiceScreen extends StatelessWidget {
                   child: Obx(() => ListView.builder(
                         shrinkWrap: true,
                         physics: BouncingScrollPhysics(),
-                        itemCount: salesController.salesInvoiceList.length,
+                        itemCount: salesController.salesOrderList.length,
                         itemBuilder: (context, index) {
-                          var salesInvoice =
-                              salesController.salesInvoiceList[index].model[0];
+                          var salesOrder =
+                              salesController.salesOrderList[index].model[0];
                           return Slidable(
                             key: const Key('sales_order_list'),
                             startActionPane: ActionPane(
@@ -241,7 +263,7 @@ class SalesInvoiceScreen extends StatelessWidget {
                                             Products(),
                                             false,
                                             salesController
-                                                .salesInvoiceList[index],
+                                                .salesOrderList[index],
                                             index)),
                               ],
                             ),
@@ -266,13 +288,13 @@ class SalesInvoiceScreen extends StatelessWidget {
                                   SizedBox(
                                       width: width * 0.15,
                                       child: Text(
-                                        salesController.salesInvoiceList[index]
+                                        salesController.salesOrderList[index]
                                             .model[0].productId,
                                       )),
                                   SizedBox(
                                       width: width * 0.4,
                                       child: AutoSizeText(
-                                        salesController.salesInvoiceList[index]
+                                        salesController.salesOrderList[index]
                                             .model[0].description,
                                         maxFontSize: 16,
                                         minFontSize: 12,
@@ -284,7 +306,7 @@ class SalesInvoiceScreen extends StatelessWidget {
                                           InventoryCalculations
                                               .roundOffQuantity(
                                             quantity: salesController
-                                                .salesInvoiceList[index]
+                                                .salesOrderList[index]
                                                 .model[0]
                                                 .updatedQuantity,
                                           ),
@@ -294,10 +316,8 @@ class SalesInvoiceScreen extends StatelessWidget {
                                   SizedBox(
                                     width: width * 0.13,
                                     child: Obx(() => Text(
-                                          salesController
-                                              .salesInvoiceList[index]
-                                              .model[0]
-                                              .price1
+                                          salesController.salesOrderList[index]
+                                              .model[0].updatedPrice
                                               .toString(),
                                           textAlign: TextAlign.center,
                                         )),
@@ -382,7 +402,8 @@ class SalesInvoiceScreen extends StatelessWidget {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                // Get.toNamed('/home');
+                                salesController.salesOrderList.clear();
+                                salesController.subTotal.value = 0.00;
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.mutedBlueColor,

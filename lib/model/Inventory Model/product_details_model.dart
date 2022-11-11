@@ -59,6 +59,7 @@ class SingleProduct {
     this.updatedQuantity,
     this.specialPrice,
     this.price1,
+    this.updatedPrice,
     this.price2,
     this.size,
     this.rackBin,
@@ -87,6 +88,7 @@ class SingleProduct {
   dynamic updatedQuantity;
   dynamic specialPrice;
   dynamic price1;
+  dynamic updatedPrice;
   dynamic price2;
   String? size;
   String? rackBin;

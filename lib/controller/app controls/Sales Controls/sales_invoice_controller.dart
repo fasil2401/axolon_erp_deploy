@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:axolon_erp/controller/Api%20Controls/login_token_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_screen_controller.dart';
 import 'package:axolon_erp/model/Inventory%20Model/get_all_products_model.dart';
 import 'package:axolon_erp/model/Inventory%20Model/product_details_model.dart';
+import 'package:axolon_erp/model/all_customer_model.dart';
+import 'package:axolon_erp/model/voucher_number_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
@@ -17,18 +20,24 @@ class SalesInvoiceController extends GetxController {
   void onInit() {
     super.onInit();
     getAllProducts();
+    getAllCustomers();
   }
 
   final loginController = Get.put(LoginTokenController());
+  final salesScreenController = Get.put(SalesController());
   var quantityControl = TextEditingController();
   var edit = false.obs;
   var isLoading = false.obs;
   var isProductLoading = false.obs;
+  var isCustomerLoading = false.obs;
+  var isVoucherLoading = false.obs;
   var response = 0.obs;
   var message = ''.obs;
+  var sysDocList = [].obs;
   var productList = [].obs;
+  var customerList = [].obs;
   var filterList = [].obs;
-  var salesInvoiceList = [].obs;
+  var salesOrderList = [].obs;
   var singleProduct = ProductDetailsModel(
           res: 1, model: [], unitmodel: [], productlocationmodel: [], msg: '')
       .obs;
@@ -37,6 +46,9 @@ class SalesInvoiceController extends GetxController {
   var subTotal = 0.0.obs;
   var quantity = 1.0.obs;
   var unit = ''.obs;
+  var price = 0.0.obs;
+  var isPriceEdited = false.obs;
+  var voucherNumber = ''.obs;
 
   decrementQuantity() {
     if (quantity.value > 1) {
@@ -68,6 +80,12 @@ class SalesInvoiceController extends GetxController {
         .toList();
   }
 
+  generateSysDocList() {
+    sysDocList.value = salesScreenController.sysDocList
+        .where((element) => element.sysDocType == 26)
+        .toList();
+  }
+
   resetList() {
     filterList.value = productList;
   }
@@ -78,6 +96,11 @@ class SalesInvoiceController extends GetxController {
 
   changeUnit(String value) {
     unit.value = value;
+  }
+
+  changePrice(String value) {
+    isPriceEdited.value = true;
+    value.isNotEmpty ? price.value = double.parse(value) : price.value = 0.0;
   }
 
   scanSalesItems(String itemCode) {
@@ -97,6 +120,7 @@ class SalesInvoiceController extends GetxController {
   }
 
   getAllProducts() async {
+    generateSysDocList();
     isLoading.value = true;
     await loginController.getToken();
     final String token = loginController.token.value;
@@ -115,6 +139,52 @@ class SalesInvoiceController extends GetxController {
     } finally {
       if (response.value == 1) {
         developer.log(productList.length.toString(), name: 'All Products');
+      }
+    }
+  }
+
+  getAllCustomers() async {
+    isCustomerLoading.value = true;
+    await loginController.getToken();
+    final String token = loginController.token.value;
+    dynamic result;
+    try {
+      var feedback =
+          await ApiServices.fetchData(api: 'GetCustomerList?token=${token}');
+      if (feedback != null) {
+        result = AllCustomerModel.fromJson(feedback);
+        print(result);
+        response.value = result.result;
+        customerList.value = result.modelobject;
+        isCustomerLoading.value = false;
+      }
+    } finally {
+      if (response.value == 1) {
+        developer.log(customerList.length.toString(), name: 'All Customers');
+      }
+    }
+  }
+
+  getVoucherNumber(String sysDocId) async {
+    isVoucherLoading.value = true;
+    await loginController.getToken();
+    final String token = loginController.token.value;
+    String date = DateTime.now().toIso8601String();
+    dynamic result;
+    try {
+      var feedback = await ApiServices.fetchData(
+          api:
+              'GetNextDocumentNo?token=${token}&sysDocID=${sysDocId}&dateTime=${date}');
+      if (feedback != null) {
+        result = VoucherNumberModel.fromJson(feedback);
+        print(result);
+        response.value = result.res;
+        voucherNumber.value = result.model;
+        isVoucherLoading.value = false;
+      }
+    } finally {
+      if (response.value == 1) {
+        developer.log(voucherNumber.value.toString(), name: 'Voucher Number');
       }
     }
   }
@@ -150,8 +220,9 @@ class SalesInvoiceController extends GetxController {
   }
 
   removeItem(int index) {
-    subTotal.value = subTotal.value - salesInvoiceList[index].model[0].price1;
-    salesInvoiceList.removeAt(index);
+    subTotal.value =
+        subTotal.value - salesOrderList[index].model[0].updatedPrice;
+    salesOrderList.removeAt(index);
   }
 
   addOrUpdateProductToSales(Products product, bool isAdding,
@@ -162,10 +233,13 @@ class SalesInvoiceController extends GetxController {
     if (isAdding == false) {
       unit.value = single.model[0].updatedUnitId!;
       unitList.value = single.unitmodel;
+      price.value = single.model[0].updatedPrice!;
     }
     if (isAdding == true) {
       getProductDetails(product.productId!);
+      price.value = singleProduct.value.model[0].price1;
     }
+    isPriceEdited.value = false;
 
     Get.defaultDialog(
         barrierDismissible: false,
@@ -294,79 +368,98 @@ class SalesInvoiceController extends GetxController {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      // child: TextField(
-                      //   // controller: na meController,
-                      //   controller: TextEditingController(
-                      //       text: singleProduct.value.model[0].unitId),
-
-                      //   readOnly: true,
-                      //   onTap: () {},
-                      //   style: const TextStyle(fontSize: 16, color: Colors.black),
-                      //   decoration: InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //       borderRadius: BorderRadius.circular(10),
-                      //       borderSide: const BorderSide(
-                      //           color: AppColors.mutedColor, width: 0.1),
-                      //     ),
-                      //     isCollapsed: true,
-                      //     contentPadding: const EdgeInsets.symmetric(
-                      //         vertical: 10, horizontal: 15),
-                      //     labelText: 'Unit',
-                      //   ),
-                      // ),
-                      child: DropdownButtonFormField2(
-                        decoration: InputDecoration(
-                          isCollapsed: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 5),
-                          label: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              unit.value,
-                              style: TextStyle(
-                                  color: AppColors.primary, fontSize: 12),
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        icon: Icon(
-                          Icons.arrow_drop_down,
-                          color: AppColors.primary,
-                        ),
-                        iconSize: 20,
-                        // buttonHeight: 4.5.w,
-                        buttonPadding:
-                            const EdgeInsets.only(left: 20, right: 10),
-                        dropdownDecoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        items: unitList
-                            .map(
-                              (item) => DropdownMenuItem(
-                                value: item.code,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.code,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColors.primary,
-                                        // fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: DropdownButtonFormField2(
+                              decoration: InputDecoration(
+                                isCollapsed: true,
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 5),
+                                label: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    unit.value,
+                                    style: TextStyle(
+                                        color: AppColors.primary, fontSize: 12),
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          var selectedUnit = value;
-                          String unit = selectedUnit.toString();
-                          changeUnit(unit);
-                        },
-                        onSaved: (value) {},
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: AppColors.primary,
+                              ),
+                              iconSize: 20,
+                              // buttonHeight: 4.5.w,
+                              buttonPadding:
+                                  const EdgeInsets.only(left: 20, right: 10),
+                              dropdownDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              items: unitList
+                                  .map(
+                                    (item) => DropdownMenuItem(
+                                      value: item.code,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.code,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: AppColors.primary,
+                                              // fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                var selectedUnit = value;
+                                String unit = selectedUnit.toString();
+                                changeUnit(unit);
+                              },
+                              onSaved: (value) {},
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Flexible(
+                            child: TextField(
+                              // controller: na meController,
+                              controller: TextEditingController(
+                                  text: isAdding
+                                      ? singleProduct.value.model[0].price1
+                                          .toString()
+                                      : single.model[0].updatedPrice
+                                          .toString()),
+                              onChanged: (value) => changePrice(value),
+                              keyboardType: TextInputType.number,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(
+                                      color: AppColors.mutedColor, width: 0.1),
+                                ),
+                                isCollapsed: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 15),
+                                labelText: 'Price',
+                                labelStyle: TextStyle(
+                                    color: AppColors.primary, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -394,26 +487,37 @@ class SalesInvoiceController extends GetxController {
                                 quantity.value;
                             singleProduct.value.model[0].updatedUnitId =
                                 unit.value;
-                            salesInvoiceList.add(singleProduct.value);
-                            calculateTotal(singleProduct.value.model[0].price1);
+                            singleProduct.value.model[0].updatedPrice =
+                                isPriceEdited.value
+                                    ? price.value
+                                    : singleProduct.value.model[0].price1;
+                            salesOrderList.add(singleProduct.value);
+                            isPriceEdited.value
+                                ? calculateTotal(price.value)
+                                : calculateTotal(
+                                    singleProduct.value.model[0].price1);
                             quantity.value = 1.0;
                             Get.back();
                             Get.back();
-                            developer.log(salesInvoiceList.length.toString(),
-                                name: 'salesInvoiceList.length');
+                            developer.log(salesOrderList.length.toString(),
+                                name: 'salesOrderList.length');
                           } else {
                             SnackbarServices.errorSnackbar(
                                 'Quantity is not available');
                           }
                         }
                       : () async {
+                          subTotal.value =
+                              subTotal.value - single.model[0].updatedPrice;
                           single.model[0].updatedQuantity = quantity.value;
                           single.model[0].updatedUnitId = unit.value;
-                          salesInvoiceList.insert(index, single);
-                          salesInvoiceList.removeAt(index + 1);
+                          single.model[0].updatedPrice = price.value;
+                          salesOrderList.insert(index, single);
+                          salesOrderList.removeAt(index + 1);
+                          calculateTotal(price.value);
                           Get.back();
-                          developer.log(salesInvoiceList.length.toString(),
-                              name: 'salesInvoiceList.length');
+                          developer.log(salesOrderList.length.toString(),
+                              name: 'salesOrderList.length');
                           // refresh();
                         }),
               ElevatedButton(

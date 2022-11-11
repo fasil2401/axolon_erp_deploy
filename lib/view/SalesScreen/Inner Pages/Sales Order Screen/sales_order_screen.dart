@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_order_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_screen_controller.dart';
 import 'package:axolon_erp/model/Inventory%20Model/get_all_products_model.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
@@ -11,10 +12,19 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
-class SalesOrderScreen extends StatelessWidget {
+class SalesOrderScreen extends StatefulWidget {
   SalesOrderScreen({super.key});
+
+  @override
+  State<SalesOrderScreen> createState() => _SalesOrderScreenState();
+}
+
+class _SalesOrderScreenState extends State<SalesOrderScreen> {
   final salesController = Get.put(SalesOrderController());
   var selectedSysdocValue;
+
+  var selectedValue;
+
   List sysDocList = [];
 
   @override
@@ -46,7 +56,7 @@ class SalesOrderScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             isCollapsed: true,
                             contentPadding:
-                                const EdgeInsets.symmetric(vertical: 1),
+                                const EdgeInsets.symmetric(vertical: 5),
                             label: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
@@ -69,22 +79,22 @@ class SalesOrderScreen extends StatelessWidget {
                             Icons.arrow_drop_down,
                             color: AppColors.primary,
                           ),
-                          iconSize: 30,
-                          buttonHeight: 20,
                           buttonPadding:
                               const EdgeInsets.only(left: 20, right: 10),
                           dropdownDecoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          items: sysDocList
+                          items: salesController.sysDocList
                               .map(
                                 (item) => DropdownMenuItem(
                                   value: item,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item.code,
+                                        "${item.code} - ",
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: AppColors.primary,
@@ -94,11 +104,12 @@ class SalesOrderScreen extends StatelessWidget {
                                       ),
                                       SizedBox(
                                         width: width * 0.3,
-                                        child: Text(
-                                          item,
+                                        child: AutoSizeText(
+                                          item.name,
+                                          minFontSize: 10,
+                                          maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            fontSize: 14,
                                             color: AppColors.primary,
                                             fontWeight: FontWeight.w400,
                                             fontFamily: 'Rubik',
@@ -110,7 +121,11 @@ class SalesOrderScreen extends StatelessWidget {
                                 ),
                               )
                               .toList(),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            selectedSysdocValue = value;
+                            salesController
+                                .getVoucherNumber(selectedSysdocValue.code);
+                          },
                           onSaved: (value) {
                             // selectedValue = value;
                           },
@@ -136,13 +151,15 @@ class SalesOrderScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                child: Text(
-                                  '',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w400,
-                                    // fontFamily: 'Rubik',
+                                child: Obx(
+                                  () => Text(
+                                    salesController.voucherNumber.value,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w400,
+                                      // fontFamily: 'Rubik',
+                                    ),
                                   ),
                                 ),
                               ),
@@ -174,41 +191,48 @@ class SalesOrderScreen extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton2(
-                            isExpanded: false,
-                            isDense: true,
-                            hint: Text(
-                              'Customer Id',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).hintColor,
+                        child: Obx(() => DropdownButtonHideUnderline(
+                              child: DropdownButton2(
+                                isExpanded: true,
+                                isDense: true,
+                                hint: Text(
+                                  salesController.isCustomerLoading.value
+                                      ? 'Please wait...'
+                                      : 'Customer Id',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                items: salesController.customerList
+                                    .map((item) => DropdownMenuItem(
+                                          value: item,
+                                          child: AutoSizeText(
+                                            item.name,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                                value: selectedValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedValue = value;
+                                  });
+                                },
+                                dropdownDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: Colors.white,
+                                ),
+                                buttonHeight: 20,
+                                buttonWidth: 140,
+                                itemHeight: 40,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            items: sysDocList
-                                .map((item) => DropdownMenuItem(
-                                      value: item,
-                                      child: Text(
-                                        item.name,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                    ))
-                                .toList(),
-                            value: selectedSysdocValue,
-                            onChanged: (value) {},
-                            dropdownDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: Colors.white,
-                            ),
-                            buttonHeight: 20,
-                            buttonWidth: 140,
-                            itemHeight: 40,
-                          ),
-                        ),
+                            )),
                       ),
                     ],
                   ),
@@ -296,7 +320,7 @@ class SalesOrderScreen extends StatelessWidget {
                                     width: width * 0.13,
                                     child: Obx(() => Text(
                                           salesController.salesOrderList[index]
-                                              .model[0].price1
+                                              .model[0].updatedPrice
                                               .toString(),
                                           textAlign: TextAlign.center,
                                         )),
@@ -381,7 +405,8 @@ class SalesOrderScreen extends StatelessWidget {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                // Get.toNamed('/home');
+                                salesController.salesOrderList.clear();
+                                salesController.subTotal.value = 0.00;
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.mutedBlueColor,

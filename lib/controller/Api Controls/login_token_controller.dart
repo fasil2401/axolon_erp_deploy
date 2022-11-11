@@ -8,6 +8,7 @@ class LoginTokenController extends GetxController {
   var response = 0.obs;
   var message = ''.obs;
   var token = ''.obs;
+  var userId = ''.obs;
 
   getToken() async {
     final String database = UserSimplePreferences.getDatabase() ?? '';
@@ -41,6 +42,7 @@ class LoginTokenController extends GetxController {
     } finally {
       if (response.value == 1) {
         token.value = result.loginToken;
+        this.userId.value = result.userId;
         print(token.value);
       }
     }

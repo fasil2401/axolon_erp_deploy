@@ -1,3 +1,4 @@
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_screen_controller.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/Hr%20Screen/components/items.dart';
 import 'package:axolon_erp/view/SalesScreen/components/sales_screen_items.dart';
@@ -7,8 +8,8 @@ import 'package:get/get.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 class SalesScreen extends StatelessWidget {
-  const SalesScreen({super.key});
-
+  SalesScreen({super.key});
+  final salesController = Get.put(SalesController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(

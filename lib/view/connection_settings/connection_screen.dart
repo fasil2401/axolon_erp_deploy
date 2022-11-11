@@ -591,13 +591,19 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(20),
                                           ),
-                                          child: Buttons.buildElevatedButtonCancel(
-                                              text: 'Cancel',
-                                              onPressed: () {
-                                                Get.back();
-                                              },
-                                              color: AppColors.mutedBlueColor,
-                                              textColor: AppColors.primary)),
+                                          child:
+                                              Buttons.buildElevatedButtonCancel(
+                                                  text: 'Cancel',
+                                                  onPressed: () {
+                                                    // Get.back();
+                                                    // Get.offAll(() =>
+                                                    //     ConnectionScreen());
+                                                    getLocalSettings();
+                                                  },
+                                                  color:
+                                                      AppColors.mutedBlueColor,
+                                                  textColor:
+                                                      AppColors.primary)),
                                     ),
                                     Expanded(
                                       child: Container(
@@ -670,6 +676,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                     ),
                                     GFButton(
                                       onPressed: () {
+                                        settingsList.clear();
                                         createNew();
                                       },
                                       text: "Add New",

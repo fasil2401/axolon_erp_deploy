@@ -247,7 +247,8 @@ class AttendanceController extends GetxController {
     final String latitude = UserSimplePreferences.getLatitude() ?? '';
     if (jobIdCode.value == '') {
       errorMessage.value = 'Please Select Job Id';
-      return false;
+      return true;
+      // return false;
     } else if (latitude == '') {
       errorMessage.value = 'Please Enable Location';
       return false;

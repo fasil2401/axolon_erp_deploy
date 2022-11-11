@@ -71,7 +71,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 0, horizontal: 10),
                             child: Text(
-                              'Job Id:',
+                              'Job:',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
@@ -85,7 +85,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   isExpanded: false,
                                   isDense: true,
                                   hint: Text(
-                                    'Select Job Id',
+                                    'Select Job',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Theme.of(context).hintColor,

@@ -159,7 +159,7 @@ class ConnectionSettingController extends GetxController {
   }
 
   saveSettings(List<ConnectionModel> list) async {
-    isLoading.value = true;
+    // isLoading.value = true;
     if (nameWarning.value == false &&
         ipWarning.value == false &&
         webPortWarning.value == false &&
@@ -174,14 +174,15 @@ class ConnectionSettingController extends GetxController {
       await UserSimplePreferences.setErpPort(erpPort.value);
       await UserSimplePreferences.setConnection('true');
       // goToLogin();
-      final isValid = await validateConnection();
-      if (isValid) {
-        getConfirmation(list);
-        isLoading.value = false;
-      } else {
-        isLoading.value = false;
-        SnackbarServices.errorSnackbar('Please check your connection settings');
-      }
+      getConfirmation(list);
+      // final isValid = await validateConnection();
+      // if (isValid) {
+      //   getConfirmation(list);
+      //   isLoading.value = false;
+      // } else {
+      //   isLoading.value = false;
+      //   SnackbarServices.errorSnackbar('Please check your connection settings');
+      // }
     } else {
       SnackbarServices.errorSnackbar('Please fill all the fields');
     }
