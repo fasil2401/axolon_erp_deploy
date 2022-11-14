@@ -223,6 +223,8 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                   setState(() {
                                     selectedValue = value;
                                   });
+                                  salesController
+                                      .getCustomerId(selectedValue.code);
                                 },
                                 dropdownDecoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
@@ -428,7 +430,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                print('save');
+                                salesController.createSalesOrder();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
@@ -439,13 +441,21 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 25),
-                                child: Text(
-                                  'Save',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
-                                ),
+                                child: Obx(() => salesController.isSaving.value
+                                    ? SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ))
+                                    : Text(
+                                        'Save',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      )),
                               ),
                             ),
                           ],

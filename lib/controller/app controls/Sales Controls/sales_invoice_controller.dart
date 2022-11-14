@@ -20,7 +20,7 @@ class SalesInvoiceController extends GetxController {
   void onInit() {
     super.onInit();
     getAllProducts();
-    getAllCustomers();
+    // getAllCustomers();
   }
 
   final loginController = Get.put(LoginTokenController());
