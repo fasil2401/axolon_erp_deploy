@@ -22,7 +22,6 @@ class SalesOrderController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    generateSysDocList();
     getAllCustomers();
   }
 
@@ -34,12 +33,14 @@ class SalesOrderController extends GetxController {
   var isProductLoading = false.obs;
   var isCustomerLoading = false.obs;
   var isVoucherLoading = false.obs;
+  var isSearching = false.obs;
   var isSaving = false.obs;
   var response = 0.obs;
   var message = ''.obs;
   var sysDocList = [].obs;
   var productList = [].obs;
   var customerList = [].obs;
+  var customerFilterList = [].obs;
   var filterList = [].obs;
   var salesOrderList = [].obs;
   var singleProduct = ProductDetailsModel(
@@ -55,6 +56,7 @@ class SalesOrderController extends GetxController {
   var voucherNumber = ''.obs;
   var sysDocId = ''.obs;
   var customerId = ''.obs;
+  var customer = CustomerModel().obs;
 
   decrementQuantity() {
     if (quantity.value > 1) {
@@ -86,6 +88,14 @@ class SalesOrderController extends GetxController {
         .toList();
   }
 
+  searchCustomers(String value) {
+    customerFilterList.value = customerList
+        .where((element) =>
+            element.code.toLowerCase().contains(value.toLowerCase()) ||
+            element.name.toLowerCase().contains(value.toLowerCase()))
+        .toList();
+  }
+
   generateSysDocList() {
     sysDocList.value = salesScreenController.sysDocList
         .where((element) => element.sysDocType == 23)
@@ -94,6 +104,15 @@ class SalesOrderController extends GetxController {
 
   resetList() {
     filterList.value = productList;
+  }
+
+  resetCustomerList() {
+    customerFilterList.value = customerList;
+  }
+
+  selectCustomer(CustomerModel customer) {
+    this.customer.value = customer;
+    customerId.value = this.customer.value.code ?? '';
   }
 
   calculateTotal(double price) {
@@ -152,7 +171,8 @@ class SalesOrderController extends GetxController {
     }
   }
 
-  getAllCustomers() async {
+   getAllCustomers() async {
+    await generateSysDocList();
     isCustomerLoading.value = true;
     await loginController.getToken();
     final String token = loginController.token.value;
@@ -165,6 +185,7 @@ class SalesOrderController extends GetxController {
         print(result);
         response.value = result.result;
         customerList.value = result.modelobject;
+        customerFilterList.value = result.modelobject;
         isCustomerLoading.value = false;
       }
     } finally {
@@ -206,106 +227,118 @@ class SalesOrderController extends GetxController {
   }
 
   createSalesOrder() async {
-    isSaving.value = true;
-    var list = [];
-    int index = 0;
+    if (salesOrderList.isNotEmpty) {
+      if (voucherNumber.value != '') {
+        if (customerId.value != '') {
+          isSaving.value = true;
+          var list = [];
+          int index = 0;
 
-    for (var product in salesOrderList) {
-      list.add(CreateSalesOrderDetailModel(
-          itemcode: product.model[0].productId,
-          description: product.model[0].description,
-          quantity: product.model[0].updatedQuantity,
-          remarks: '',
-          rowindex: index,
-          unitid: product.model[0].updatedUnitId,
-          specificationid: '',
-          styleid: '',
-          equipmentid: '',
-          itemtype: 0,
-          locationid: '',
-          jobid: '',
-          costcategoryid: '',
-          sourcesysdocid: '',
-          sourcevoucherid: '',
-          sourcerowindex: '',
-          unitprice: product.model[0].updatedPrice,
-          cost: product.model[0].price1,
-          amount: product.model[0].updatedPrice,
-          taxoption: null,
-          taxamount: 0,
-          taxgroupid: ''));
-      index++;
-    }
+          for (var product in salesOrderList) {
+            list.add(CreateSalesOrderDetailModel(
+                itemcode: product.model[0].productId,
+                description: product.model[0].description,
+                quantity: product.model[0].updatedQuantity,
+                remarks: '',
+                rowindex: index,
+                unitid: product.model[0].updatedUnitId,
+                specificationid: '',
+                styleid: '',
+                equipmentid: '',
+                itemtype: 0,
+                locationid: '',
+                jobid: '',
+                costcategoryid: '',
+                sourcesysdocid: '',
+                sourcevoucherid: '',
+                sourcerowindex: '',
+                unitprice: product.model[0].updatedPrice,
+                cost: product.model[0].price1,
+                amount: product.model[0].updatedPrice,
+                taxoption: null,
+                taxamount: 0,
+                taxgroupid: ''));
+            index++;
+          }
 
-    await loginController.getToken();
-    final String token = loginController.token.value;
-    String data = jsonEncode({
-      "token": token,
-      "Sysdocid": sysDocId.value,
-      "Voucherid": voucherNumber.value,
-      "Companyid": "",
-      "Divisionid": "",
-      "Customerid": customerId.value,
-      "Transactiondate": DateTime.now().toIso8601String(),
-      "Salespersonid": "",
-      "Salesflow": 0,
-      "Isexport": true,
-      "Requireddate": DateTime.now().toIso8601String(),
-      "Duedate": DateTime.now().toIso8601String(),
-      "ETD": DateTime.now().toIso8601String(),
-      "Shippingaddress": "",
-      "Shiptoaddress": "",
-      "Billingaddress": "",
-      "Customeraddress": "",
-      "Priceincludetax": true,
-      "Status": 0,
-      "Currencyid": "",
-      "Currencyrate": 1,
-      "Currencyname": "",
-      "Termid": "",
-      "Shippingmethodid": "",
-      "Reference": "",
-      "Reference2": "",
-      "Note": "",
-      "POnumber": "",
-      "Isvoid": false,
-      "Discount": 0,
-      "Total": subTotal.value,
-      "Taxamount": 0,
-      "Sourcedoctype": 0,
-      "Jobid": "",
-      "Costcategoryid": "",
-      "Payeetaxgroupid": "",
-      "Taxoption": 0,
-      "Roundoff": 0,
-      "Ordertype": 0,
-      "Isnewrecord": true,
-      "SalesOrderDetails": list
-    });
-    dynamic result;
-    try {
-      var feedback = await ApiServices.fetchDataRawBody(
-          api: 'CreateSalesOrder', data: data);
-      developer.log(feedback.toString(), name: 'Feedback');
-      if (feedback != null) {
-        if (feedback["res"] == 0) {
-          result = ErrorResponseModel.fromJson(feedback);
-          response.value = result.res;
+          await loginController.getToken();
+          final String token = loginController.token.value;
+          String data = jsonEncode({
+            "token": token,
+            "Sysdocid": sysDocId.value,
+            "Voucherid": voucherNumber.value,
+            "Companyid": "",
+            "Divisionid": "",
+            "Customerid": customerId.value,
+            "Transactiondate": DateTime.now().toIso8601String(),
+            "Salespersonid": "",
+            "Salesflow": 0,
+            "Isexport": true,
+            "Requireddate": DateTime.now().toIso8601String(),
+            "Duedate": DateTime.now().toIso8601String(),
+            "ETD": DateTime.now().toIso8601String(),
+            "Shippingaddress": "",
+            "Shiptoaddress": "",
+            "Billingaddress": "",
+            "Customeraddress": "",
+            "Priceincludetax": true,
+            "Status": 0,
+            "Currencyid": "",
+            "Currencyrate": 1,
+            "Currencyname": "",
+            "Termid": "",
+            "Shippingmethodid": "",
+            "Reference": "",
+            "Reference2": "",
+            "Note": "",
+            "POnumber": "",
+            "Isvoid": false,
+            "Discount": 0,
+            "Total": subTotal.value,
+            "Taxamount": 0,
+            "Sourcedoctype": 0,
+            "Jobid": "",
+            "Costcategoryid": "",
+            "Payeetaxgroupid": "",
+            "Taxoption": 0,
+            "Roundoff": 0,
+            "Ordertype": 0,
+            "Isnewrecord": true,
+            "SalesOrderDetails": list
+          });
+          dynamic result;
+          try {
+            var feedback = await ApiServices.fetchDataRawBody(
+                api: 'CreateSalesOrder', data: data);
+            developer.log(feedback.toString(), name: 'Feedback');
+            if (feedback != null) {
+              if (feedback["res"] == 0) {
+                result = ErrorResponseModel.fromJson(feedback);
+                response.value = result.res;
+              } else {
+                result = CreateSalesOrderResponseModel.fromJson(feedback);
+                response.value = result.res;
+              }
+            }
+          } finally {
+            isSaving.value = false;
+            if (response.value == 1) {
+              developer.log('Saving Success', name: '${result.docNo}');
+              clearData();
+              SnackbarServices.successSnackbar(
+                  'Successfully Saved as Doc No : ${result.docNo}');
+            } else {
+              SnackbarServices.errorSnackbar(result.err.toString());
+            }
+          }
         } else {
-          result = CreateSalesOrderResponseModel.fromJson(feedback);
-          response.value = result.res;
+          SnackbarServices.errorSnackbar('Please select any Customer !');
         }
-      }
-    } finally {
-      isSaving.value = false;
-      if (response.value == 1) {
-        developer.log('Saving Success', name: '${result.docNo}');
-        clearData();
-        SnackbarServices.successSnackbar(
-            'Successfully Saved as Doc No : ${result.docNo}');
       } else {
-        SnackbarServices.errorSnackbar(result.err.toString());
+        SnackbarServices.errorSnackbar('Pick Any Voucher !');
       }
+    } else {
+      SnackbarServices.errorSnackbar('Please add Products first !');
     }
   }
 

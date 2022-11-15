@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sizer/sizer.dart';
 
 class SalesOrderScreen extends StatefulWidget {
   SalesOrderScreen({super.key});
@@ -50,85 +51,88 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
-                        child: DropdownButtonFormField2(
-                          isDense: true,
-                          value: selectedSysdocValue,
-                          decoration: InputDecoration(
-                            isCollapsed: true,
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 5),
-                            label: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'SysDocId',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Rubik',
+                        child: Obx(
+                          () => DropdownButtonFormField2(
+                            isDense: true,
+                            value: selectedSysdocValue,
+                            decoration: InputDecoration(
+                              isCollapsed: true,
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 5),
+                              label: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'SysDocId',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Rubik',
+                                  ),
                                 ),
                               ),
+                              // contentPadding: EdgeInsets.zero,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
-                            // contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                            isExpanded: true,
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.primary,
                             ),
-                          ),
-                          isExpanded: true,
-                          icon: Icon(
-                            Icons.arrow_drop_down,
-                            color: AppColors.primary,
-                          ),
-                          buttonPadding:
-                              const EdgeInsets.only(left: 20, right: 10),
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          items: salesController.sysDocList
-                              .map(
-                                (item) => DropdownMenuItem(
-                                  value: item,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${item.code} - ",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: AppColors.primary,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'Rubik',
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: width * 0.3,
-                                        child: AutoSizeText(
-                                          item.name,
-                                          minFontSize: 10,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
+                            buttonPadding:
+                                const EdgeInsets.only(left: 20, right: 10),
+                            dropdownDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            items: salesController.sysDocList
+                                .map(
+                                  (item) => DropdownMenuItem(
+                                    value: item,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${item.code} - ",
                                           style: TextStyle(
+                                            fontSize: 14,
                                             color: AppColors.primary,
                                             fontWeight: FontWeight.w400,
                                             fontFamily: 'Rubik',
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(
+                                          width: width * 0.3,
+                                          child: AutoSizeText(
+                                            item.name,
+                                            minFontSize: 10,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: AppColors.primary,
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: 'Rubik',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            selectedSysdocValue = value;
-                            salesController
-                                .getVoucherNumber(selectedSysdocValue.code);
-                          },
-                          onSaved: (value) {
-                            // selectedValue = value;
-                          },
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              selectedSysdocValue = value;
+                              salesController
+                                  .getVoucherNumber(selectedSysdocValue.code);
+                            },
+                            onSaved: (value) {
+                              // selectedValue = value;
+                            },
+                          ),
                         ),
                       ),
                       Padding(
@@ -174,13 +178,13 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                   height: 10,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 10),
+                        padding:
+                            const EdgeInsets.only(top: 10, right: 10, left: 10),
                         child: Text(
                           'Customer Id:',
                           style: TextStyle(
@@ -191,50 +195,150 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                         ),
                       ),
                       Expanded(
-                        child: Obx(() => DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                isExpanded: true,
-                                isDense: true,
-                                hint: Text(
-                                  salesController.isCustomerLoading.value
-                                      ? 'Please wait...'
-                                      : 'Customer Id',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Theme.of(context).hintColor,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
+                        child: Obx(
+                          () => TextField(
+                            controller: TextEditingController(
+                              text: salesController.customerId.value == ''
+                                  ? salesController.isCustomerLoading.value
+                                      ? 'Please wait..'
+                                      : 'Customer Id'
+                                  : salesController.customer.value.name,
+                            ),
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              isCollapsed: true,
+                              isDense: true,
+                              border: InputBorder.none,
+                              suffix: Transform.translate(
+                                offset: Offset(0, 8),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: salesController.isCustomerLoading.value
+                                      ? CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: AppColors.mutedColor,
+                                        )
+                                      : Icon(Icons.arrow_drop_down),
                                 ),
-                                items: salesController.customerList
-                                    .map((item) => DropdownMenuItem(
-                                          value: item,
-                                          child: AutoSizeText(
-                                            item.name,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                        ))
-                                    .toList(),
-                                value: selectedValue,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedValue = value;
-                                  });
-                                  salesController
-                                      .getCustomerId(selectedValue.code);
-                                },
-                                dropdownDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  color: Colors.white,
-                                ),
-                                buttonHeight: 20,
-                                buttonWidth: 140,
-                                itemHeight: 40,
                               ),
-                            )),
+                            ),
+                            onTap: () {
+                              salesController.resetCustomerList();
+                              salesController.isSearching.value = false;
+
+                              Get.defaultDialog(
+                                title: 'Customers',
+                                titleStyle: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.primary,
+                                ),
+                                content: SizedBox(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextField(
+                                        decoration: InputDecoration(
+                                            isCollapsed: true,
+                                            hintText: 'Search',
+                                            contentPadding: EdgeInsets.all(8)),
+                                        onChanged: (value) {
+                                          salesController
+                                              .searchCustomers(value);
+                                        },
+                                        onTap: () {
+                                          salesController.isSearching.value =
+                                              true;
+                                        },
+                                        onEditingComplete: () async {
+                                          await changeFocus(context);
+                                          salesController.isSearching.value =
+                                              false;
+                                        },
+                                      ),
+                                      Obx(() => SizedBox(
+                                            height: salesController
+                                                    .isSearching.value
+                                                ? MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.3
+                                                : MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.6,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.9,
+                                            child: Obx(() => ListView.separated(
+                                                  shrinkWrap: true,
+                                                  itemCount: salesController
+                                                      .customerFilterList
+                                                      .length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    var customer = salesController
+                                                            .customerFilterList[
+                                                        index];
+                                                    return InkWell(
+                                                      onTap: () {
+                                                        salesController
+                                                            .selectCustomer(
+                                                                customer);
+                                                        Get.back();
+                                                      },
+                                                      child: Card(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: AutoSizeText(
+                                                            '${customer.code} - ${customer.name}',
+                                                            minFontSize: 12,
+                                                            maxFontSize: 16,
+                                                            style: TextStyle(
+                                                              color: AppColors
+                                                                  .mutedColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  separatorBuilder:
+                                                      (context, index) =>
+                                                          SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                )),
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                                actions: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Get.back();
+                                          },
+                                          child: Text('Close',
+                                              style: TextStyle(
+                                                  color: AppColors.primary)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -494,6 +598,10 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
         ],
       ),
     );
+  }
+
+  changeFocus(BuildContext context) {
+    FocusScope.of(context).requestFocus(FocusNode());
   }
 
   Text _buildDetailTextContent(String text) {

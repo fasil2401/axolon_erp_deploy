@@ -99,7 +99,7 @@ class ProductsController extends GetxController {
       titleStyle: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
-        color: Theme.of(context).primaryColor,
+        color: AppColors.primary,
       ),
       contentPadding: EdgeInsets.only(left: 15, right: 15),
       content: Column(

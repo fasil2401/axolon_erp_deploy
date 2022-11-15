@@ -13,13 +13,13 @@ class AllCustomerModel {
   });
 
   int result;
-  List<Modelobject> modelobject;
+  List<CustomerModel> modelobject;
 
   factory AllCustomerModel.fromJson(Map<String, dynamic> json) =>
       AllCustomerModel(
         result: json["result"],
-        modelobject: List<Modelobject>.from(
-            json["Modelobject"].map((x) => Modelobject.fromJson(x))),
+        modelobject: List<CustomerModel>.from(
+            json["Modelobject"].map((x) => CustomerModel.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -28,8 +28,8 @@ class AllCustomerModel {
       };
 }
 
-class Modelobject {
-  Modelobject({
+class CustomerModel {
+  CustomerModel({
     this.code,
     this.name,
     this.searchColumn,
@@ -79,7 +79,7 @@ class Modelobject {
   dynamic isPro;
   String? mobile;
 
-  factory Modelobject.fromJson(Map<String, dynamic> json) => Modelobject(
+  factory CustomerModel.fromJson(Map<String, dynamic> json) => CustomerModel(
         code: json["Code"],
         name: json["Name"],
         searchColumn: json["SearchColumn"],
