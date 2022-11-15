@@ -1,7 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_screen_controller.dart';
+import 'package:axolon_erp/model/Sales%20Model/date_model.dart';
+import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/Hr%20Screen/components/items.dart';
 import 'package:axolon_erp/view/SalesScreen/components/sales_screen_items.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -10,6 +14,11 @@ import 'package:glassmorphism/glassmorphism.dart';
 class SalesScreen extends StatelessWidget {
   SalesScreen({super.key});
   final salesController = Get.put(SalesController());
+
+  var selectedSysdocValue;
+  List sysDocList = [
+    DateFilterModel(label: 'Today', value: 1),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -227,6 +236,68 @@ class SalesScreen extends StatelessWidget {
                 ],
               ),
             ),
+            // DropdownButtonFormField2(
+            //   isDense: true,
+            //   value: selectedSysdocValue,
+            //   decoration: InputDecoration(
+            //     isCollapsed: true,
+            //     contentPadding: const EdgeInsets.symmetric(vertical: 5),
+            //     label: Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: Text(
+            //         'Dates',
+            //         style: TextStyle(
+            //           fontSize: 14,
+            //           color: AppColors.primary,
+            //           fontWeight: FontWeight.w400,
+            //           fontFamily: 'Rubik',
+            //         ),
+            //       ),
+            //     ),
+            //     // contentPadding: EdgeInsets.zero,
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(10),
+            //     ),
+            //   ),
+            //   isExpanded: true,
+            //   icon: Icon(
+            //     Icons.arrow_drop_down,
+            //     color: AppColors.primary,
+            //   ),
+            //   buttonPadding: const EdgeInsets.only(left: 20, right: 10),
+            //   dropdownDecoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(15),
+            //   ),
+            //   items: DateRangeSelector.dateRange
+            //       .map(
+            //         (item) => DropdownMenuItem(
+            //           value: item,
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.start,
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: [
+            //               Text(
+            //                 item.label,
+            //                 style: TextStyle(
+            //                   fontSize: 14,
+            //                   color: AppColors.primary,
+            //                   fontWeight: FontWeight.w400,
+            //                   fontFamily: 'Rubik',
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+            //       )
+            //       .toList(),
+            //   onChanged: (value) {
+            //     selectedSysdocValue = value;
+            //     DateRangeSelector.getDateRange(selectedSysdocValue.value);
+            //   },
+            //   onSaved: (value) {
+            //     // selectedValue = value;
+            //   },
+            // ),
           ],
         ),
       ),

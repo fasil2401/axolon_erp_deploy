@@ -22,6 +22,7 @@ class SalesOrderController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     getAllCustomers();
   }
 
@@ -55,6 +56,7 @@ class SalesOrderController extends GetxController {
   var isPriceEdited = false.obs;
   var voucherNumber = ''.obs;
   var sysDocId = ''.obs;
+  var sysDocName = ' '.obs;
   var customerId = ''.obs;
   var customer = CustomerModel().obs;
 
@@ -96,10 +98,16 @@ class SalesOrderController extends GetxController {
         .toList();
   }
 
-  generateSysDocList() {
-    sysDocList.value = salesScreenController.sysDocList
-        .where((element) => element.sysDocType == 23)
-        .toList();
+  generateSysDocList() async {
+    // sysDocList.value = await salesScreenController.sysDocList
+    //     .where((element) => element.sysDocType == 23)
+    //     .toList();
+    sysDocList.clear();
+    for (var element in salesScreenController.sysDocList) {
+      if (element.sysDocType == 23) {
+        sysDocList.add(element);
+      }
+    }
   }
 
   resetList() {
@@ -115,8 +123,8 @@ class SalesOrderController extends GetxController {
     customerId.value = this.customer.value.code ?? '';
   }
 
-  calculateTotal(double price) {
-    subTotal.value = subTotal.value + price;
+  calculateTotal(double price, double quantity) {
+    subTotal.value = subTotal.value + (price * quantity);
   }
 
   changeUnit(String value) {
@@ -171,7 +179,7 @@ class SalesOrderController extends GetxController {
     }
   }
 
-   getAllCustomers() async {
+  getAllCustomers() async {
     await generateSysDocList();
     isCustomerLoading.value = true;
     await loginController.getToken();
@@ -254,7 +262,8 @@ class SalesOrderController extends GetxController {
                 sourcerowindex: '',
                 unitprice: product.model[0].updatedPrice,
                 cost: product.model[0].price1,
-                amount: product.model[0].updatedPrice,
+                amount: product.model[0].updatedPrice *
+                    product.model[0].updatedQuantity,
                 taxoption: null,
                 taxamount: 0,
                 taxgroupid: ''));
@@ -346,15 +355,17 @@ class SalesOrderController extends GetxController {
     sysDocList.clear();
     sysDocId.value = '';
     voucherNumber.value = '';
+    sysDocName.value = ' ';
     customerId.value = '';
     subTotal.value = 0.0;
     salesOrderList.clear();
     generateSysDocList();
   }
 
-  getVoucherNumber(String sysDocId) async {
+  getVoucherNumber(String sysDocId, String name) async {
     isVoucherLoading.value = true;
     this.sysDocId.value = sysDocId;
+    sysDocName.value = name;
     await loginController.getToken();
     final String token = loginController.token.value;
     String date = DateTime.now().toIso8601String();
@@ -378,8 +389,9 @@ class SalesOrderController extends GetxController {
   }
 
   removeItem(int index) {
-    subTotal.value =
-        subTotal.value - salesOrderList[index].model[0].updatedPrice;
+    subTotal.value = subTotal.value -
+        (salesOrderList[index].model[0].updatedPrice *
+            salesOrderList[index].model[0].updatedQuantity);
     salesOrderList.removeAt(index);
   }
 
@@ -392,10 +404,12 @@ class SalesOrderController extends GetxController {
       unit.value = single.model[0].updatedUnitId!;
       unitList.value = single.unitmodel;
       price.value = single.model[0].updatedPrice!;
+      quantityControl.text = quantity.value.toString();
     }
     if (isAdding == true) {
       getProductDetails(product.productId!);
       price.value = singleProduct.value.model[0].price1;
+      quantityControl.text = quantity.value.toString();
     }
     isPriceEdited.value = false;
 
@@ -456,12 +470,6 @@ class SalesOrderController extends GetxController {
                                 ),
                               ),
                               Obx(() {
-                                // quantityControl.text =
-                                //     quantity.value.toString();
-                                if (edit.value == false) {
-                                  quantityControl.text =
-                                      quantity.value.toString();
-                                }
                                 quantityControl.selection =
                                     TextSelection.fromPosition(TextPosition(
                                         offset: quantityControl.text.length));
@@ -651,9 +659,14 @@ class SalesOrderController extends GetxController {
                                     : singleProduct.value.model[0].price1;
                             salesOrderList.add(singleProduct.value);
                             isPriceEdited.value
-                                ? calculateTotal(price.value)
+                                ? calculateTotal(
+                                    price.value,
+                                    singleProduct
+                                        .value.model[0].updatedQuantity)
                                 : calculateTotal(
-                                    singleProduct.value.model[0].price1);
+                                    singleProduct.value.model[0].price1,
+                                    singleProduct
+                                        .value.model[0].updatedQuantity);
                             quantity.value = 1.0;
                             Get.back();
                             Get.back();
@@ -665,14 +678,16 @@ class SalesOrderController extends GetxController {
                           }
                         }
                       : () async {
-                          subTotal.value =
-                              subTotal.value - single.model[0].updatedPrice;
+                          subTotal.value = subTotal.value -
+                              (single.model[0].updatedPrice *
+                                  single.model[0].updatedQuantity);
                           single.model[0].updatedQuantity = quantity.value;
                           single.model[0].updatedUnitId = unit.value;
                           single.model[0].updatedPrice = price.value;
                           salesOrderList.insert(index, single);
                           salesOrderList.removeAt(index + 1);
-                          calculateTotal(price.value);
+                          calculateTotal(
+                              price.value, single.model[0].updatedQuantity);
                           Get.back();
                           developer.log(salesOrderList.length.toString(),
                               name: 'salesOrderList.length');

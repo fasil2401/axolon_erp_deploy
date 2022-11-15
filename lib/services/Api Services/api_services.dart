@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'package:axolon_erp/utils/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,9 +41,8 @@ class ApiServices {
   }
 
   static Future fetchDataRawBody({String? api, String? data}) async {
-    print(data);
+    developer.log(data.toString(), name: 'ApiServices data');
     String baseUrl = Api.getBaseUrl();
-    print('base url issss ==== ::::$baseUrl');
     var responses = await client.post(
       Uri.parse('$baseUrl$api'),
       headers: {"Content-Type": "application/json"},

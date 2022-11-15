@@ -22,6 +22,7 @@ class SalesOrderScreen extends StatefulWidget {
 
 class _SalesOrderScreenState extends State<SalesOrderScreen> {
   final salesController = Get.put(SalesOrderController());
+  final salesScreenController = Get.put(SalesController());
   var selectedSysdocValue;
 
   var selectedValue;
@@ -42,132 +43,295 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 10,
-                ),
+                // const SizedBox(
+                //   height: 10,
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Flexible(
+                //         child: Obx(
+                //           () => DropdownButtonFormField2(
+                //             isDense: true,
+                //             // value: selectedSysdocValue,
+                //             decoration: InputDecoration(
+                //               isCollapsed: true,
+                //               contentPadding:
+                //                   const EdgeInsets.symmetric(vertical: 5),
+                //               label: Padding(
+                //                 padding: const EdgeInsets.all(8.0),
+                //                 child: Text(
+                //                   'SysDocId',
+                //                   style: TextStyle(
+                //                     fontSize: 14,
+                //                     color: AppColors.primary,
+                //                     fontWeight: FontWeight.w400,
+                //                     fontFamily: 'Rubik',
+                //                   ),
+                //                 ),
+                //               ),
+                //               // contentPadding: EdgeInsets.zero,
+                //               border: OutlineInputBorder(
+                //                 borderRadius: BorderRadius.circular(10),
+                //               ),
+                //             ),
+                //             isExpanded: true,
+                //             icon: Icon(
+                //               Icons.arrow_drop_down,
+                //               color: AppColors.primary,
+                //             ),
+                //             buttonPadding:
+                //                 const EdgeInsets.only(left: 20, right: 10),
+                //             dropdownDecoration: BoxDecoration(
+                //               borderRadius: BorderRadius.circular(15),
+                //             ),
+                //             items: salesController.sysDocList
+                //                 .map(
+                //                   (item) => DropdownMenuItem(
+                //                     value: item,
+                //                     child: Row(
+                //                       mainAxisAlignment:
+                //                           MainAxisAlignment.start,
+                //                       crossAxisAlignment:
+                //                           CrossAxisAlignment.start,
+                //                       children: [
+                //                         Text(
+                //                           "${item.code} - ",
+                //                           style: TextStyle(
+                //                             fontSize: 14,
+                //                             color: AppColors.primary,
+                //                             fontWeight: FontWeight.w400,
+                //                             fontFamily: 'Rubik',
+                //                           ),
+                //                         ),
+                //                         SizedBox(
+                //                           width: width * 0.3,
+                //                           child: AutoSizeText(
+                //                             item.name,
+                //                             minFontSize: 10,
+                //                             maxLines: 2,
+                //                             overflow: TextOverflow.ellipsis,
+                //                             style: TextStyle(
+                //                               color: AppColors.primary,
+                //                               fontWeight: FontWeight.w400,
+                //                               fontFamily: 'Rubik',
+                //                             ),
+                //                           ),
+                //                         ),
+                //                       ],
+                //                     ),
+                //                   ),
+                //                 )
+                //                 .toList(),
+                //             onChanged: (value) {
+                //               selectedSysdocValue = value;
+                //               salesController
+                //                   .getVoucherNumber(selectedSysdocValue.code);
+                //             },
+                //             onSaved: (value) {
+                //               // selectedValue = value;
+                //             },
+                //           ),
+                //         ),
+                //       ),
+                //       Padding(
+                //         padding: const EdgeInsets.only(left: 5),
+                //         child: SizedBox(
+                //           width: width * 0.3,
+                //           child: Column(
+                //             mainAxisAlignment: MainAxisAlignment.start,
+                //             crossAxisAlignment: CrossAxisAlignment.start,
+                //             children: [
+                //               SizedBox(
+                //                 child: Text(
+                //                   'Voucher :',
+                //                   style: TextStyle(
+                //                     fontSize: 14,
+                //                     color: AppColors.primary,
+                //                     fontWeight: FontWeight.w500,
+                //                     // fontFamily: 'Rubik',
+                //                   ),
+                //                 ),
+                //               ),
+                //               SizedBox(
+                //                 child: Obx(
+                //                   () => Text(
+                //                     salesController.voucherNumber.value,
+                //                     style: TextStyle(
+                //                       fontSize: 14,
+                //                       color: AppColors.primary,
+                //                       fontWeight: FontWeight.w400,
+                //                       // fontFamily: 'Rubik',
+                //                     ),
+                //                   ),
+                //                 ),
+                //               ),
+                //             ],
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // const SizedBox(
+                //   height: 10,
+                // ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 10, right: 10, left: 10),
+                        child: Text(
+                          'SysDoc Id:',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
                       Flexible(
                         child: Obx(
-                          () => DropdownButtonFormField2(
-                            isDense: true,
-                            value: selectedSysdocValue,
+                          () => TextField(
+                            controller: TextEditingController(
+                              text: salesController.sysDocName.value,
+                            ),
+                            readOnly: true,
                             decoration: InputDecoration(
                               isCollapsed: true,
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 5),
-                              label: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'SysDocId',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Rubik',
-                                  ),
+                              isDense: true,
+                              border: InputBorder.none,
+                              suffix: Transform.translate(
+                                offset: Offset(0, 8),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: Icon(Icons.arrow_drop_down),
                                 ),
                               ),
-                              // contentPadding: EdgeInsets.zero,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
                             ),
-                            isExpanded: true,
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                              color: AppColors.primary,
-                            ),
-                            buttonPadding:
-                                const EdgeInsets.only(left: 20, right: 10),
-                            dropdownDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            items: salesController.sysDocList
-                                .map(
-                                  (item) => DropdownMenuItem(
-                                    value: item,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "${item.code} - ",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: AppColors.primary,
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: 'Rubik',
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: width * 0.3,
-                                          child: AutoSizeText(
-                                            item.name,
-                                            minFontSize: 10,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: AppColors.primary,
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: 'Rubik',
+                            onTap: () async{
+                              await salesController.generateSysDocList();
+                              Get.defaultDialog(
+                                title: 'System Document',
+                                titleStyle: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.primary,
+                                ),
+                                content: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.3,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  child: Obx(
+                                    () => ListView.separated(
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          salesController.sysDocList.length,
+                                      itemBuilder: (context, index) {
+                                        var sysDoc =
+                                            salesController.sysDocList[index];
+                                        return InkWell(
+                                          onTap: () {
+                                            // salesController
+                                            //     .selectCustomer(customer);
+                                            salesController.getVoucherNumber(
+                                                sysDoc.code, sysDoc.name);
+                                            Get.back();
+                                          },
+                                          child: Card(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: AutoSizeText(
+                                                '${sysDoc.code} - ${sysDoc.name}',
+                                                minFontSize: 12,
+                                                maxFontSize: 16,
+                                                style: TextStyle(
+                                                  color: AppColors.mutedColor,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        );
+                                      },
+                                      separatorBuilder: (context, index) =>
+                                          SizedBox(
+                                        height: 5,
+                                      ),
                                     ),
                                   ),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              selectedSysdocValue = value;
-                              salesController
-                                  .getVoucherNumber(selectedSysdocValue.code);
-                            },
-                            onSaved: (value) {
-                              // selectedValue = value;
+                                ),
+                                actions: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Get.back();
+                                          },
+                                          child: Text('Close',
+                                              style: TextStyle(
+                                                  color: AppColors.primary)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
                             },
                           ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: SizedBox(
-                          width: width * 0.3,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                child: Text(
-                                  'Voucher :',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w500,
-                                    // fontFamily: 'Rubik',
-                                  ),
+                        padding:
+                            const EdgeInsets.only(top: 10, right: 10, left: 10),
+                        child: Text(
+                          'Voucher :',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Obx(
+                          () => TextField(
+                            controller: TextEditingController(
+                              text: salesController.voucherNumber.value,
+                            ),
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              isCollapsed: true,
+                              isDense: true,
+                              border: InputBorder.none,
+                              suffix: Transform.translate(
+                                offset: Offset(0, 8),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 24,
+                                  child: salesController.isVoucherLoading.value
+                                      ? SizedBox(
+                                          width: 15,
+                                          height: 15,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: AppColors.mutedColor,
+                                          ),
+                                        )
+                                      : Container(),
                                 ),
                               ),
-                              SizedBox(
-                                child: Obx(
-                                  () => Text(
-                                    salesController.voucherNumber.value,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.w400,
-                                      // fontFamily: 'Rubik',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -177,6 +341,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                 const SizedBox(
                   height: 10,
                 ),
+
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Row(
@@ -201,7 +366,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                               text: salesController.customerId.value == ''
                                   ? salesController.isCustomerLoading.value
                                       ? 'Please wait..'
-                                      : 'Customer Id'
+                                      : ' '
                                   : salesController.customer.value.name,
                             ),
                             readOnly: true,
@@ -511,8 +676,9 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                salesController.salesOrderList.clear();
-                                salesController.subTotal.value = 0.00;
+                                // salesController.salesOrderList.clear();
+                                // salesController.subTotal.value = 0.00;
+                                salesController.clearData();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.mutedBlueColor,
