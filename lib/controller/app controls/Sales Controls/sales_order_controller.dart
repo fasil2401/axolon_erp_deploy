@@ -12,7 +12,7 @@ import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/constants/snackbar.dart';
-import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Shimmer/pop_up_shimmer.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/Sales%20Shimmer/pop_up_shimmer.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -408,7 +408,7 @@ class SalesOrderController extends GetxController {
     }
     if (isAdding == true) {
       getProductDetails(product.productId!);
-      price.value = singleProduct.value.model[0].price1;
+      // price.value = singleProduct.value.model[0].price1;
       quantityControl.text = quantity.value.toString();
     }
     isPriceEdited.value = false;

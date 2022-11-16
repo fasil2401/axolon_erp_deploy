@@ -15,10 +15,7 @@ class SalesScreen extends StatelessWidget {
   SalesScreen({super.key});
   final salesController = Get.put(SalesController());
 
-  var selectedSysdocValue;
-  List sysDocList = [
-    DateFilterModel(label: 'Today', value: 1),
-  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -196,7 +193,12 @@ class SalesScreen extends StatelessWidget {
                       itemCount: SalesScreenItems.SalesReportItems.length,
                       itemBuilder: (BuildContext context, int index) {
                         return GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Get.toNamed(
+                                SalesScreenItems.SalesReportItems[index].route);
+                            print(
+                                SalesScreenItems.SalesReportItems[index].route);
+                          },
                           child: Column(
                             children: [
                               Container(

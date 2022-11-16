@@ -29,7 +29,7 @@ class SalesScreenItems {
   static List<ScreenItemModel> SalesReportItems = [
     ScreenItemModel(
         title: 'Daily Sales Analysis',
-        route: '${RouteManager.redirect}',
+        route: '${RouteManager.dailySalesAnalysis}',
         icon: AppIcons.report),
     ScreenItemModel(
         title: 'Sales Profitability',

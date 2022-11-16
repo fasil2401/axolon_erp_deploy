@@ -1,4 +1,5 @@
 import 'package:axolon_erp/controller/Api%20Controls/login_token_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/daily_sales_analysis_controller.dart';
 import 'package:axolon_erp/model/Sales%20Model/date_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:flutter/material.dart';
@@ -104,9 +105,11 @@ class DateRangeSelector {
 
       default:
     }
+
     developer.log(dateTime.start.toString(),
         name: 'DateRangeSelector startDate');
     developer.log(dateTime.end.toString(), name: 'DateRangeSelector endDate');
+    return dateTime;
   }
 
   getAllDates() async {
