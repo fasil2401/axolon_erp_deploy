@@ -13,13 +13,13 @@ class DailySalesAnalysisModel {
   });
 
   int result;
-  List<Modelobject> modelobject;
+  List<AnalysisModel> modelobject;
 
   factory DailySalesAnalysisModel.fromJson(Map<String, dynamic> json) =>
       DailySalesAnalysisModel(
         result: json["result"],
-        modelobject: List<Modelobject>.from(
-            json["Modelobject"].map((x) => Modelobject.fromJson(x))),
+        modelobject: List<AnalysisModel>.from(
+            json["Modelobject"].map((x) => AnalysisModel.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -28,8 +28,8 @@ class DailySalesAnalysisModel {
       };
 }
 
-class Modelobject {
-  Modelobject({
+class AnalysisModel {
+  AnalysisModel({
     required this.date,
     this.discount,
     this.roundOff,
@@ -61,7 +61,7 @@ class Modelobject {
   dynamic costReturn;
   dynamic salesReturn;
 
-  factory Modelobject.fromJson(Map<String, dynamic> json) => Modelobject(
+  factory AnalysisModel.fromJson(Map<String, dynamic> json) => AnalysisModel(
         date: DateTime.parse(json["Date"]),
         discount: json["Discount"] == null ? null : json["Discount"].toDouble(),
         roundOff: json["RoundOff"] == null ? null : json["RoundOff"],

@@ -1,4 +1,5 @@
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/daily_sales_analysis_controller.dart';
+import 'package:axolon_erp/model/Sales%20Model/daily_sales_analysis_model.dart';
 import 'package:axolon_erp/model/Sales%20Model/date_model.dart';
 import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
@@ -7,6 +8,7 @@ import 'package:axolon_erp/view/components/custom_text.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class DailySalesAnalysisScreen extends StatelessWidget {
   DailySalesAnalysisScreen({super.key});
@@ -285,7 +287,190 @@ class DailySalesAnalysisScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Obx(() => dailyAnalysisController.reportList.isEmpty
+                  ? Container()
+                  : SfDataGrid(
+                      gridLinesVisibility: GridLinesVisibility.both,
+                      headerGridLinesVisibility: GridLinesVisibility.both,
+                      // selectionMode: SelectionMode.multiple,
+                      allowEditing: true,
+                      editingGestureType: EditingGestureType.doubleTap,
+                      source: dailyAnalysisController.dailyAnalysisSource,
+                      columns: [
+                        GridColumn(
+                          columnName: 'date',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Date',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'discount',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Discount',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'roundOff',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Round Off',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'tax',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Tax',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'cost',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Cost',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'cash Sale Tax',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Cash Sale Tax',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'credit Sale Tax',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Credit Sale Tax',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'cashSale',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Cash Sale',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'creditSale',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Credit Sale',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'discountReturn',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Discount Return',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'roundOffReturn',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Round Off Return',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'taxReturn',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Tax Return',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'costReturn',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Cost Return',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnName: 'salesReturn',
+                          label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Sales Return',
+                              // overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ))
             ],
           ),
         ),

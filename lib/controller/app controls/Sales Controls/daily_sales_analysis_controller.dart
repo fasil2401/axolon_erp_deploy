@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:developer' as developer;
 
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 class DailySalesAnalysisController extends GetxController {
   final loginController = Get.put(LoginTokenController());
   var isLoading = false.obs;
@@ -31,6 +33,7 @@ class DailySalesAnalysisController extends GetxController {
   var toLocation = LocationSingleModel().obs;
   var singleLocation = LocationSingleModel().obs;
   var reportList = [].obs;
+  late DailyAnalysisSource dailyAnalysisSource;
 
   updateLocationRadio(String value) {
     locationRadio.value = value;
@@ -219,11 +222,70 @@ class DailySalesAnalysisController extends GetxController {
         response.value = result.result;
         reportList.value = result.modelobject;
         isLoadingReport.value = false;
+        dailyAnalysisSource = DailyAnalysisSource(result.modelobject);
       }
     } finally {
       if (response.value == 1) {
-        developer.log(reportList.value[0].cost.toString(), name: 'Report Name');
+        developer.log(dailyAnalysisSource[0].toString(), name: 'Report Name');
       }
     }
+  }
+}
+
+class DailyAnalysisSource extends DataGridSource {
+  DailyAnalysisSource(List<AnalysisModel> analysis) {
+    dataGridRows = analysis
+        .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
+              DataGridCell<dynamic>(
+                  columnName: 'date', value: dataGridRow.date),
+              DataGridCell<dynamic>(
+                  columnName: 'discount', value: dataGridRow.discount),
+              DataGridCell<dynamic>(
+                  columnName: 'roundOff', value: dataGridRow.roundOff),
+              DataGridCell<dynamic>(columnName: 'tax', value: dataGridRow.tax),
+              DataGridCell<dynamic>(
+                  columnName: 'cost', value: dataGridRow.cost),
+              DataGridCell<dynamic>(
+                  columnName: 'cashSaleTax', value: dataGridRow.cashSaleTax),
+              DataGridCell<dynamic>(
+                  columnName: 'creditSaleTax',
+                  value: dataGridRow.creditSaleTax),
+              DataGridCell<dynamic>(
+                  columnName: 'cashSale', value: dataGridRow.cashSale),
+              DataGridCell<dynamic>(
+                  columnName: 'creditSale', value: dataGridRow.creditSale),
+              DataGridCell<dynamic>(
+                  columnName: 'discountReturn',
+                  value: dataGridRow.discountReturn),
+              DataGridCell<dynamic>(
+                  columnName: 'roundOffReturn',
+                  value: dataGridRow.roundOffReturn),
+              DataGridCell<dynamic>(
+                  columnName: 'taxReturn', value: dataGridRow.taxReturn),
+              DataGridCell<dynamic>(
+                  columnName: 'costReturn', value: dataGridRow.costReturn),
+              DataGridCell<dynamic>(
+                  columnName: 'salesReturn', value: dataGridRow.salesReturn),
+            ]))
+        .toList();
+  }
+
+  late List<DataGridRow> dataGridRows;
+  @override
+  List<DataGridRow> get rows => dataGridRows;
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+      cells: row.getCells().map<Widget>((dataGridCell) {
+        return Container(
+          padding: EdgeInsets.all(8),
+          alignment: Alignment.center,
+          child: Text(
+            dataGridCell.value.toString(),
+            // overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }).toList(),
+    );
   }
 }

@@ -58,6 +58,7 @@ dependencies:
   glassmorphism: ^3.0.0
   auto_size_text: ^3.0.0
   flutter_slidable: ^2.0.0
+  syncfusion_flutter_datagrid: ^20.3.57
   
 
 dev_dependencies:
