@@ -4,9 +4,13 @@ import 'package:axolon_erp/model/Sales%20Model/daily_sales_analysis_model.dart';
 import 'package:axolon_erp/model/location_list_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
+import 'package:axolon_erp/utils/Calculations/sales_analysis_calculations.dart';
+import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
+import 'package:axolon_erp/utils/date_formatter.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/Sales%20Shimmer/pop_up_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'dart:developer' as developer;
 
@@ -197,36 +201,39 @@ class DailySalesAnalysisController extends GetxController {
   }
 
   getDailyAnalysis() async {
-    isLoadingReport.value = true;
-    await loginController.getToken();
-    String fromDate = this.fromDate.value.toIso8601String();
-    String toDate = this.toDate.value.toIso8601String();
-    final String token = loginController.token.value;
-    String toLocation = '';
-    String fromLocation = '';
-    if (isSingleLocation.value) {
-      toLocation = singleLocation.value.code ?? '';
-      fromLocation = singleLocation.value.code ?? '';
-    } else if (isMultipleLocation.value) {
-      toLocation = this.toLocation.value.code ?? '';
-      fromLocation = this.fromLocation.value.code ?? '';
-    }
-    dynamic result;
-    try {
-      var feedback = await ApiServices.fetchData(
-          api:
-              'GetDailySalesAnalysis?token=${token}&fromDate=${fromDate}&toDate=${toDate}&locationFrom=${fromLocation}&locationTo=${toLocation}');
-      if (feedback != null) {
-        result = DailySalesAnalysisModel.fromJson(feedback);
-        print(result);
-        response.value = result.result;
-        reportList.value = result.modelobject;
-        isLoadingReport.value = false;
-        dailyAnalysisSource = DailyAnalysisSource(result.modelobject);
+    if (isLoadingReport.value == false) {
+      isLoadingReport.value = true;
+      await loginController.getToken();
+      String fromDate = this.fromDate.value.toIso8601String();
+      String toDate = this.toDate.value.toIso8601String();
+      final String token = loginController.token.value;
+      String toLocation = '';
+      String fromLocation = '';
+      if (isSingleLocation.value) {
+        toLocation = singleLocation.value.code ?? '';
+        fromLocation = singleLocation.value.code ?? '';
+      } else if (isMultipleLocation.value) {
+        toLocation = this.toLocation.value.code ?? '';
+        fromLocation = this.fromLocation.value.code ?? '';
       }
-    } finally {
-      if (response.value == 1) {
-        developer.log(dailyAnalysisSource[0].toString(), name: 'Report Name');
+      dynamic result;
+      try {
+        var feedback = await ApiServices.fetchData(
+            api:
+                'GetDailySalesAnalysis?token=${token}&fromDate=${fromDate}&toDate=${toDate}&locationFrom=${fromLocation}&locationTo=${toLocation}');
+        if (feedback != null) {
+          result = DailySalesAnalysisModel.fromJson(feedback);
+          print(result);
+          response.value = result.result;
+          reportList.value = result.modelobject;
+          isLoadingReport.value = false;
+          dailyAnalysisSource = DailyAnalysisSource(result.modelobject);
+        }
+      } finally {
+        if (response.value == 1 && reportList.value.isNotEmpty) {
+          Get.back();
+          // developer.log(dailyAnalysisSource[0].toString(), name: 'Report Name');
+        }
       }
     }
   }
@@ -235,38 +242,100 @@ class DailySalesAnalysisController extends GetxController {
 class DailyAnalysisSource extends DataGridSource {
   DailyAnalysisSource(List<AnalysisModel> analysis) {
     dataGridRows = analysis
-        .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
+        .map<DataGridRow>(
+          (dataGridRow) => DataGridRow(
+            cells: [
               DataGridCell<dynamic>(
-                  columnName: 'date', value: dataGridRow.date),
+                  columnName: 'date',
+                  value: DateFormatter.dateFormat
+                      .format(dataGridRow.date)
+                      .toString()),
+              DataGridCell<dynamic>(
+                columnName: 'grossSale',
+                value: SalesAnalysisCalculations.getGrossSale(
+                        cashSale: dataGridRow.cashSale,
+                        creditSale: dataGridRow.creditSale,
+                        cashSaleTax: dataGridRow.cashSaleTax,
+                        creditSaleTax: dataGridRow.creditSaleTax)
+                    .toStringAsFixed(2),
+              ),
+              DataGridCell<dynamic>(
+                columnName: 'return',
+                value: SalesAnalysisCalculations.getReturn(
+                        salesReturn: dataGridRow.salesReturn,
+                        taxReturn: dataGridRow.taxReturn,
+                        discountReturn: dataGridRow.discountReturn,
+                        roundOffReturn: dataGridRow.roundOffReturn)
+                    .toStringAsFixed(2),
+              ),
               DataGridCell<dynamic>(
                   columnName: 'discount', value: dataGridRow.discount),
-              DataGridCell<dynamic>(
-                  columnName: 'roundOff', value: dataGridRow.roundOff),
               DataGridCell<dynamic>(columnName: 'tax', value: dataGridRow.tax),
               DataGridCell<dynamic>(
-                  columnName: 'cost', value: dataGridRow.cost),
+                  columnName: 'roundOff', value: dataGridRow.roundOff),
               DataGridCell<dynamic>(
-                  columnName: 'cashSaleTax', value: dataGridRow.cashSaleTax),
+                columnName: 'netSale',
+                value: SalesAnalysisCalculations.getNetSale(
+                        grossSale: SalesAnalysisCalculations.getGrossSale(
+                            cashSale: dataGridRow.cashSale,
+                            creditSale: dataGridRow.creditSale,
+                            cashSaleTax: dataGridRow.cashSaleTax,
+                            creditSaleTax: dataGridRow.creditSaleTax),
+                        returnAmount: SalesAnalysisCalculations.getReturn(
+                            salesReturn: dataGridRow.salesReturn,
+                            taxReturn: dataGridRow.taxReturn,
+                            discountReturn: dataGridRow.discountReturn,
+                            roundOffReturn: dataGridRow.roundOffReturn),
+                        tax: dataGridRow.tax)
+                    .toStringAsFixed(2),
+              ),
               DataGridCell<dynamic>(
-                  columnName: 'creditSaleTax',
-                  value: dataGridRow.creditSaleTax),
+                  columnName: 'cost',
+                  value: dataGridRow.cost ?? 0.00.toStringAsFixed(2)),
+              // DataGridCell<dynamic>(
+              //     columnName: 'cashSaleTax', value: dataGridRow.cashSaleTax),
+              // DataGridCell<dynamic>(
+              //     columnName: 'creditSaleTax',
+              //     value: dataGridRow.creditSaleTax),
+              // DataGridCell<dynamic>(
+              //     columnName: 'cashSale', value: dataGridRow.cashSale),
+
+              // DataGridCell<dynamic>(
+              //     columnName: 'creditSale', value: dataGridRow.creditSale),
+
               DataGridCell<dynamic>(
-                  columnName: 'cashSale', value: dataGridRow.cashSale),
-              DataGridCell<dynamic>(
-                  columnName: 'creditSale', value: dataGridRow.creditSale),
-              DataGridCell<dynamic>(
-                  columnName: 'discountReturn',
-                  value: dataGridRow.discountReturn),
-              DataGridCell<dynamic>(
-                  columnName: 'roundOffReturn',
-                  value: dataGridRow.roundOffReturn),
-              DataGridCell<dynamic>(
-                  columnName: 'taxReturn', value: dataGridRow.taxReturn),
-              DataGridCell<dynamic>(
-                  columnName: 'costReturn', value: dataGridRow.costReturn),
-              DataGridCell<dynamic>(
-                  columnName: 'salesReturn', value: dataGridRow.salesReturn),
-            ]))
+                columnName: 'profit',
+                value: SalesAnalysisCalculations.getNetProfit(
+                        netSale: SalesAnalysisCalculations.getNetSale(
+                            grossSale: SalesAnalysisCalculations.getGrossSale(
+                                cashSale: dataGridRow.cashSale,
+                                creditSale: dataGridRow.creditSale,
+                                cashSaleTax: dataGridRow.cashSaleTax,
+                                creditSaleTax: dataGridRow.creditSaleTax),
+                            returnAmount: SalesAnalysisCalculations.getReturn(
+                                salesReturn: dataGridRow.salesReturn,
+                                taxReturn: dataGridRow.taxReturn,
+                                discountReturn: dataGridRow.discountReturn,
+                                roundOffReturn: dataGridRow.roundOffReturn),
+                            tax: dataGridRow.tax),
+                        cost: dataGridRow.cost)
+                    .toStringAsFixed(2),
+              ),
+              // DataGridCell<dynamic>(
+              //     columnName: 'discountReturn',
+              //     value: dataGridRow.discountReturn),
+              // DataGridCell<dynamic>(
+              //     columnName: 'roundOffReturn',
+              //     value: dataGridRow.roundOffReturn),
+              // DataGridCell<dynamic>(
+              //     columnName: 'taxReturn', value: dataGridRow.taxReturn),
+              // DataGridCell<dynamic>(
+              //     columnName: 'costReturn', value: dataGridRow.costReturn),
+              // DataGridCell<dynamic>(
+              //     columnName: 'salesReturn', value: dataGridRow.salesReturn),
+            ],
+          ),
+        )
         .toList();
   }
 
@@ -278,12 +347,35 @@ class DailyAnalysisSource extends DataGridSource {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((dataGridCell) {
         return Container(
-          padding: EdgeInsets.all(8),
-          alignment: Alignment.center,
-          child: Text(
-            dataGridCell.value.toString(),
-            // overflow: TextOverflow.ellipsis,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          height: 20,
+          alignment: dataGridCell.columnName == 'date'
+              ? Alignment.centerLeft
+              : Alignment.centerRight,
+          child: dataGridCell.columnName == 'profit'
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SvgPicture.asset(
+                      double.parse(dataGridCell.value) >= 0
+                          ? AppIcons.up_arrow
+                          : AppIcons.down_arrow,
+                      height: 10,
+                      width: 10,
+                      color: double.parse(dataGridCell.value) >= 0
+                          ? AppColors.darkGreen
+                          : AppColors.darkRed,
+                    ),
+                    Text(
+                      dataGridCell.value.toString(),
+                      // overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                )
+              : Text(
+                  dataGridCell.value.toString(),
+                  // overflow: TextOverflow.ellipsis,
+                ),
         );
       }).toList(),
     );

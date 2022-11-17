@@ -30,4 +30,7 @@ class AppIcons {
   static const String approved = '${base}approved.svg';
   static const String report = '${base}report.svg';
   static const String box = '${base}box.svg';
+  static const String filter = '${base}filter_icon.svg';
+  static const String up_arrow = '${base}up-arrow.svg';
+  static const String down_arrow = '${base}down-arrow.svg';
 }
