@@ -8,12 +8,10 @@ import 'package:axolon_erp/utils/Calculations/sales_analysis_calculations.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/date_formatter.dart';
-import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/Sales%20Shimmer/pop_up_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'dart:developer' as developer;
-
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class DailySalesAnalysisController extends GetxController {
@@ -29,7 +27,7 @@ class DailySalesAnalysisController extends GetxController {
   var isFromDate = false.obs;
   var isCustomDate = false.obs;
   var isEqualDate = false.obs;
-  var locationRadio = ''.obs;
+  var locationRadio = 'all'.obs;
   var isSingleLocation = false.obs;
   var isMultipleLocation = false.obs;
   var locations = [].obs;
@@ -106,23 +104,98 @@ class DailySalesAnalysisController extends GetxController {
     }
   }
 
-  selectLocation(String value) {
+  selectLocation(String value, BuildContext context) {
     if (locations.isEmpty) {
       getLocationList();
     }
-    Get.defaultDialog(
-      title: 'Location',
-      titleStyle: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: AppColors.primary,
-      ),
-      content: Container(
-        height: 300,
-        child: Obx(
-          () => isLoadingLocations.value
-              ? SalesShimmer.locationPopShimmer()
-              : ListView.separated(
+    // Get.defaultDialog(
+    //   title: 'Location',
+    //   titleStyle: TextStyle(
+    //     fontSize: 14,
+    //     fontWeight: FontWeight.w500,
+    //     color: AppColors.primary,
+    //   ),
+    //   content: Column(
+    //     children: [
+    //       Expanded(
+    //           child: Container(
+    //         width: 200,
+    //         child: ListView.builder(
+    //           shrinkWrap: true,
+    //           itemCount: locations.length,
+    //           itemBuilder: (context, index) {
+    //             return InkWell(
+    //               onTap: () {
+    //                 if (value == 'from') {
+    //                   fromLocation.value = locations[index];
+    //                 } else if (value == 'to') {
+    //                   toLocation.value = locations[index];
+    //                 } else {
+    //                   singleLocation.value = locations[index];
+    //                 }
+    //                 Get.back();
+    //               },
+    //               child: Card(
+    //                 child: Padding(
+    //                   padding: const EdgeInsets.all(8.0),
+    //                   child: AutoSizeText(
+    //                     "${locations[index].code} - ${locations[index].name}",
+    //                     minFontSize: 12,
+    //                     maxFontSize: 16,
+    //                     style: TextStyle(
+    //                       color: AppColors.mutedColor,
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ),
+    //             );
+    //           },
+    //         ),
+    //       ))
+    //     ],
+    //   ),
+    //   actions: [
+    //     Row(
+    //       mainAxisAlignment: MainAxisAlignment.end,
+    //       children: [
+    //         Padding(
+    //           padding: const EdgeInsets.all(5.0),
+    //           child: InkWell(
+    //             onTap: () {
+    //               Get.back();
+    //             },
+    //             child:
+    //                 Text('Close', style: TextStyle(color: AppColors.primary)),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ],
+    // );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          title: Center(
+            child: Text(
+              'Location',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+          content: Column(
+            children: [
+              Expanded(
+                  child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: ListView.builder(
+                  shrinkWrap: true,
                   itemCount: locations.length,
                   itemBuilder: (context, index) {
                     return InkWell(
@@ -151,29 +224,29 @@ class DailySalesAnalysisController extends GetxController {
                       ),
                     );
                   },
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: 5,
+                ),
+              ))
+            ],
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: InkWell(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Text('Close',
+                        style: TextStyle(color: AppColors.primary)),
                   ),
                 ),
-        ),
-      ),
-      actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: InkWell(
-                onTap: () {
-                  Get.back();
-                },
-                child:
-                    Text('Close', style: TextStyle(color: AppColors.primary)),
-              ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -219,8 +292,9 @@ class DailySalesAnalysisController extends GetxController {
       dynamic result;
       try {
         var feedback = await ApiServices.fetchData(
-            api:
-                'GetDailySalesAnalysis?token=${token}&fromDate=${fromDate}&toDate=${toDate}&locationFrom=${fromLocation}&locationTo=${toLocation}');
+            api: toLocation != '' && fromLocation != ''
+                ? 'GetDailySalesAnalysis?token=${token}&fromDate=${fromDate}&toDate=${toDate}&locationFrom=${fromLocation}&locationTo=${toLocation}'
+                : 'GetDailySalesAnalysis?token=${token}&fromDate=${fromDate}&toDate=${toDate}');
         if (feedback != null) {
           result = DailySalesAnalysisModel.fromJson(feedback);
           print(result);
@@ -356,15 +430,17 @@ class DailyAnalysisSource extends DataGridSource {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SvgPicture.asset(
-                      double.parse(dataGridCell.value) >= 0
-                          ? AppIcons.up_arrow
-                          : AppIcons.down_arrow,
-                      height: 10,
-                      width: 10,
-                      color: double.parse(dataGridCell.value) >= 0
-                          ? AppColors.darkGreen
-                          : AppColors.darkRed,
+                    RotatedBox(
+                      quarterTurns:
+                          double.parse(dataGridCell.value) >= 0 ? 4 : 2,
+                      child: SvgPicture.asset(
+                        AppIcons.up_arrow,
+                        height: 15,
+                        width: 10,
+                        color: double.parse(dataGridCell.value) >= 0
+                            ? AppColors.success
+                            : AppColors.error,
+                      ),
                     ),
                     Text(
                       dataGridCell.value.toString(),

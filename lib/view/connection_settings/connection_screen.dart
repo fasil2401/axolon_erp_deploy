@@ -585,7 +585,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                       child: Container(
                                           margin: const EdgeInsets.symmetric(
                                               horizontal: 25),
-                                          height: height * 0.055,
+                                          height: 40,
                                           // width: MediaQuery.of(context).size.width,
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -609,7 +609,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                       child: Container(
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 25),
-                                        height: height * 0.055,
+                                        height: 40,
                                         // width: MediaQuery.of(context).size.width,
                                         decoration: BoxDecoration(
                                           borderRadius:

@@ -54,34 +54,34 @@ class _LoginScreenState extends State<LoginScreen> {
             end: Alignment.centerRight,
           ),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              /// Login & Welcome back
-              Container(
-                height: height * 0.3,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 35),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: const [
-                    /// LOGIN TEXT
-                    Text('Login',
-                        style: TextStyle(color: Colors.white, fontSize: 32.5)),
-                    SizedBox(height: 7.5),
+        child: Column(
+          children: [
+            /// Login & Welcome back
+            Container(
+              height: height * 0.2,
+              padding: const EdgeInsets.only(left: 10, bottom: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: const [
+                  /// LOGIN TEXT
+                  Text('Login',
+                      style: TextStyle(color: Colors.white, fontSize: 24)),
+                  SizedBox(height: 3.5),
 
-                    /// WELCOME
-                    Text('Welcome Back',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
-                  ],
-                ),
+                  /// WELCOME
+                  Text('Welcome Back',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ],
               ),
-              Stack(
+            ),
+            Expanded(
+              flex: 3,
+              child: Stack(
                 children: [
                   Container(
-                    height: height * 0.7,
                     width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -90,13 +90,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     child: ListView(
-                      physics: const NeverScrollableScrollPhysics(),
+                      // physics: const NeverScrollableScrollPhysics(),
                       children: [
                         SizedBox(height: height * 0.02),
 
                         Center(
                           child: SizedBox(
-                            width: width * 0.5,
+                            width: width * 0.35,
                             child:
                                 Image.asset(Images.logo, fit: BoxFit.contain),
                           ),
@@ -203,14 +203,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 25),
-                          height: height * 0.055,
+                          height: 40,
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Obx(
                             () => ElevatedButton(
-                              onPressed: () async{
+                              onPressed: () async {
                                 loginController.saveCredentials();
                               },
                               style: ElevatedButton.styleFrom(
@@ -235,6 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
+                        SizedBox(
+                          height: 40,
+                        )
                       ],
                     ),
                   ),
@@ -270,8 +273,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

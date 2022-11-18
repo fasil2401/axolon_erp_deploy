@@ -419,7 +419,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                           enabled: true,
                           isDate: false,
                           onTap: () {
-                            dailyAnalysisController.selectLocation('from');
+                            dailyAnalysisController.selectLocation('from', context);
                           },
                         ),
                       ),
@@ -439,7 +439,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                           enabled: true,
                           isDate: false,
                           onTap: () {
-                            dailyAnalysisController.selectLocation('to');
+                            dailyAnalysisController.selectLocation('to',context);
                           },
                         ),
                       ),
@@ -459,7 +459,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                 enabled: true,
                 isDate: false,
                 onTap: () {
-                  dailyAnalysisController.selectLocation('single');
+                  dailyAnalysisController.selectLocation('single',context);
                 },
               ),
             ),

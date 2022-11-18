@@ -4,6 +4,7 @@ import 'package:axolon_erp/utils/constants/dummy_list.dart';
 import 'package:axolon_erp/view/Attendance%20Screen/components/report_screen.dart';
 import 'package:axolon_erp/view/components/custom_text.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -52,237 +53,243 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: SingleChildScrollView(
-                physics: const ScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Align(
-                        alignment: Alignment.centerRight, child: _buildTime()),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
-                            child: Text(
-                              'Job:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Obx(
-                              () => DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  isExpanded: false,
-                                  isDense: true,
-                                  hint: Text(
-                                    'Select Job',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  items: attendanceController.jobList
-                                      .map((item) => DropdownMenuItem(
-                                            value: item,
-                                            child: Text(
-                                              item.name,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                          ))
-                                      .toList(),
-                                  value: selectedValue,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedValue = value;
-                                    });
-                                    attendanceController
-                                        .setJobId(selectedValue);
-                                  },
-                                  dropdownDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    color: Colors.white,
-                                  ),
-                                  buttonHeight: 20,
-                                  buttonWidth: 140,
-                                  itemHeight: 40,
+              child: CupertinoScrollbar(
+                child: SingleChildScrollView(
+                  physics: const ScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: _buildTime()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 10),
+                              child: Text(
+                                'Job:',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
+                            Expanded(
+                              child: Obx(
+                                () => DropdownButtonHideUnderline(
+                                  child: DropdownButton2(
+                                    isExpanded: false,
+                                    isDense: true,
+                                    hint: Text(
+                                      'Select Job',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Theme.of(context).hintColor,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    items: attendanceController.jobList
+                                        .map((item) => DropdownMenuItem(
+                                              value: item,
+                                              child: Text(
+                                                item.name,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ))
+                                        .toList(),
+                                    value: selectedValue,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedValue = value;
+                                      });
+                                      attendanceController
+                                          .setJobId(selectedValue);
+                                    },
+                                    dropdownDecoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: Colors.white,
+                                    ),
+                                    buttonHeight: 20,
+                                    buttonWidth: 140,
+                                    itemHeight: 40,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildButton(
+                                text: 'Check In',
+                                icon: Icons.login_rounded,
+                                color: AppColors.darkGreen,
+                                logFlag: 1),
+                          ),
+                          Expanded(
+                            child: _buildButton(
+                                text: 'Check Out',
+                                icon: Icons.logout_rounded,
+                                color: AppColors.darkRed,
+                                logFlag: 2),
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildButton(
-                              text: 'Check In',
-                              icon: Icons.login_rounded,
-                              color: AppColors.darkGreen,
-                              logFlag: 1),
-                        ),
-                        Expanded(
-                          child: _buildButton(
-                              text: 'Check Out',
-                              icon: Icons.logout_rounded,
-                              color: AppColors.darkRed,
-                              logFlag: 2),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildButton(
-                              text: 'Start Break',
-                              icon: Icons.coffee,
-                              color: AppColors.primary,
-                              logFlag: 3),
-                        ),
-                        Expanded(
-                          child: _buildButton(
-                              text: 'End Break',
-                              icon: Icons.coffee_outlined,
-                              color: AppColors.primary,
-                              logFlag: 4),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    _buildTimeLineHead(context),
-                    Obx(
-                      () => attendanceController.isLoading.value
-                          ? _buildShimmer()
-                          : Container(
-                              width: double.infinity,
-                              child: ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount:
-                                    attendanceController.attendanceLog.length,
-                                itemBuilder: (context, index) {
-                                  return TimelineTile(
-                                    alignment: TimelineAlign.manual,
-                                    lineXY: 0.2,
-                                    isFirst: index == 0,
-                                    isLast: index ==
-                                        attendanceController
-                                                .attendanceLog.length -
-                                            1,
-                                    afterLineStyle: LineStyle(
-                                      color: AppColors.primary,
-                                      thickness: 3,
-                                    ),
-                                    beforeLineStyle: LineStyle(
-                                      color: AppColors.primary,
-                                      thickness: 3,
-                                    ),
-                                    indicatorStyle: IndicatorStyle(
-                                      width: 25,
-                                      height: 25,
-                                      indicator: Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: attendanceController
-                                                      .attendanceLog[index]
-                                                      .logFlag ==
-                                                  'CheckIn'
-                                              ? AppColors.darkGreen
-                                              : attendanceController
-                                                          .attendanceLog[index]
-                                                          .logFlag ==
-                                                      'CheckOut'
-                                                  ? AppColors.darkRed
-                                                  : AppColors.mutedColor,
-                                        ),
-                                        child: Center(
-                                          child: Icon(
-                                            attendanceController
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildButton(
+                                text: 'Start Break',
+                                icon: Icons.coffee,
+                                color: AppColors.primary,
+                                logFlag: 3),
+                          ),
+                          Expanded(
+                            child: _buildButton(
+                                text: 'End Break',
+                                icon: Icons.coffee_outlined,
+                                color: AppColors.primary,
+                                logFlag: 4),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      _buildTimeLineHead(context),
+                      Obx(
+                        () => attendanceController.isLoading.value
+                            ? _buildShimmer()
+                            : Container(
+                                width: double.infinity,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      attendanceController.attendanceLog.length,
+                                  itemBuilder: (context, index) {
+                                    return TimelineTile(
+                                      alignment: TimelineAlign.manual,
+                                      lineXY: 0.2,
+                                      isFirst: index == 0,
+                                      isLast: index ==
+                                          attendanceController
+                                                  .attendanceLog.length -
+                                              1,
+                                      afterLineStyle: LineStyle(
+                                        color: AppColors.primary,
+                                        thickness: 3,
+                                      ),
+                                      beforeLineStyle: LineStyle(
+                                        color: AppColors.primary,
+                                        thickness: 3,
+                                      ),
+                                      indicatorStyle: IndicatorStyle(
+                                        width: 25,
+                                        height: 25,
+                                        indicator: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: attendanceController
                                                         .attendanceLog[index]
                                                         .logFlag ==
                                                     'CheckIn'
-                                                ? Icons.login_rounded
+                                                ? AppColors.darkGreen
                                                 : attendanceController
                                                             .attendanceLog[
                                                                 index]
                                                             .logFlag ==
                                                         'CheckOut'
-                                                    ? Icons.logout_rounded
-                                                    : Icons.coffee_outlined,
-                                            color: Colors.white,
-                                            size: 10,
+                                                    ? AppColors.darkRed
+                                                    : AppColors.mutedColor,
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              attendanceController
+                                                          .attendanceLog[index]
+                                                          .logFlag ==
+                                                      'CheckIn'
+                                                  ? Icons.login_rounded
+                                                  : attendanceController
+                                                              .attendanceLog[
+                                                                  index]
+                                                              .logFlag ==
+                                                          'CheckOut'
+                                                      ? Icons.logout_rounded
+                                                      : Icons.coffee_outlined,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    endChild: Container(
-                                      height: 45,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.lightGrey,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            attendanceController
-                                                .attendanceLog[index].logFlag,
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w500,
+                                      endChild: Container(
+                                        height: 45,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.lightGrey,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              attendanceController
+                                                  .attendanceLog[index].logFlag,
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          Text(
-                                            'Time: ${attendanceController.attendanceLog[index].logDate.trim().substring(8)}',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w500,
+                                            SizedBox(
+                                              height: 2,
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          Text(
-                                            'Location: ${attendanceController.attendanceLog[index].locationId}',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w500,
+                                            Text(
+                                              'Time: ${attendanceController.attendanceLog[index].logDate.trim().substring(8)}',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            SizedBox(
+                                              height: 2,
+                                            ),
+                                            Text(
+                                              'Location: ${attendanceController.attendanceLog[index].locationId}',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

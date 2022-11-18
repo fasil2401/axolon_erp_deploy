@@ -110,29 +110,29 @@ class SalesShimmer {
     );
   }
 
-
   static Widget locationPopShimmer() {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: ListView.separated(
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return Card(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Location",
-                    style: TextStyle(
-                      color: AppColors.mutedColor,
-                    ),
-                  ),
-                ));
-              },
-              separatorBuilder: (context, index) => SizedBox(
-                height: 5,
+        shrinkWrap: true,
+        itemCount: 4,
+        itemBuilder: (context, index) {
+          return Card(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Location",
+              style: TextStyle(
+                color: AppColors.mutedColor,
               ),
             ),
+          ));
+        },
+        separatorBuilder: (context, index) => SizedBox(
+          height: 5,
+        ),
+      ),
     );
   }
 }
