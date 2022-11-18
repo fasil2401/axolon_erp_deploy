@@ -61,6 +61,7 @@ dependencies:
   syncfusion_flutter_datagrid: ^20.3.57
   syncfusion_flutter_datagrid_export: ^20.3.57-beta
   syncfusion_flutter_pdf: ^20.3.57
+  open_filex: ^4.3.1
   
 
 dev_dependencies:

@@ -7,6 +7,7 @@ import 'package:axolon_erp/utils/File%20Save%20Helper/file_save_helper.dart'
     as helper;
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
+import 'package:axolon_erp/utils/constants/snackbar.dart';
 import 'package:axolon_erp/utils/date_formatter.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -57,112 +58,175 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
       appBar: AppBar(
         title: const Text('Daily Sales Analysis'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Obx(
-            () => dailyAnalysisController.reportList.isEmpty
-                ? Container()
-                : Container(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AutoSizeText('Daily Sales Analysis',
-                                minFontSize: 20,
-                                maxFontSize: 24,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black)),
-                            SizedBox(
-                              height: 5,
+      body: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Obx(
+                () => dailyAnalysisController.reportList.isEmpty
+                    ? Container()
+                    : Container(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                AutoSizeText('Daily Sales Analysis',
+                                    minFontSize: 20,
+                                    maxFontSize: 24,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black)),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                AutoSizeText(
+                                    'From: ${dailyAnalysisController.fromLocation.value.code ?? dailyAnalysisController.singleLocation.value.code}  To: ${dailyAnalysisController.toLocation.value.code ?? dailyAnalysisController.singleLocation.value.code}',
+                                    minFontSize: 10,
+                                    maxFontSize: 15,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.mutedColor)),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                AutoSizeText(
+                                    'From Date: ${DateFormatter.dateFormat.format(dailyAnalysisController.fromDate.value).toString()} To Date: ${DateFormatter.dateFormat.format(dailyAnalysisController.toDate.value).toString()}',
+                                    minFontSize: 10,
+                                    maxFontSize: 15,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.mutedColor)),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                              ],
                             ),
-                            AutoSizeText(
-                                'From: ${dailyAnalysisController.fromLocation.value.code ?? dailyAnalysisController.singleLocation.value.code}  To: ${dailyAnalysisController.toLocation.value.code ?? dailyAnalysisController.singleLocation.value.code}',
-                                minFontSize: 10,
-                                maxFontSize: 15,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.mutedColor)),
-                            SizedBox(
-                              height: 5,
+                          ),
+                        ),
+                      ),
+              ),
+              Expanded(
+                child: Obx(() {
+                  return dailyAnalysisController.reportList.isEmpty
+                      ? Container()
+                      : SfDataGrid(
+                          key: _key,
+                          gridLinesVisibility: GridLinesVisibility.none,
+                          headerGridLinesVisibility: GridLinesVisibility.none,
+                          horizontalScrollController: ScrollController(),
+                          // selectionMode: SelectionMode.multiple,
+                          allowEditing: true,
+                          columnWidthMode: ColumnWidthMode.none,
+                          headerRowHeight: 30,
+                          // defaultColumnWidth: 80,
+                          editingGestureType: EditingGestureType.doubleTap,
+                          source: dailyAnalysisController.dailyAnalysisSource,
+                          columns: [
+                            GridColumn(
+                              columnName: 'date',
+                              label: _buildGridColumnLabel('Date'),
+                              autoFitPadding: EdgeInsets.zero,
                             ),
-                            AutoSizeText(
-                                'From Date: ${DateFormatter.dateFormat.format(dailyAnalysisController.fromDate.value).toString()} To Date: ${DateFormatter.dateFormat.format(dailyAnalysisController.toDate.value).toString()}',
-                                minFontSize: 10,
-                                maxFontSize: 15,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.mutedColor)),
-                            SizedBox(
-                              height: 5,
+                            GridColumn(
+                              columnName: 'grossSale',
+                              label: _buildGridColumnLabel('Gross Sale'),
+                            ),
+                            GridColumn(
+                              columnName: 'return',
+                              label: _buildGridColumnLabel('Return'),
+                            ),
+                            GridColumn(
+                              columnName: 'discount',
+                              label: _buildGridColumnLabel('Disc'),
+                            ),
+                            GridColumn(
+                              columnName: 'tax',
+                              label: _buildGridColumnLabel('Tax'),
+                            ),
+                            GridColumn(
+                              columnName: 'roundOff',
+                              label: _buildGridColumnLabel('Misc'),
+                            ),
+                            GridColumn(
+                              columnName: 'netSale',
+                              label: _buildGridColumnLabel('Net Sale'),
+                            ),
+                            GridColumn(
+                              columnName: 'cost',
+                              label: _buildGridColumnLabel('Cost'),
+                            ),
+                            GridColumn(
+                              columnName: 'profit',
+                              label: _buildGridColumnLabel('Profit'),
                             ),
                           ],
+                        );
+                }),
+              )
+            ],
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      dailyAnalysisController.isButtonOpen.value =
+                          !dailyAnalysisController.isButtonOpen.value;
+                    },
+                    child: Obx(() => CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            dailyAnalysisController.isButtonOpen.value
+                                ? Icons.close
+                                : Icons.more_vert_rounded,
+                            size: 20,
+                            color: AppColors.mutedColor,
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(
+                    () => Visibility(
+                      visible: dailyAnalysisController.isButtonOpen.value,
+                      child: InkWell(
+                        onTap: () {
+                          exportDataGridToPdf();
+                        },
+                        child: CircleAvatar(
+                          backgroundColor: AppColors.primary,
+                          child: Obx(
+                            () =>
+                                dailyAnalysisController.isPrintingProgress.value
+                                    ? SizedBox(
+                                        width: 10,
+                                        height: 10,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.print_outlined,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
+                          ),
                         ),
                       ),
                     ),
                   ),
+                ],
+              ),
+            ),
           ),
-          Expanded(
-            child: Obx(() {
-              return dailyAnalysisController.reportList.isEmpty
-                  ? Container()
-                  : SfDataGrid(
-                      key: _key,
-                      gridLinesVisibility: GridLinesVisibility.none,
-                      headerGridLinesVisibility: GridLinesVisibility.none,
-                      horizontalScrollController: ScrollController(),
-                      // selectionMode: SelectionMode.multiple,
-                      allowEditing: true,
-                      columnWidthMode: ColumnWidthMode.none,
-                      headerRowHeight: 30,
-                      // defaultColumnWidth: 80,
-                      editingGestureType: EditingGestureType.doubleTap,
-                      source: dailyAnalysisController.dailyAnalysisSource,
-                      columns: [
-                        GridColumn(
-                          columnName: 'date',
-                          label: _buildGridColumnLabel('Date'),
-                          autoFitPadding: EdgeInsets.zero,
-                        ),
-                        GridColumn(
-                          columnName: 'grossSale',
-                          label: _buildGridColumnLabel('Gross Sale'),
-                        ),
-                        GridColumn(
-                          columnName: 'return',
-                          label: _buildGridColumnLabel('Return'),
-                        ),
-                        GridColumn(
-                          columnName: 'discount',
-                          label: _buildGridColumnLabel('Disc'),
-                        ),
-                        GridColumn(
-                          columnName: 'tax',
-                          label: _buildGridColumnLabel('Tax'),
-                        ),
-                        GridColumn(
-                          columnName: 'roundOff',
-                          label: _buildGridColumnLabel('Misc'),
-                        ),
-                        GridColumn(
-                          columnName: 'netSale',
-                          label: _buildGridColumnLabel('Net Sale'),
-                        ),
-                        GridColumn(
-                          columnName: 'cost',
-                          label: _buildGridColumnLabel('Cost'),
-                        ),
-                        GridColumn(
-                          columnName: 'profit',
-                          label: _buildGridColumnLabel('Profit'),
-                        ),
-                      ],
-                    );
-            }),
-          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -181,6 +245,21 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
         child: SvgPicture.asset(AppIcons.filter,
             color: Colors.white, height: 20, width: 20),
       ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
+      // floatingActionButton: FabCircularMenu(
+      //   children: <Widget>[
+      //     IconButton(
+      //         icon: Icon(Icons.home),
+      //         onPressed: () {
+      //           print('Home');
+      //         }),
+      //     IconButton(
+      //         icon: Icon(Icons.favorite),
+      //         onPressed: () {
+      //           print('Favorite');
+      //         })
+      //   ],
+      // ),
     );
   }
 
@@ -419,7 +498,8 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                           enabled: true,
                           isDate: false,
                           onTap: () {
-                            dailyAnalysisController.selectLocation('from', context);
+                            dailyAnalysisController.selectLocation(
+                                'from', context);
                           },
                         ),
                       ),
@@ -439,7 +519,8 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                           enabled: true,
                           isDate: false,
                           onTap: () {
-                            dailyAnalysisController.selectLocation('to',context);
+                            dailyAnalysisController.selectLocation(
+                                'to', context);
                           },
                         ),
                       ),
@@ -459,7 +540,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                 enabled: true,
                 isDate: false,
                 onTap: () {
-                  dailyAnalysisController.selectLocation('single',context);
+                  dailyAnalysisController.selectLocation('single', context);
                 },
               ),
             ),
@@ -501,39 +582,55 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
   }
 
   Future<void> exportDataGridToPdf() async {
-    final ByteData data = await rootBundle.load('assets/images/logo.png');
-    final PdfDocument document = _key.currentState!.exportToPdfDocument(
-        fitAllColumnsInOnePage: true,
-        cellExport: (DataGridCellPdfExportDetails details) {
-          if (details.cellType == DataGridExportCellType.row) {
-            if (details.columnName == 'Shipped Date') {
-              details.pdfCell.value = DateFormat('MM/dd/yyyy')
-                  .format(DateTime.parse(details.pdfCell.value));
+    if (_key.currentState != null) {
+      dailyAnalysisController.isPrintingProgress.value = true;
+      final ByteData data =
+          await rootBundle.load('assets/images/axolon_logo.png');
+      final PdfDocument document = _key.currentState!.exportToPdfDocument(
+          fitAllColumnsInOnePage: true,
+          cellExport: (DataGridCellPdfExportDetails details) {
+            if (details.cellType == DataGridExportCellType.columnHeader) {
+              details.pdfCell.style = PdfGridCellStyle(
+                  format: PdfStringFormat(alignment: PdfTextAlignment.center));
+            } else {
+              details.pdfCell.style = PdfGridCellStyle(
+                  format: PdfStringFormat(alignment: PdfTextAlignment.right));
             }
-          }
-        },
-        headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
-          final double width = details.pdfPage.getClientSize().width;
-          final PdfPageTemplateElement header =
-              PdfPageTemplateElement(Rect.fromLTWH(0, 0, width, 65));
+          },
+          headerFooterExport: (DataGridPdfHeaderFooterExportDetails details) {
+            final double width = details.pdfPage.getClientSize().width;
+            final PdfPageTemplateElement header =
+                PdfPageTemplateElement(Rect.fromLTWH(0, 0, width, 65));
 
-          header.graphics.drawImage(
-              PdfBitmap(data.buffer
-                  .asUint8List(data.offsetInBytes, data.lengthInBytes)),
-              Rect.fromLTWH(width - 148, 0, 148, 60));
+            // header.graphics.drawImage(
+            //     PdfBitmap(data.buffer
+            //         .asUint8List(data.offsetInBytes, data.lengthInBytes)),
+            //     Rect.fromLTWH(width - 148, 0, 148, 60));
 
-          header.graphics.drawString(
-            'Product Details',
-            PdfStandardFont(PdfFontFamily.helvetica, 13,
-                style: PdfFontStyle.bold),
-            bounds: const Rect.fromLTWH(0, 25, 200, 60),
-          );
+            header.graphics.drawString(
+              'Daily Sales Analysis',
+              PdfStandardFont(PdfFontFamily.helvetica, 10,
+                  style: PdfFontStyle.bold),
+              format: PdfStringFormat(alignment: PdfTextAlignment.center),
+              bounds: const Rect.fromLTWH(180, 10, 200, 100),
+            );
+            header.graphics.drawString(
+              '\n From : ${DateFormatter.dateFormat.format(dailyAnalysisController.fromDate.value).toString()} - To : ${DateFormatter.dateFormat.format(dailyAnalysisController.toDate.value).toString()}',
+              PdfStandardFont(PdfFontFamily.helvetica, 10,
+                  style: PdfFontStyle.regular),
+              bounds: const Rect.fromLTWH(180, 10, 200, 100),
+            );
 
-          details.pdfDocumentTemplate.top = header;
-        });
-    final List<int> bytes = document.saveSync();
-    await helper.FileSaveHelper.saveAndLaunchFile(bytes, 'DataGrid.pdf');
-    document.dispose();
+            details.pdfDocumentTemplate.top = header;
+          });
+      final List<int> bytes = document.saveSync();
+      await helper.FileSaveHelper.saveAndLaunchFile(
+          bytes, 'DailySalesAnalysis.pdf');
+      dailyAnalysisController.isPrintingProgress.value = false;
+      document.dispose();
+    } else {
+      SnackbarServices.errorSnackbar('Please Add Details !');
+    }
   }
 
   TextField _buildTextFeild(

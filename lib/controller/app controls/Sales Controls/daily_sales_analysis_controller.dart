@@ -36,6 +36,8 @@ class DailySalesAnalysisController extends GetxController {
   var singleLocation = LocationSingleModel().obs;
   var reportList = [].obs;
   late DailyAnalysisSource dailyAnalysisSource;
+  var isButtonOpen = false.obs;
+  var isPrintingProgress = false.obs;
 
   updateLocationRadio(String value) {
     locationRadio.value = value;

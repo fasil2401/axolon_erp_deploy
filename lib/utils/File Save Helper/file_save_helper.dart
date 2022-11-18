@@ -3,7 +3,9 @@ import 'dart:io';
 
 ///Package imports
 import 'package:flutter/services.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
@@ -13,6 +15,7 @@ class FileSaveHelper {
   ///To save the Excel file in the device
   static Future<void> saveAndLaunchFile(
       List<int> bytes, String fileName) async {
+    print('saving');
     String? path;
     if (Platform.isAndroid ||
         Platform.isIOS ||
@@ -27,9 +30,11 @@ class FileSaveHelper {
         File(Platform.isWindows ? '$path\\$fileName' : '$path/$fileName');
     await file.writeAsBytes(bytes, flush: true);
     if (Platform.isAndroid || Platform.isIOS) {
+      print('geting data');
       final Map<String, String> argument = <String, String>{
         'file_path': '$path/$fileName'
       };
+      OpenFilex.open('$path/$fileName');
     } else if (Platform.isWindows) {
       await Process.run('start', <String>['$path\\$fileName'],
           runInShell: true);
