@@ -1,7 +1,7 @@
 import 'dart:core';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/daily_sales_analysis_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/customer_satement_controller.dart';
 import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
 import 'package:axolon_erp/utils/File%20Save%20Helper/file_save_helper.dart'
     as helper;
@@ -20,16 +20,16 @@ import 'package:syncfusion_flutter_datagrid_export/export.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:flutter/services.dart';
 
-class DailySalesAnalysisScreen extends StatefulWidget {
-  DailySalesAnalysisScreen({super.key});
+class CustomerStatementScreen extends StatefulWidget {
+  CustomerStatementScreen({super.key});
 
   @override
-  State<DailySalesAnalysisScreen> createState() =>
-      _DailySalesAnalysisScreenState();
+  State<CustomerStatementScreen> createState() =>
+      _CustomerStatementScreenState();
 }
 
-class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
-  final dailyAnalysisController = Get.put(DailySalesAnalysisController());
+class _CustomerStatementScreenState extends State<CustomerStatementScreen> {
+  final customerStatementController = Get.put(CustomerStatementController());
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
@@ -59,7 +59,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daily Sales Analysis'),
+        title: const Text('Customer Statement'),
         actions: <Widget>[
           PopupMenuButton<int>(
             onSelected: (item) => handleClickOnAppBar(item),
@@ -98,7 +98,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Obx(
-            () => dailyAnalysisController.reportList.isEmpty
+            () => customerStatementController.reportList.isEmpty
                 ? Container()
                 : Container(
                     child: Center(
@@ -106,35 +106,112 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AutoSizeText('Daily Sales Analysis',
-                                minFontSize: 20,
-                                maxFontSize: 24,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black)),
+                            Align(
+                              alignment: Alignment.center,
+                              child: AutoSizeText('Customer Statement',
+                                  minFontSize: 20,
+                                  maxFontSize: 24,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black)),
+                            ),
                             SizedBox(
                               height: 5,
                             ),
-                            AutoSizeText(
-                                'From: ${dailyAnalysisController.fromLocation.value.code ?? dailyAnalysisController.singleLocation.value.code}  To: ${dailyAnalysisController.toLocation.value.code ?? dailyAnalysisController.singleLocation.value.code}',
-                                minFontSize: 10,
-                                maxFontSize: 15,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.mutedColor)),
+                            Align(
+                              alignment: Alignment.center,
+                              child: AutoSizeText(
+                                  'From Date: ${DateFormatter.dateFormat.format(customerStatementController.fromDate.value).toString()} To Date: ${DateFormatter.dateFormat.format(customerStatementController.toDate.value).toString()}',
+                                  minFontSize: 10,
+                                  maxFontSize: 15,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.mutedColor)),
+                            ),
                             SizedBox(
                               height: 5,
                             ),
-                            AutoSizeText(
-                                'From Date: ${DateFormatter.dateFormat.format(dailyAnalysisController.fromDate.value).toString()} To Date: ${DateFormatter.dateFormat.format(dailyAnalysisController.toDate.value).toString()}',
-                                minFontSize: 10,
-                                maxFontSize: 15,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.mutedColor)),
-                            SizedBox(
-                              height: 5,
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildHeaderText('Customer'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    _buildHeaderText('Term Name'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    _buildHeaderText('Opening Balance'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    _buildHeaderText('Ending Balance'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    _buildHeaderText('PDC'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    _buildHeaderText('Phone'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    _buildHeaderText('Currency'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _buildHeaderText(
+                                          ': ${customerStatementController.reportHeader.value.customerCode} - ${customerStatementController.reportHeader.value.customerName}'),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      _buildHeaderText(
+                                          ': ${customerStatementController.reportHeader.value.termName}'),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      _buildHeaderText(
+                                          ': ${customerStatementController.reportHeader.value.openingBalance}'),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      _buildHeaderText(
+                                          ': ${customerStatementController.reportHeader.value.endingBalance}'),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      _buildHeaderText(
+                                          ': ${customerStatementController.reportHeader.value.pdc}'),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      _buildHeaderText(
+                                          ': ${customerStatementController.reportHeader.value.phone1}'),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      _buildHeaderText(
+                                          ': ${customerStatementController.reportHeader.value.currencyId}'),
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
                           ],
                         ),
@@ -144,7 +221,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
           ),
           Expanded(
             child: Obx(() {
-              return dailyAnalysisController.reportList.isEmpty
+              return customerStatementController.reportList.isEmpty
                   ? Container()
                   : CupertinoScrollbar(
                       controller: _scrollController,
@@ -162,7 +239,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                         columnWidthMode: ColumnWidthMode.none,
                         headerRowHeight: 30,
                         editingGestureType: EditingGestureType.doubleTap,
-                        source: dailyAnalysisController.dailyAnalysisSource,
+                        source: customerStatementController.reportSource,
                         columns: [
                           GridColumn(
                             columnName: 'Date',
@@ -170,36 +247,28 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                             autoFitPadding: EdgeInsets.zero,
                           ),
                           GridColumn(
-                            columnName: 'GrossSale',
-                            label: _buildGridColumnLabel('Gross Sale'),
+                            columnName: 'Number',
+                            label: _buildGridColumnLabel('Number'),
                           ),
                           GridColumn(
-                            columnName: 'Return',
-                            label: _buildGridColumnLabel('Return'),
+                            columnName: 'Type',
+                            label: _buildGridColumnLabel('Type'),
                           ),
                           GridColumn(
-                            columnName: 'Discount',
-                            label: _buildGridColumnLabel('Disc'),
+                            columnName: 'Description',
+                            label: _buildGridColumnLabel('Description'),
                           ),
                           GridColumn(
-                            columnName: 'Tax',
-                            label: _buildGridColumnLabel('Tax'),
+                            columnName: 'Debit',
+                            label: _buildGridColumnLabel('Debit'),
                           ),
                           GridColumn(
-                            columnName: 'RoundOff',
-                            label: _buildGridColumnLabel('Misc'),
+                            columnName: 'Credit',
+                            label: _buildGridColumnLabel('Credit'),
                           ),
                           GridColumn(
-                            columnName: 'NetSale',
-                            label: _buildGridColumnLabel('Net Sale'),
-                          ),
-                          GridColumn(
-                            columnName: 'Cost',
-                            label: _buildGridColumnLabel('Cost'),
-                          ),
-                          GridColumn(
-                            columnName: 'Profit',
-                            label: _buildGridColumnLabel('Profit'),
+                            columnName: 'Balance',
+                            label: _buildGridColumnLabel('Balance'),
                           ),
                         ],
                       ),
@@ -240,6 +309,14 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
       //   ],
       // ),
     );
+  }
+
+  AutoSizeText _buildHeaderText(String text) {
+    return AutoSizeText(text,
+        minFontSize: 10,
+        maxFontSize: 15,
+        style: TextStyle(
+            fontWeight: FontWeight.w400, color: AppColors.mutedColor));
   }
 
   void handleClickOnAppBar(int item) {
@@ -296,8 +373,8 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
               Flexible(
                 child: Obx(() => DropdownButtonFormField2(
                       isDense: true,
-                      value: DateRangeSelector
-                          .dateRange[dailyAnalysisController.dateIndex.value],
+                      value: DateRangeSelector.dateRange[
+                          customerStatementController.dateIndex.value],
                       decoration: InputDecoration(
                         isCollapsed: true,
                         contentPadding: const EdgeInsets.symmetric(vertical: 5),
@@ -351,7 +428,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                           .toList(),
                       onChanged: (value) {
                         selectedSysdocValue = value;
-                        dailyAnalysisController.selectDateRange(
+                        customerStatementController.selectDateRange(
                             selectedSysdocValue.value,
                             DateRangeSelector.dateRange
                                 .indexOf(selectedSysdocValue));
@@ -383,14 +460,14 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                   () => _buildTextFeild(
                     controller: TextEditingController(
                       text: DateFormatter.dateFormat
-                          .format(dailyAnalysisController.fromDate.value)
+                          .format(customerStatementController.fromDate.value)
                           .toString(),
                     ),
                     label: 'From Date',
-                    enabled: dailyAnalysisController.isFromDate.value,
+                    enabled: customerStatementController.isFromDate.value,
                     isDate: true,
                     onTap: () {
-                      dailyAnalysisController.selectDate(context, true);
+                      customerStatementController.selectDate(context, true);
                     },
                   ),
                 ),
@@ -403,43 +480,45 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                   () => _buildTextFeild(
                     controller: TextEditingController(
                       text: DateFormatter.dateFormat
-                          .format(dailyAnalysisController.toDate.value)
+                          .format(customerStatementController.toDate.value)
                           .toString(),
                     ),
                     label: 'To Date',
-                    enabled: dailyAnalysisController.isToDate.value,
+                    enabled: customerStatementController.isToDate.value,
                     isDate: true,
                     onTap: () {
-                      dailyAnalysisController.selectDate(context, false);
+                      customerStatementController.selectDate(context, false);
                     },
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            'Location',
-            style: TextStyle(
-              fontSize: 18,
-              color: AppColors.mutedColor,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
           Row(
             children: [
               Flexible(
+                child: AutoSizeText(
+                  'Is Account Currency',
+                  minFontSize: 12,
+                  maxLines: 1,
+                  maxFontSize: 20,
+                  style: TextStyle(
+                    color: AppColors.mutedColor,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Flexible(
                 child: Obx(() => RadioListTile(
                       activeColor: AppColors.primary,
                       contentPadding: EdgeInsets.zero,
-                      title: Text("All"),
-                      value: "all",
-                      groupValue: dailyAnalysisController.locationRadio.value,
+                      title: Text("Yes"),
+                      value: "yes",
+                      groupValue:
+                          customerStatementController.locationRadio.value,
                       onChanged: (value) {
-                        dailyAnalysisController
-                            .updateLocationRadio(value.toString());
+                        customerStatementController
+                            .updateAccountCurrency(value.toString());
                       },
                     )),
               ),
@@ -447,25 +526,13 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                 child: Obx(() => RadioListTile(
                       activeColor: AppColors.primary,
                       contentPadding: EdgeInsets.zero,
-                      title: Text("Single"),
-                      value: "single",
-                      groupValue: dailyAnalysisController.locationRadio.value,
+                      title: Text("No"),
+                      value: "no",
+                      groupValue:
+                          customerStatementController.locationRadio.value,
                       onChanged: (value) {
-                        dailyAnalysisController
-                            .updateLocationRadio(value.toString());
-                      },
-                    )),
-              ),
-              Flexible(
-                child: Obx(() => RadioListTile(
-                      activeColor: AppColors.primary,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text("Range"),
-                      value: "range",
-                      groupValue: dailyAnalysisController.locationRadio.value,
-                      onChanged: (value) {
-                        dailyAnalysisController
-                            .updateLocationRadio(value.toString());
+                        customerStatementController
+                            .updateAccountCurrency(value.toString());
                       },
                     )),
               )
@@ -474,76 +541,26 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
           SizedBox(
             height: 15,
           ),
-          Obx(() => Visibility(
-                visible: dailyAnalysisController.isMultipleLocation.value,
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Obx(
-                        () => _buildTextFeild(
-                          controller: TextEditingController(
-                            text: dailyAnalysisController
-                                    .fromLocation.value.name ??
-                                ' ',
-                          ),
-                          label: 'From',
-                          enabled: true,
-                          isDate: false,
-                          onTap: () {
-                            dailyAnalysisController.selectLocation(
-                                'from', context);
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Flexible(
-                      child: Obx(
-                        () => _buildTextFeild(
-                          controller: TextEditingController(
-                            text:
-                                dailyAnalysisController.toLocation.value.name ??
-                                    ' ',
-                          ),
-                          label: 'To',
-                          enabled: true,
-                          isDate: false,
-                          onTap: () {
-                            dailyAnalysisController.selectLocation(
-                                'to', context);
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )),
           Obx(
-            () => Visibility(
-              visible: dailyAnalysisController.isSingleLocation.value,
-              child: _buildTextFeild(
-                controller: TextEditingController(
-                  text:
-                      dailyAnalysisController.singleLocation.value.name ?? ' ',
-                ),
-                label: 'Location',
-                enabled: true,
-                isDate: false,
-                onTap: () {
-                  dailyAnalysisController.selectLocation('single', context);
-                },
+            () => _buildTextFeild(
+              controller: TextEditingController(
+                text: customerStatementController.customer.value.name ?? ' ',
               ),
+              label: 'Customer Id',
+              enabled: true,
+              isDate: false,
+              onTap: () {
+                customerStatementController.selectCustomer(context);
+              },
             ),
           ),
           Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton(
               onPressed: () {
-                dailyAnalysisController.getDailyAnalysis();
+                customerStatementController.getCustomerStatement();
               },
-              child: Obx(() => dailyAnalysisController.isLoadingReport.value
+              child: Obx(() => customerStatementController.isLoadingReport.value
                   ? SizedBox(
                       height: 20,
                       width: 20,
@@ -575,7 +592,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
 
   Future<void> exportDataGridToPdf() async {
     if (_key.currentState != null) {
-      dailyAnalysisController.isPrintingProgress.value = true;
+      customerStatementController.isPrintingProgress.value = true;
       final ByteData data =
           await rootBundle.load('assets/images/axolon_logo.png');
       final PdfDocument document = _key.currentState!.exportToPdfDocument(
@@ -624,14 +641,14 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
             //     Rect.fromLTWH(width - 148, 0, 148, 60));
 
             header.graphics.drawString(
-              'Daily Sales Analysis',
+              'Customer Statement',
               PdfStandardFont(PdfFontFamily.helvetica, 10,
                   style: PdfFontStyle.bold),
               format: PdfStringFormat(alignment: PdfTextAlignment.center),
               bounds: Rect.fromLTWH(width / 3, 0, width / 3, 0),
             );
             header.graphics.drawString(
-              '\n From : ${DateFormatter.dateFormat.format(dailyAnalysisController.fromDate.value).toString()} - To : ${DateFormatter.dateFormat.format(dailyAnalysisController.toDate.value).toString()}',
+              '\n From : ${DateFormatter.dateFormat.format(customerStatementController.fromDate.value).toString()} - To : ${DateFormatter.dateFormat.format(customerStatementController.toDate.value).toString()}',
               PdfStandardFont(PdfFontFamily.helvetica, 10,
                   style: PdfFontStyle.regular),
               bounds: Rect.fromLTRB(width / 3, 10, width / 3, 0),
@@ -641,8 +658,8 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
           });
       final List<int> bytes = document.saveSync();
       await helper.FileSaveHelper.saveAndLaunchFile(
-          bytes, 'DailySalesAnalysis.pdf');
-      dailyAnalysisController.isPrintingProgress.value = false;
+          bytes, 'CustomerStatement.pdf');
+      customerStatementController.isPrintingProgress.value = false;
       document.dispose();
     } else {
       SnackbarServices.errorSnackbar('Please Add Details !');
@@ -678,7 +695,7 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
           borderRadius: BorderRadius.circular(5),
         ),
         suffix: Icon(
-          isDate ? Icons.calendar_month : Icons.location_pin,
+          isDate ? Icons.calendar_month : Icons.account_circle_outlined,
           size: 15,
           color: enabled ? AppColors.primary : AppColors.mutedColor,
         ),

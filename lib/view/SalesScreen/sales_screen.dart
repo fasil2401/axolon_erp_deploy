@@ -15,7 +15,6 @@ class SalesScreen extends StatelessWidget {
   SalesScreen({super.key});
   final salesController = Get.put(SalesController());
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

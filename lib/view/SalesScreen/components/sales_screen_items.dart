@@ -22,7 +22,7 @@ class SalesScreenItems {
         icon: AppIcons.receipt),
     ScreenItemModel(
         title: 'Customer Statement',
-        route: '${RouteManager.redirect}',
+        route: '${RouteManager.customerStatement}',
         icon: AppIcons.statement),
   ];
 

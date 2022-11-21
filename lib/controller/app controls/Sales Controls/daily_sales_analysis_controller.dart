@@ -8,6 +8,7 @@ import 'package:axolon_erp/utils/Calculations/sales_analysis_calculations.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/date_formatter.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/Sales%20Shimmer/pop_up_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -38,6 +39,7 @@ class DailySalesAnalysisController extends GetxController {
   late DailyAnalysisSource dailyAnalysisSource;
   var isButtonOpen = false.obs;
   var isPrintingProgress = false.obs;
+  var dateIndex = 0.obs;
 
   updateLocationRadio(String value) {
     locationRadio.value = value;
@@ -89,7 +91,8 @@ class DailySalesAnalysisController extends GetxController {
     update();
   }
 
-  selectDateRange(int value) async {
+  selectDateRange(int value, int index) async {
+    dateIndex.value = index;
     isEqualDate.value = false;
     isFromDate.value = false;
     isToDate.value = false;
@@ -192,42 +195,48 @@ class DailySalesAnalysisController extends GetxController {
             ),
           ),
           content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
-                  child: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: locations.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        if (value == 'from') {
-                          fromLocation.value = locations[index];
-                        } else if (value == 'to') {
-                          toLocation.value = locations[index];
-                        } else {
-                          singleLocation.value = locations[index];
-                        }
-                        Get.back();
-                      },
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: AutoSizeText(
-                            "${locations[index].code} - ${locations[index].name}",
-                            minFontSize: 12,
-                            maxFontSize: 16,
-                            style: TextStyle(
-                              color: AppColors.mutedColor,
-                            ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Obx(
+                    () => isLoadingLocations.value
+                        ? SalesShimmer.locationPopShimmer()
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: locations.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  if (value == 'from') {
+                                    fromLocation.value = locations[index];
+                                  } else if (value == 'to') {
+                                    toLocation.value = locations[index];
+                                  } else {
+                                    singleLocation.value = locations[index];
+                                  }
+                                  Get.back();
+                                },
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: AutoSizeText(
+                                      "${locations[index].code} - ${locations[index].name}",
+                                      minFontSize: 12,
+                                      maxFontSize: 16,
+                                      style: TextStyle(
+                                        color: AppColors.mutedColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                      ),
-                    );
-                  },
+                  ),
                 ),
-              ))
+              ),
             ],
           ),
           actions: [
@@ -367,18 +376,9 @@ class DailyAnalysisSource extends DataGridSource {
               ),
               DataGridCell<dynamic>(
                   columnName: 'Cost',
-                  value: dataGridRow.cost ?? 0.00.toStringAsFixed(2)),
-              // DataGridCell<dynamic>(
-              //     columnName: 'cashSaleTax', value: dataGridRow.cashSaleTax),
-              // DataGridCell<dynamic>(
-              //     columnName: 'creditSaleTax',
-              //     value: dataGridRow.creditSaleTax),
-              // DataGridCell<dynamic>(
-              //     columnName: 'cashSale', value: dataGridRow.cashSale),
-
-              // DataGridCell<dynamic>(
-              //     columnName: 'creditSale', value: dataGridRow.creditSale),
-
+                  value: dataGridRow.cost == null
+                      ? 0.00.toStringAsFixed(2)
+                      : dataGridRow.cost.toStringAsFixed(2)),
               DataGridCell<dynamic>(
                 columnName: 'Profit',
                 value: SalesAnalysisCalculations.getNetProfit(
@@ -397,18 +397,6 @@ class DailyAnalysisSource extends DataGridSource {
                         cost: dataGridRow.cost)
                     .toStringAsFixed(2),
               ),
-              // DataGridCell<dynamic>(
-              //     columnName: 'discountReturn',
-              //     value: dataGridRow.discountReturn),
-              // DataGridCell<dynamic>(
-              //     columnName: 'roundOffReturn',
-              //     value: dataGridRow.roundOffReturn),
-              // DataGridCell<dynamic>(
-              //     columnName: 'taxReturn', value: dataGridRow.taxReturn),
-              // DataGridCell<dynamic>(
-              //     columnName: 'costReturn', value: dataGridRow.costReturn),
-              // DataGridCell<dynamic>(
-              //     columnName: 'salesReturn', value: dataGridRow.salesReturn),
             ],
           ),
         )
