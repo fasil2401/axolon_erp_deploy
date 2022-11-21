@@ -334,6 +334,7 @@ class SalesOrderController extends GetxController {
             if (response.value == 1) {
               developer.log('Saving Success', name: '${result.docNo}');
               clearData();
+              getVoucherNumber(sysDocId.value, sysDocName.value);
               SnackbarServices.successSnackbar(
                   'Successfully Saved as Doc No : ${result.docNo}');
             } else {
@@ -352,10 +353,10 @@ class SalesOrderController extends GetxController {
   }
 
   clearData() {
-    sysDocList.clear();
-    sysDocId.value = '';
-    voucherNumber.value = '';
-    sysDocName.value = ' ';
+    // sysDocList.clear();
+    // sysDocId.value = '';
+    // voucherNumber.value = '';
+    // sysDocName.value = ' ';
     customerId.value = '';
     subTotal.value = 0.0;
     salesOrderList.clear();

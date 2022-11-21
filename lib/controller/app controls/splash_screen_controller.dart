@@ -32,10 +32,10 @@ class SplashScreenController extends GetxController {
         if (isLoggedIn == 'true') {
           Get.offNamed(RouteManager().routes[3].name);
         } else {
-          Get.offNamed(RouteManager().routes[3].name);
+          Get.offNamed(RouteManager().routes[1].name);
         }
       } else {
-        Get.offNamed(RouteManager().routes[3].name);
+        Get.offNamed(RouteManager().routes[2].name);
       }
     });
   }

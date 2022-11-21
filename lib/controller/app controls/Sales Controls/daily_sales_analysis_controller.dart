@@ -322,12 +322,12 @@ class DailyAnalysisSource extends DataGridSource {
           (dataGridRow) => DataGridRow(
             cells: [
               DataGridCell<dynamic>(
-                  columnName: 'date',
+                  columnName: 'Date',
                   value: DateFormatter.dateFormat
                       .format(dataGridRow.date)
                       .toString()),
               DataGridCell<dynamic>(
-                columnName: 'grossSale',
+                columnName: 'GrossSale',
                 value: SalesAnalysisCalculations.getGrossSale(
                         cashSale: dataGridRow.cashSale,
                         creditSale: dataGridRow.creditSale,
@@ -336,7 +336,7 @@ class DailyAnalysisSource extends DataGridSource {
                     .toStringAsFixed(2),
               ),
               DataGridCell<dynamic>(
-                columnName: 'return',
+                columnName: 'Return',
                 value: SalesAnalysisCalculations.getReturn(
                         salesReturn: dataGridRow.salesReturn,
                         taxReturn: dataGridRow.taxReturn,
@@ -345,12 +345,12 @@ class DailyAnalysisSource extends DataGridSource {
                     .toStringAsFixed(2),
               ),
               DataGridCell<dynamic>(
-                  columnName: 'discount', value: dataGridRow.discount),
-              DataGridCell<dynamic>(columnName: 'tax', value: dataGridRow.tax),
+                  columnName: 'Discount', value: dataGridRow.discount),
+              DataGridCell<dynamic>(columnName: 'Tax', value: dataGridRow.tax),
               DataGridCell<dynamic>(
-                  columnName: 'roundOff', value: dataGridRow.roundOff),
+                  columnName: 'RoundOff', value: dataGridRow.roundOff),
               DataGridCell<dynamic>(
-                columnName: 'netSale',
+                columnName: 'NetSale',
                 value: SalesAnalysisCalculations.getNetSale(
                         grossSale: SalesAnalysisCalculations.getGrossSale(
                             cashSale: dataGridRow.cashSale,
@@ -366,7 +366,7 @@ class DailyAnalysisSource extends DataGridSource {
                     .toStringAsFixed(2),
               ),
               DataGridCell<dynamic>(
-                  columnName: 'cost',
+                  columnName: 'Cost',
                   value: dataGridRow.cost ?? 0.00.toStringAsFixed(2)),
               // DataGridCell<dynamic>(
               //     columnName: 'cashSaleTax', value: dataGridRow.cashSaleTax),
@@ -380,7 +380,7 @@ class DailyAnalysisSource extends DataGridSource {
               //     columnName: 'creditSale', value: dataGridRow.creditSale),
 
               DataGridCell<dynamic>(
-                columnName: 'profit',
+                columnName: 'Profit',
                 value: SalesAnalysisCalculations.getNetProfit(
                         netSale: SalesAnalysisCalculations.getNetSale(
                             grossSale: SalesAnalysisCalculations.getGrossSale(
@@ -425,10 +425,10 @@ class DailyAnalysisSource extends DataGridSource {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 8.0),
           height: 20,
-          alignment: dataGridCell.columnName == 'date'
+          alignment: dataGridCell.columnName == 'Date'
               ? Alignment.centerLeft
               : Alignment.centerRight,
-          child: dataGridCell.columnName == 'profit'
+          child: dataGridCell.columnName == 'Profit'
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

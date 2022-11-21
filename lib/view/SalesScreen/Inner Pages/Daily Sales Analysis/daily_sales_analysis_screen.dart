@@ -126,40 +126,40 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                           source: dailyAnalysisController.dailyAnalysisSource,
                           columns: [
                             GridColumn(
-                              columnName: 'date',
+                              columnName: 'Date',
                               label: _buildGridColumnLabel('Date'),
                               autoFitPadding: EdgeInsets.zero,
                             ),
                             GridColumn(
-                              columnName: 'grossSale',
+                              columnName: 'GrossSale',
                               label: _buildGridColumnLabel('Gross Sale'),
                             ),
                             GridColumn(
-                              columnName: 'return',
+                              columnName: 'Return',
                               label: _buildGridColumnLabel('Return'),
                             ),
                             GridColumn(
-                              columnName: 'discount',
+                              columnName: 'Discount',
                               label: _buildGridColumnLabel('Disc'),
                             ),
                             GridColumn(
-                              columnName: 'tax',
+                              columnName: 'Tax',
                               label: _buildGridColumnLabel('Tax'),
                             ),
                             GridColumn(
-                              columnName: 'roundOff',
+                              columnName: 'RoundOff',
                               label: _buildGridColumnLabel('Misc'),
                             ),
                             GridColumn(
-                              columnName: 'netSale',
+                              columnName: 'NetSale',
                               label: _buildGridColumnLabel('Net Sale'),
                             ),
                             GridColumn(
-                              columnName: 'cost',
+                              columnName: 'Cost',
                               label: _buildGridColumnLabel('Cost'),
                             ),
                             GridColumn(
-                              columnName: 'profit',
+                              columnName: 'Profit',
                               label: _buildGridColumnLabel('Profit'),
                             ),
                           ],
@@ -591,9 +591,33 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
           cellExport: (DataGridCellPdfExportDetails details) {
             if (details.cellType == DataGridExportCellType.columnHeader) {
               details.pdfCell.style = PdfGridCellStyle(
-                  format: PdfStringFormat(alignment: PdfTextAlignment.center));
+                  borders: PdfBorders(
+                      top: PdfPen(PdfColor(0, 0, 0), width: 0.5),
+                      right: PdfPen(PdfColor(0, 0, 0), width: 0.5),
+                      left: PdfPen(PdfColor(0, 0, 0), width: 0.5),
+                      bottom: PdfPen(PdfColor(0, 0, 0), width: 2)),
+                  font: PdfStandardFont(PdfFontFamily.helvetica, 10,
+                      style: PdfFontStyle.bold),
+                  format: PdfStringFormat(
+                    alignment: PdfTextAlignment.center,
+                    lineAlignment: PdfVerticalAlignment.middle,
+                  ));
+            } else if (details.cellType == DataGridExportCellType.row &&
+                details.columnName == 'Date') {
+              details.pdfCell.style = PdfGridCellStyle(
+                  borders: PdfBorders(
+                      top: PdfPen(PdfColor(255, 255, 255), width: 0.5),
+                      right: PdfPen(PdfColor(255, 255, 255), width: 0.5),
+                      left: PdfPen(PdfColor(255, 255, 255), width: 0.5),
+                      bottom: PdfPen(PdfColor(255, 255, 255), width: 0.5)),
+                  format: PdfStringFormat(alignment: PdfTextAlignment.left));
             } else {
               details.pdfCell.style = PdfGridCellStyle(
+                  borders: PdfBorders(
+                      top: PdfPen(PdfColor(255, 255, 255), width: 0.5),
+                      right: PdfPen(PdfColor(255, 255, 255), width: 0.5),
+                      left: PdfPen(PdfColor(255, 255, 255), width: 0.5),
+                      bottom: PdfPen(PdfColor(255, 255, 255), width: 0.5)),
                   format: PdfStringFormat(alignment: PdfTextAlignment.right));
             }
           },
@@ -612,13 +636,13 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
               PdfStandardFont(PdfFontFamily.helvetica, 10,
                   style: PdfFontStyle.bold),
               format: PdfStringFormat(alignment: PdfTextAlignment.center),
-              bounds: const Rect.fromLTWH(180, 10, 200, 100),
+              bounds: Rect.fromLTWH(width / 3, 0, width / 3, 0),
             );
             header.graphics.drawString(
               '\n From : ${DateFormatter.dateFormat.format(dailyAnalysisController.fromDate.value).toString()} - To : ${DateFormatter.dateFormat.format(dailyAnalysisController.toDate.value).toString()}',
               PdfStandardFont(PdfFontFamily.helvetica, 10,
                   style: PdfFontStyle.regular),
-              bounds: const Rect.fromLTWH(180, 10, 200, 100),
+              bounds: Rect.fromLTRB(width / 3, 10, width / 3, 0),
             );
 
             details.pdfDocumentTemplate.top = header;
