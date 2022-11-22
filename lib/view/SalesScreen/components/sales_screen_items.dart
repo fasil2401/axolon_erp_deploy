@@ -10,7 +10,7 @@ class SalesScreenItems {
         icon: AppIcons.sales_order),
     ScreenItemModel(
         title: 'Sales Invoice',
-        route: '${RouteManager.salesInvoice}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.invoice),
     ScreenItemModel(
         title: 'Salesman Activity',

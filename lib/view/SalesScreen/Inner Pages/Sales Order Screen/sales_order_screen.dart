@@ -2,17 +2,20 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_order_controller.dart';
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_screen_controller.dart';
 import 'package:axolon_erp/model/Inventory%20Model/get_all_products_model.dart';
+import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
+import 'package:axolon_erp/utils/constants/asset_paths.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
+import 'package:axolon_erp/utils/date_formatter.dart';
+import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/Sales%20Shimmer/pop_up_shimmer.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/draggable_button.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Sales%20Order%20Screen/sales_product_list_screen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:sizer/sizer.dart';
 
 class SalesOrderScreen extends StatefulWidget {
   SalesOrderScreen({super.key});
@@ -56,6 +59,317 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sales Order'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              salesController.getSalesOrderOpenList();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    insetPadding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    title: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Obx(
+                                () => DropdownButtonFormField2(
+                                  isDense: true,
+                                  value: DateRangeSelector.dateRange[
+                                      salesController.dateIndex.value],
+                                  decoration: InputDecoration(
+                                    isCollapsed: true,
+                                    contentPadding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    label: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Dates',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: 'Rubik',
+                                        ),
+                                      ),
+                                    ),
+                                    // contentPadding: EdgeInsets.zero,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  isExpanded: true,
+                                  icon: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: AppColors.primary,
+                                  ),
+                                  buttonPadding: const EdgeInsets.only(
+                                      left: 20, right: 10),
+                                  dropdownDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  items: DateRangeSelector.dateRange
+                                      .map(
+                                        (item) => DropdownMenuItem(
+                                          value: item,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                item.label,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: AppColors.primary,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontFamily: 'Rubik',
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (value) {
+                                    selectedSysdocValue = value;
+                                    salesController.selectDateRange(
+                                        selectedSysdocValue.value,
+                                        DateRangeSelector.dateRange
+                                            .indexOf(selectedSysdocValue));
+                                  },
+                                  onSaved: (value) {},
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          children: [
+                            Flexible(
+                                child: Obx(
+                              () => _buildDateTextFeild(
+                                controller: TextEditingController(
+                                  text: DateFormatter.dateFormat
+                                      .format(salesController.fromDate.value)
+                                      .toString(),
+                                ),
+                                label: 'From Date',
+                                enabled: salesController.isFromDate.value,
+                                isDate: true,
+                                onTap: () {
+                                  salesController.selectDate(context, true);
+                                },
+                              ),
+                            )),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Flexible(
+                              child: Obx(
+                                () => _buildDateTextFeild(
+                                  controller: TextEditingController(
+                                    text: DateFormatter.dateFormat
+                                        .format(salesController.toDate.value)
+                                        .toString(),
+                                  ),
+                                  label: 'To Date',
+                                  enabled: salesController.isToDate.value,
+                                  isDate: true,
+                                  onTap: () {
+                                    salesController.selectDate(context, false);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              salesController.getSalesOrderOpenList();
+                              // Get.back();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Text(
+                              'Apply',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Rubik',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: SizedBox(
+                      width: width,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: Obx(
+                                () => salesController.isOpenListLoading.value
+                                    ? SalesShimmer.locationPopShimmer()
+                                    : salesController
+                                                .salesOrderOpenList.length ==
+                                            0
+                                        ? Center(
+                                            child: Text('No Data Found'),
+                                          )
+                                        : ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: salesController
+                                                .salesOrderOpenList.length,
+                                            itemBuilder: (context, index) {
+                                              var item = salesController
+                                                  .salesOrderOpenList[index];
+                                              return InkWell(
+                                                onTap: () {
+                                                  // if (value == 'from') {
+                                                  //   fromLocation.value = locations[index];
+                                                  // } else if (value == 'to') {
+                                                  //   toLocation.value = locations[index];
+                                                  // } else {
+                                                  //   singleLocation.value = locations[index];
+                                                  // }
+                                                  Get.back();
+                                                },
+                                                child: Card(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  elevation: 3,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        AutoSizeText(
+                                                          '${item.docId} - ${item.docNumber}',
+                                                          minFontSize: 12,
+                                                          maxFontSize: 18,
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        SizedBox(
+                                                          width: width * 0.6,
+                                                          child: AutoSizeText(
+                                                            '${item.customerCode} - ${item.customerName}',
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            minFontSize: 10,
+                                                            maxFontSize: 14,
+                                                            style: TextStyle(
+                                                              color: AppColors
+                                                                  .mutedColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        AutoSizeText(
+                                                          'Amount : ${item.amount.toString()}/-',
+                                                          minFontSize: 10,
+                                                          maxFontSize: 14,
+                                                          style: TextStyle(
+                                                            color: AppColors
+                                                                .mutedColor,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        AutoSizeText(
+                                                          'Date : ${DateFormatter.dateFormat.format(item.orderDate)}',
+                                                          minFontSize: 10,
+                                                          maxFontSize: 14,
+                                                          style: TextStyle(
+                                                            color: AppColors
+                                                                .mutedColor,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: Text('Close',
+                                  style: TextStyle(color: AppColors.primary)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            icon: SvgPicture.asset(AppIcons.openList,
+                color: Colors.white, width: 20, height: 20),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -424,7 +738,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                               motion: const DrawerMotion(),
                               children: [
                                 SlidableAction(
-                                    backgroundColor: Colors.transparent,
+                                    backgroundColor: Colors.green[100]!,
                                     foregroundColor: Colors.green,
                                     icon: Icons.mode_edit_outlined,
                                     onPressed: (_) => salesController
@@ -440,7 +754,7 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                               motion: const DrawerMotion(),
                               children: [
                                 SlidableAction(
-                                    backgroundColor: Colors.transparent,
+                                    backgroundColor: Colors.red[100]!,
                                     foregroundColor: Colors.red,
                                     icon: Icons.delete,
                                     onPressed: (_) =>
@@ -502,130 +816,144 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                   thickness: 1,
                   color: AppColors.mutedBlueColor,
                 ),
-                Card(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                _buildDetailTextHead('Sub Total'),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                _buildDetailTextHead('Discount'),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                _buildDetailTextHead('Tax'),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                _buildDetailTextHead('Total'),
-                              ],
-                            )),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                // mainAxisAlignment: MainAxisAlignment.start,
+                InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(30),
+                          ),
+                        ),
+                        context: context,
+                        builder: (context) => _buildDiscountSheet());
+                  },
+                  child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Obx(() => _buildDetailTextContent(
-                                      salesController.subTotal.value
-                                          .toString())),
+                                  _buildDetailTextHead('Sub Total'),
                                   const SizedBox(
                                     height: 8,
                                   ),
-                                  _buildDetailTextContent('0.00'),
+                                  _buildDetailTextHead('Discount'),
                                   const SizedBox(
                                     height: 8,
                                   ),
-                                  _buildDetailTextContent('0.00'),
+                                  _buildDetailTextHead('Tax'),
                                   const SizedBox(
                                     height: 8,
                                   ),
-                                  Obx(() => _buildDetailTextContent(
-                                      salesController.subTotal.value
-                                          .toString())),
+                                  _buildDetailTextHead('Total'),
                                 ],
-                              ),
-                            )
-                          ],
-                        ),
-                        Divider(
-                          thickness: 1,
-                          color: AppColors.lightGrey,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                // salesController.salesOrderList.clear();
-                                // salesController.subTotal.value = 0.00;
-                                salesController.clearData();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.mutedBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                              )),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  // mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Obx(() => _buildDetailTextContent(
+                                        salesController.subTotal.value
+                                            .toString())),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    _buildDetailTextContent('0.00'),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    _buildDetailTextContent('0.00'),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Obx(() => _buildDetailTextContent(
+                                        salesController.subTotal.value
+                                            .toString())),
+                                  ],
                                 ),
-                              ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 25),
-                                child: Text(
-                                  'Clear',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 14,
+                              )
+                            ],
+                          ),
+                          Divider(
+                            thickness: 1,
+                            color: AppColors.lightGrey,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  // salesController.salesOrderList.clear();
+                                  // salesController.subTotal.value = 0.00;
+                                  salesController.clearData();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.mutedBlueColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25),
+                                  child: Text(
+                                    'Clear',
+                                    style: TextStyle(
+                                      color: AppColors.primary,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                salesController.createSalesOrder();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                              ElevatedButton(
+                                onPressed: () {
+                                  salesController.createSalesOrder();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25),
+                                  child:
+                                      Obx(() => salesController.isSaving.value
+                                          ? SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: Colors.white,
+                                              ))
+                                          : Text(
+                                              'Save',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
+                                            )),
                                 ),
                               ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 25),
-                                child: Obx(() => salesController.isSaving.value
-                                    ? SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.white,
-                                        ))
-                                    : Text(
-                                        'Save',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -658,6 +986,263 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  TextField _buildDateTextFeild(
+      {required String label,
+      required Function() onTap,
+      required bool enabled,
+      required bool isDate,
+      required TextEditingController controller}) {
+    return TextField(
+      controller: controller,
+      readOnly: true,
+      enabled: enabled,
+      onTap: onTap,
+      style: TextStyle(
+        fontSize: 14,
+        color: enabled ? AppColors.primary : AppColors.mutedColor,
+        fontWeight: FontWeight.w400,
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(
+          fontSize: 14,
+          color: AppColors.primary,
+          fontWeight: FontWeight.w400,
+        ),
+        isCollapsed: true,
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        suffix: Icon(
+          isDate ? Icons.calendar_month : Icons.location_pin,
+          size: 15,
+          color: enabled ? AppColors.primary : AppColors.mutedColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDiscountSheet() {
+    return Padding(
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          top: 10,
+          left: 15,
+          right: 15),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Discount',
+                style: TextStyle(
+                  color: AppColors.mutedColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Card(
+                  child: Center(
+                    child: Icon(
+                      Icons.close,
+                      size: 15,
+                      color: AppColors.mutedColor,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            children: [
+              // Flexible(
+              //   child: Obx(
+              //     () => salesController.isEditingDiscount.value
+              //         ? _buildDiscountFields(
+              //             label: 'Percentage',
+              //             controller: TextEditingController(
+              //                 text: salesController.discountPercentage.value
+              //                     .toStringAsFixed(2)),
+              //             onChanged: (value) {
+              //               // salesController.isEditingDiscount.value = false;
+              //               // salesController.isEditingDiscountPercentage.value =
+              //               //     true;
+              //               print(value);
+              //               salesController.calculateDiscount(value, true);
+              //             },
+              //             onTap: () {
+              //               salesController.isEditingDiscount.value = false;
+              //               salesController.isEditingDiscountPercentage.value =
+              //                   true;
+              //             })
+              //         : _buildDiscountFields(
+              //             label: 'Percentage',
+              //             controller: TextEditingController(),
+              //             onChanged: (value) {
+              //               // salesController.isEditingDiscount.value = false;
+              //               // salesController.isEditingDiscountPercentage.value =
+              //               //     true;
+              //               print(value);
+              //               salesController.calculateDiscount(value, true);
+              //             },
+              //             onTap: () {
+              //               salesController.isEditingDiscount.value = false;
+              //             }),
+              //   ),
+              // ),
+              Obx(() => Visibility(
+                    visible: salesController.isEditingDiscount.value == false,
+                    child: Flexible(
+                      child: _buildDiscountFields(
+                          label: 'Percentage',
+                          controller: TextEditingController(),
+                          onChanged: (value) {
+                            // salesController.isEditingDiscount.value = false;
+                            // salesController.isEditingDiscountPercentage.value =
+                            //     true;
+                            print('ordinaly $value');
+                            salesController.calculateDiscount(value, true);
+                          },
+                          onTap: () {
+                            // salesController.isEditingDiscount.value = false;
+                          }),
+                    ),
+                  )),
+              Obx(() => Visibility(
+                    visible: salesController.isEditingDiscount.value == true,
+                    child: Flexible(
+                        child: _buildDiscountFields(
+                            label: 'Percentage',
+                            controller: TextEditingController(),
+                            onChanged: (value) {
+                              // salesController.isEditingDiscount.value = false;
+                              // salesController.isEditingDiscountPercentage.value =
+                              //     true;
+                              print('controller $value');
+                              salesController.calculateDiscount(value, true);
+                            },
+                            onTap: () {
+                              // salesController.isEditingDiscount.value = false;
+                              // salesController
+                              //     .isEditingDiscountPercentage.value = true;
+                            })),
+                  )),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(
+                '%',
+                style: TextStyle(
+                  color: AppColors.mutedColor,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Obx(() => Visibility(
+                    visible:
+                        salesController.isEditingDiscountPercentage.value ==
+                            false,
+                    child: Expanded(
+                        child: _buildDiscountFields(
+                            label: 'Amount',
+                            controller: TextEditingController(),
+                            onChanged: (value) {
+                              // salesController.isEditingDiscountPercentage.value =
+                              //     false;
+                              // salesController.isEditingDiscount.value = true;
+                              // salesController.isEditingDiscountPercentage.value =
+                              //     false;
+                              print('ordinary $value');
+                              salesController.calculateDiscount(value, false);
+                            },
+                            onTap: () {})),
+                  )),
+              Obx(() => Visibility(
+                    visible:
+                        salesController.isEditingDiscountPercentage.value ==
+                            true,
+                    child: Expanded(
+                      child: _buildDiscountFields(
+                        label: 'Amount',
+                        controller: TextEditingController(),
+                        onChanged: (value) {
+                          // salesController.isEditingDiscountPercentage.value =
+                          //     false;
+                          // salesController.isEditingDiscount.value = true;
+                          salesController.isEditingDiscountPercentage.value =
+                              false;
+                          print('controller $value');
+
+                          salesController.calculateDiscount(value, false);
+                        },
+                        onTap: () {
+                          print('tapped');
+                          salesController.isEditingDiscountPercentage.value =
+                              true;
+                          // FocusScope.of(context).requestFocus(FocusNode());
+                          salesController.isEditingDiscount.value = true;
+                        },
+                      ),
+                    ),
+                  )),
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+        ],
+      ),
+    );
+  }
+
+  TextField _buildDiscountFields({
+    required String label,
+    required TextEditingController controller,
+    required Function(String) onChanged,
+    required Function() onTap,
+  }) {
+    controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: controller.text.length));
+    return TextField(
+      maxLines: 1,
+      onSubmitted: (value) => print('submitted $value'),
+      onEditingComplete: () => print('editing complete'),
+      controller: controller,
+      // textInputAction: TextInputAction.continueAction,
+      keyboardType: TextInputType.number,
+      style: TextStyle(fontSize: 12, color: AppColors.primary),
+      decoration: InputDecoration(
+        isCollapsed: true,
+        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.mutedColor, width: 0.1),
+        ),
+        labelText: label,
+        labelStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: AppColors.primary,
+        ),
+      ),
+      onChanged: onChanged,
+      onTap: () => onTap,
     );
   }
 

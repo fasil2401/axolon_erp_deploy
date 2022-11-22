@@ -22,12 +22,6 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   final attendanceController = Get.put(AttendanceController());
 
-  final List<String> items = [
-    'Job Id 1',
-    'Job Id 2',
-    'Job Id 4',
-    'Job Id 5hghjcdsjbjvhgvhvh',
-  ];
   var selectedValue;
 
   @override

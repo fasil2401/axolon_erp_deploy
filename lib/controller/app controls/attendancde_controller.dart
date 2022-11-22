@@ -52,6 +52,7 @@ class AttendanceController extends GetxController {
   var jobIdCode = ''.obs;
   var errorMessage = ''.obs;
   var logFlag = 0.obs;
+  var logTime = DateTime.now().obs;
 
   setJobId(JobModel job) {
     jobId.value = job.name!;
@@ -98,6 +99,15 @@ class AttendanceController extends GetxController {
             : DateTime.now().hour;
     m.value = DateTime.now().minute;
     s.value = DateTime.now().second;
+  }
+
+  getLogTime(DateTime logTime) {
+    var diff = logTime.difference(this.logTime.value);
+    if (diff.inMinutes >= 5) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   getEmployeeAttendanceLog() async {
@@ -258,52 +268,57 @@ class AttendanceController extends GetxController {
   }
 
   createAttendanceLog(int logFlag, BuildContext context) async {
-    this.logFlag.value = logFlag;
-    if (checkForParameters()) {
-      isLoadingAttendance.value = true;
-      await loginController.getToken();
-      final String token = loginController.token.value;
-      final String employeeId = UserSimplePreferences.getEmployeeId() ?? '';
-      final String latitude = UserSimplePreferences.getLatitude() ?? '';
-      final String longitude = UserSimplePreferences.getLongitude() ?? '';
-      final data = jsonEncode({
-        "token": token,
-        "LogID": 0,
-        "EmployeeID": employeeId,
-        "LogDate": DateTime.now().toIso8601String().toString(),
-        "RowIndex": 0,
-        "ShiftID": "",
-        "LocationID": "",
-        "JobID": jobIdCode.value,
-        "LogValue": logFlag,
-        "Latitude": latitude,
-        "Longitude": longitude
-      });
-      print(data);
-      dynamic result;
+    if (getLogTime(DateTime.now())) {
+      logTime.value = DateTime.now();
+      this.logFlag.value = logFlag;
+      if (checkForParameters()) {
+        isLoadingAttendance.value = true;
+        await loginController.getToken();
+        final String token = loginController.token.value;
+        final String employeeId = UserSimplePreferences.getEmployeeId() ?? '';
+        final String latitude = UserSimplePreferences.getLatitude() ?? '';
+        final String longitude = UserSimplePreferences.getLongitude() ?? '';
+        final data = jsonEncode({
+          "token": token,
+          "LogID": 0,
+          "EmployeeID": employeeId,
+          "LogDate": DateTime.now().toIso8601String().toString(),
+          "RowIndex": 0,
+          "ShiftID": "",
+          "LocationID": "",
+          "JobID": jobIdCode.value,
+          "LogValue": logFlag,
+          "Latitude": latitude,
+          "Longitude": longitude
+        });
+        print(data);
+        dynamic result;
 
-      try {
-        var feedback = await ApiServices.fetchDataRawBodyEmployee(
-            api: 'CreateAttendanceLog', data: data);
-        if (feedback != null) {
-          result = CommonResponseModel.fromJson(feedback);
-          response.value = result.res;
+        try {
+          var feedback = await ApiServices.fetchDataRawBodyEmployee(
+              api: 'CreateAttendanceLog', data: data);
+          if (feedback != null) {
+            result = CommonResponseModel.fromJson(feedback);
+            response.value = result.res;
+          }
+        } finally {
+          isLoadingAttendance.value = false;
+          if (response.value == 1) {
+            GFToast.showToast(getToastMessage(logFlag), context,
+                toastPosition: GFToastPosition.BOTTOM,
+                textStyle: TextStyle(fontSize: 12, color: GFColors.LIGHT),
+                backgroundColor: getToastColor(logFlag),
+                toastBorderRadius: 10.0);
+            getEmployeeAttendanceLog();
+          } else {
+            SnackbarServices.errorSnackbar('Something went wrong');
+          }
         }
-      } finally {
-        isLoadingAttendance.value = false;
-        if (response.value == 1) {
-          GFToast.showToast(getToastMessage(logFlag), context,
-              toastPosition: GFToastPosition.BOTTOM,
-              textStyle: TextStyle(fontSize: 12, color: GFColors.LIGHT),
-              backgroundColor: getToastColor(logFlag),
-              toastBorderRadius: 10.0);
-          getEmployeeAttendanceLog();
-        } else {
-          SnackbarServices.errorSnackbar('Something went wrong');
-        }
+      } else {
+        SnackbarServices.errorSnackbar(errorMessage.value);
       }
     } else {
-      SnackbarServices.errorSnackbar(errorMessage.value);
+      SnackbarServices.errorSnackbar('You can only log once in 5 minutes');
     }
   }
 }

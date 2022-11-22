@@ -33,4 +33,5 @@ class AppIcons {
   static const String filter = '${base}filter_icon.svg';
   static const String up_arrow = '${base}up-arrow.svg';
   static const String down_arrow = '${base}down-arrow.svg';
+  static const String openList = '${base}menu.svg';
 }
