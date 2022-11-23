@@ -275,7 +275,7 @@ class Header {
         this.companyId,
         this.divisionId,
         this.customerId,
-       required this.transactionDate,
+        this.transactionDate,
         this.salespersonId,
         this.salesFlow,
         this.isExport,
@@ -324,7 +324,7 @@ class Header {
     String? companyId;
     String? divisionId;
     String? customerId;
-    DateTime transactionDate;
+    DateTime? transactionDate;
     String? salespersonId;
     int? salesFlow;
     dynamic isExport;
@@ -423,7 +423,7 @@ class Header {
         "CompanyID": companyId,
         "DivisionID": divisionId,
         "CustomerID": customerId,
-        "TransactionDate": transactionDate.toIso8601String(),
+        "TransactionDate": transactionDate ==null ? null : transactionDate!.toIso8601String(),
         "SalespersonID": salespersonId,
         "SalesFlow": salesFlow,
         "IsExport": isExport,

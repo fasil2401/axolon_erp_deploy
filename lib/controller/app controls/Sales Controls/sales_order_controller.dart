@@ -5,6 +5,7 @@ import 'package:axolon_erp/model/Inventory%20Model/get_all_products_model.dart';
 import 'package:axolon_erp/model/Inventory%20Model/product_details_model.dart';
 import 'package:axolon_erp/model/Sales%20Model/ceate_sales_order_response.dart';
 import 'package:axolon_erp/model/Sales%20Model/create_sales_order_detail_model.dart';
+import 'package:axolon_erp/model/Sales%20Model/sales_order_by_id_model.dart';
 import 'package:axolon_erp/model/Sales%20Model/sales_order_open_list_model.dart';
 import 'package:axolon_erp/model/all_customer_model.dart';
 import 'package:axolon_erp/model/error_response_model.dart';
@@ -24,20 +25,20 @@ class SalesOrderController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     getAllCustomers();
   }
 
   final loginController = Get.put(LoginTokenController());
   final salesScreenController = Get.put(SalesController());
   var quantityControl = TextEditingController();
-   DateTime date = DateTime.now();
+  DateTime date = DateTime.now();
   var edit = false.obs;
   var isLoading = false.obs;
   var isProductLoading = false.obs;
   var isCustomerLoading = false.obs;
   var isVoucherLoading = false.obs;
   var isOpenListLoading = false.obs;
+  var isSalesOrderByIdLoading = false.obs;
   var isSearching = false.obs;
   var isSaving = false.obs;
   var response = 0.obs;
@@ -57,8 +58,7 @@ class SalesOrderController extends GetxController {
   var subTotal = 0.0.obs;
   var discount = 0.0.obs;
   var discountPercentage = 0.0.obs;
-  var isEditingDiscount = true.obs;
-  var isEditingDiscountPercentage = true.obs;
+  var total = 0.0.obs;
   var quantity = 1.0.obs;
   var unit = ''.obs;
   var price = 0.0.obs;
@@ -70,11 +70,15 @@ class SalesOrderController extends GetxController {
   var customer = CustomerModel().obs;
   var fromDate = DateTime.now().obs;
   var toDate = DateTime.now().obs;
+  var transactionDate = DateTime.now().obs;
+  var dueDate = DateTime.now().obs;
   var dateIndex = 0.obs;
   var isEqualDate = false.obs;
   var isFromDate = false.obs;
   var isToDate = false.obs;
-
+  var isNewRecord = true.obs;
+  var isBottomVisible = true.obs;
+  var remarks = ''.obs;
 
   selectDateRange(int value, int index) async {
     dateIndex.value = index;
@@ -94,7 +98,7 @@ class SalesOrderController extends GetxController {
     }
   }
 
-    selectDate(context, bool isFrom) async {
+  selectDate(context, bool isFrom) async {
     DateTime? newDate = await showDatePicker(
       context: context,
       initialDate: date,
@@ -124,6 +128,37 @@ class SalesOrderController extends GetxController {
     update();
   }
 
+    selectTransactionDates(context, bool isTransaction) async {
+    DateTime? newDate = await showDatePicker(
+      context: context,
+      initialDate: date,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.white,
+              onPrimary: AppColors.primary,
+              surface: AppColors.primary,
+              onSurface: AppColors.primary,
+            ),
+            dialogBackgroundColor: AppColors.mutedBlueColor,
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (newDate != null) {
+      isTransaction ? transactionDate.value = newDate : dueDate.value = newDate;
+    }
+    update();
+  }
+
+  getRemarks(String value) {
+    remarks.value = value;   
+  }
+
   decrementQuantity() {
     if (quantity.value > 1) {
       edit.value = false;
@@ -137,8 +172,13 @@ class SalesOrderController extends GetxController {
   }
 
   presetSysdoc() async {
-    await generateSysDocList();
-    getVoucherNumber(sysDocList[0].code, sysDocList[0].name);
+    if (salesScreenController.isLoading.value == false) {
+      await generateSysDocList();
+      getVoucherNumber(sysDocList[0].code, sysDocList[0].name);
+    } else {
+      await Future.delayed(Duration(seconds: 0));
+      presetSysdoc();
+    }
   }
 
   editQuantity() {
@@ -168,9 +208,6 @@ class SalesOrderController extends GetxController {
   }
 
   generateSysDocList() async {
-    // sysDocList.value = await salesScreenController.sysDocList
-    //     .where((element) => element.sysDocType == 23)
-    //     .toList();
     sysDocList.clear();
     for (var element in salesScreenController.sysDocList) {
       if (element.sysDocType == 23) {
@@ -194,10 +231,11 @@ class SalesOrderController extends GetxController {
 
   calculateTotal(double price, double quantity) {
     subTotal.value = subTotal.value + (price * quantity);
+    total.value = subTotal.value - discount.value;
   }
 
   calculateDiscount(String discountAmount, bool isPercentage) {
-    double discount = discountAmount.length > 0 && discountAmount != ' '
+    double discount = discountAmount.length > 0 && discountAmount != ''
         ? double.parse(discountAmount)
         : 0.0;
     if (isPercentage) {
@@ -207,9 +245,8 @@ class SalesOrderController extends GetxController {
       this.discount.value = discount;
       discountPercentage.value = (discount * 100) / subTotal.value;
     }
+    total.value = subTotal.value - this.discount.value;
   }
-
-
 
   changeUnit(String value) {
     unit.value = value;
@@ -319,10 +356,7 @@ class SalesOrderController extends GetxController {
     }
   }
 
-  
-
   getSalesOrderOpenList() async {
-    // await generateSysDocList();
     isOpenListLoading.value = true;
     await loginController.getToken();
     final String token = loginController.token.value;
@@ -347,6 +381,81 @@ class SalesOrderController extends GetxController {
             name: 'All sales open list');
       }
     }
+  }
+
+  getSalesOrderById(String sysDoc, String voucher) async {
+    isSalesOrderByIdLoading.value = true;
+    await loginController.getToken();
+    final String token = loginController.token.value;
+    dynamic result;
+    try {
+      var feedback = await ApiServices.fetchData(
+          api:
+              'GetSalesOrderByid?token=${token}&sysDocID=${sysDoc}&voucherID=${voucher}');
+      if (feedback != null) {
+        result = SalesOrderByIdModel.fromJson(feedback);
+        response.value = result.result;
+        isSalesOrderByIdLoading.value = false;
+      }
+    } finally {
+      if (response.value == 1) {
+        loadSalesOrderFromCloud(result);
+        developer.log(result.toString(), name: 'Sales order by id');
+      }
+    }
+  }
+
+  loadSalesOrderFromCloud(dynamic result) async {
+    isNewRecord.value = false;
+    await clearData();
+    transactionDate.value = result.header[0].transactionDate;
+    dueDate.value = result.header[0].dueDate;
+    customerId.value = result.header[0].customerId;
+    customer.value =
+        customerList.where((element) => element.code == customerId.value).first;
+    voucherNumber.value = result.header[0].voucherId;
+    sysDocId.value = result.header[0].sysDocId;
+    var selectedSysDoc =
+        sysDocList.where((element) => element.code == sysDocId.value).first;
+    sysDocName.value = selectedSysDoc.name;
+    subTotal.value = result.header[0].total.toDouble();
+    total.value = result.header[0].total.toDouble();
+    discount.value = result.header[0].discount.toDouble();
+    calculateDiscount(discount.value.toString(), false);
+
+    for (var product in result.detail) {
+      salesOrderList.add(
+        ProductDetailsModel(
+            res: 1,
+            model: [
+              SingleProduct(
+                productId: product.productId,
+                description: product.description1,
+                taxGroupId: product.taxGroupId,
+                updatedQuantity: product.quantity.toDouble(),
+                updatedUnitId: product.unitId,
+                updatedPrice: product.unitPrice.toDouble(),
+                price1: product.unitPrice.toDouble(),
+                locationId: product.locationId,
+              )
+            ],
+            unitmodel: [],
+            productlocationmodel: [],
+            msg: ''),
+      );
+    }
+  }
+
+  clearData() {
+    customerId.value = '';
+    subTotal.value = 0.0;
+    discount.value = 0.0;
+    discountPercentage.value = 0.0;
+    total.value = 0.0;
+    salesOrderList.clear();
+    transactionDate.value = DateTime.now();
+    dueDate.value = DateTime.now();
+    generateSysDocList();
   }
 
   createSalesOrder() async {
@@ -394,12 +503,12 @@ class SalesOrderController extends GetxController {
             "Companyid": "",
             "Divisionid": "",
             "Customerid": customerId.value,
-            "Transactiondate": DateTime.now().toIso8601String(),
+            "Transactiondate": transactionDate.value.toIso8601String(),
             "Salespersonid": "",
             "Salesflow": 0,
             "Isexport": true,
             "Requireddate": DateTime.now().toIso8601String(),
-            "Duedate": DateTime.now().toIso8601String(),
+            "Duedate": dueDate.value.toIso8601String(),
             "ETD": DateTime.now().toIso8601String(),
             "Shippingaddress": "",
             "Shiptoaddress": "",
@@ -417,7 +526,7 @@ class SalesOrderController extends GetxController {
             "Note": "",
             "POnumber": "",
             "Isvoid": false,
-            "Discount": 0,
+            "Discount": discount.value,
             "Total": subTotal.value,
             "Taxamount": 0,
             "Sourcedoctype": 0,
@@ -427,7 +536,7 @@ class SalesOrderController extends GetxController {
             "Taxoption": 0,
             "Roundoff": 0,
             "Ordertype": 0,
-            "Isnewrecord": true,
+            "Isnewrecord": isNewRecord.value,
             "SalesOrderDetails": list
           });
           dynamic result;
@@ -467,18 +576,10 @@ class SalesOrderController extends GetxController {
     }
   }
 
-  clearData() {
-    // sysDocList.clear();
-    // sysDocId.value = '';
-    // voucherNumber.value = '';
-    // sysDocName.value = ' ';
-    customerId.value = '';
-    subTotal.value = 0.0;
-    salesOrderList.clear();
-    generateSysDocList();
-  }
-
   getVoucherNumber(String sysDocId, String name) async {
+    isNewRecord.value = true;
+    transactionDate.value = DateTime.now();
+    dueDate.value = DateTime.now();
     isVoucherLoading.value = true;
     this.sysDocId.value = sysDocId;
     sysDocName.value = name;
@@ -508,6 +609,7 @@ class SalesOrderController extends GetxController {
     subTotal.value = subTotal.value -
         (salesOrderList[index].model[0].updatedPrice *
             salesOrderList[index].model[0].updatedQuantity);
+    total.value = subTotal.value - discount.value;
     salesOrderList.removeAt(index);
   }
 
@@ -752,6 +854,22 @@ class SalesOrderController extends GetxController {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.mutedBlueColor,
+                ),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.primary),
+                ),
+                onPressed: () {
+                  quantity.value = 1.0;
+                  Get.back();
+                },
+              ),
+              ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                   ),
@@ -797,6 +915,9 @@ class SalesOrderController extends GetxController {
                           subTotal.value = subTotal.value -
                               (single.model[0].updatedPrice *
                                   single.model[0].updatedQuantity);
+                          total.value = total.value -
+                              (single.model[0].updatedPrice *
+                                  single.model[0].updatedQuantity);
                           single.model[0].updatedQuantity = quantity.value;
                           single.model[0].updatedUnitId = unit.value;
                           single.model[0].updatedPrice = price.value;
@@ -809,22 +930,6 @@ class SalesOrderController extends GetxController {
                               name: 'salesOrderList.length');
                           // refresh();
                         }),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.mutedBlueColor,
-                ),
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.primary),
-                ),
-                onPressed: () {
-                  quantity.value = 1.0;
-                  Get.back();
-                },
-              ),
             ],
           ),
         ]);
