@@ -54,6 +54,7 @@ class AttendanceController extends GetxController {
   var logFlag = 0.obs;
   var logTime = DateTime.now().obs;
 
+
   setJobId(JobModel job) {
     jobId.value = job.name!;
     jobIdCode.value = job.code!;
@@ -102,11 +103,17 @@ class AttendanceController extends GetxController {
   }
 
   getLogTime(DateTime logTime) {
-    var diff = logTime.difference(this.logTime.value);
-    if (diff.inMinutes >= 5) {
-      return true;
+    String previousLogTime = UserSimplePreferences.getAttendanceLogTime() ?? '';
+    if (previousLogTime != '') {
+      DateTime previousLogTimeDate = DateTime.parse(previousLogTime);
+      var diff = logTime.difference(previousLogTimeDate);
+      if (diff.inMinutes >= 5) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      return true;
     }
   }
 
@@ -270,6 +277,8 @@ class AttendanceController extends GetxController {
   createAttendanceLog(int logFlag, BuildContext context) async {
     if (getLogTime(DateTime.now())) {
       logTime.value = DateTime.now();
+      await UserSimplePreferences.setAttendanceLogTime(
+          logTime.value.toString());
       this.logFlag.value = logFlag;
       if (checkForParameters()) {
         isLoadingAttendance.value = true;

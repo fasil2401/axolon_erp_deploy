@@ -60,222 +60,308 @@ class _CustomerStatementScreenState extends State<CustomerStatementScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Customer Statement'),
-        actions: <Widget>[
-          PopupMenuButton<int>(
-            onSelected: (item) => handleClickOnAppBar(item),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(0),
-            position: PopupMenuPosition.under,
-            itemBuilder: (context) => [
-              PopupMenuItem<int>(
-                value: 0,
-                padding: const EdgeInsets.all(0),
-                height: 30,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Icon(
-                        Icons.print_outlined,
-                        size: 20,
-                        color: AppColors.mutedColor,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text('Print to PDF'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+        // actions: <Widget>[
+        //   PopupMenuButton<int>(
+        //     onSelected: (item) => handleClickOnAppBar(item),
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(10),
+        //     ),
+        //     padding: const EdgeInsets.all(0),
+        //     position: PopupMenuPosition.under,
+        //     itemBuilder: (context) => [
+        //       PopupMenuItem<int>(
+        //         value: 0,
+        //         padding: const EdgeInsets.all(0),
+        //         height: 30,
+        //         child: Row(
+        //           children: [
+        //             Padding(
+        //               padding: EdgeInsets.only(left: 10),
+        //               child: Icon(
+        //                 Icons.print_outlined,
+        //                 size: 20,
+        //                 color: AppColors.mutedColor,
+        //               ),
+        //             ),
+        //             Padding(
+        //               padding: EdgeInsets.only(left: 10),
+        //               child: Text('Print to PDF'),
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Obx(
-            () => customerStatementController.reportList.isEmpty
-                ? Container()
-                : Container(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: AutoSizeText('Customer Statement',
-                                  minFontSize: 20,
-                                  maxFontSize: 24,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black)),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Align(
-                              alignment: Alignment.center,
-                              child: AutoSizeText(
-                                  'From Date: ${DateFormatter.dateFormat.format(customerStatementController.fromDate.value).toString()} To Date: ${DateFormatter.dateFormat.format(customerStatementController.toDate.value).toString()}',
-                                  minFontSize: 10,
-                                  maxFontSize: 15,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.mutedColor)),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildHeaderText('Customer'),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _buildHeaderText('Term Name'),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _buildHeaderText('Opening Balance'),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _buildHeaderText('Ending Balance'),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _buildHeaderText('PDC'),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _buildHeaderText('Phone'),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _buildHeaderText('Currency'),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildHeaderText(
-                                          ': ${customerStatementController.reportHeader.value.customerCode} - ${customerStatementController.reportHeader.value.customerName}'),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      _buildHeaderText(
-                                          ': ${customerStatementController.reportHeader.value.termName}'),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      _buildHeaderText(
-                                          ': ${customerStatementController.reportHeader.value.openingBalance}'),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      _buildHeaderText(
-                                          ': ${customerStatementController.reportHeader.value.endingBalance}'),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      _buildHeaderText(
-                                          ': ${customerStatementController.reportHeader.value.pdc}'),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      _buildHeaderText(
-                                          ': ${customerStatementController.reportHeader.value.phone1}'),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      _buildHeaderText(
-                                          ': ${customerStatementController.reportHeader.value.currencyId}'),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
+      body: Obx(
+        () => customerStatementController.reportList.isEmpty
+            ? Center(
+                child: Text('No Data Found'),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.only(
+                        left: 10, right: 10, top: 10, bottom: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.mutedColor.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset:
+                              const Offset(0, 1), // changes position of shadow
                         ),
+                      ],
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
                       ),
                     ),
+                    child: _buildCusromerCard(),
                   ),
-          ),
-          Expanded(
-            child: Obx(() {
-              return customerStatementController.reportList.isEmpty
-                  ? Container()
-                  : CupertinoScrollbar(
-                      controller: _scrollController,
-                      thicknessWhileDragging: 40,
-                      thumbVisibility: true,
-                      child: SfDataGrid(
-                        key: _key,
-                        verticalScrollController: _scrollController,
-                        // horizontalScrollPhysics: NeverScrollableScrollPhysics(),
-                        // verticalScrollPhysics: NeverScrollableScrollPhysics(),
-                        isScrollbarAlwaysShown: false,
-                        gridLinesVisibility: GridLinesVisibility.none,
-                        headerGridLinesVisibility: GridLinesVisibility.none,
-                        allowEditing: true,
-                        columnWidthMode: ColumnWidthMode.none,
-                        headerRowHeight: 30,
-                        editingGestureType: EditingGestureType.doubleTap,
-                        source: customerStatementController.reportSource,
-                        columns: [
-                          GridColumn(
-                            columnName: 'Date',
-                            label: _buildGridColumnLabel('Date'),
-                            autoFitPadding: EdgeInsets.zero,
-                          ),
-                          GridColumn(
-                            columnName: 'Number',
-                            label: _buildGridColumnLabel('Number'),
-                          ),
-                          GridColumn(
-                            columnName: 'Type',
-                            label: _buildGridColumnLabel('Type'),
-                          ),
-                          GridColumn(
-                            columnName: 'Description',
-                            label: _buildGridColumnLabel('Description'),
-                          ),
-                          GridColumn(
-                            columnName: 'Debit',
-                            label: _buildGridColumnLabel('Debit'),
-                          ),
-                          GridColumn(
-                            columnName: 'Credit',
-                            label: _buildGridColumnLabel('Credit'),
-                          ),
-                          GridColumn(
-                            columnName: 'Balance',
-                            label: _buildGridColumnLabel('Balance'),
-                          ),
-                        ],
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                      child: Container(
+                    padding: const EdgeInsets.only(
+                        left: 10, right: 10, top: 5, bottom: 0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.mutedColor.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset:
+                              const Offset(0, 1), // changes position of shadow
+                        ),
+                      ],
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
                       ),
-                    );
-            }),
-          )
-        ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AutoSizeText(
+                            'Transaction History',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Obx(() => ListView.separated(
+                                shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: customerStatementController
+                                    .reportList.length,
+                                itemBuilder: (context, index) {
+                                  var report = customerStatementController
+                                      .reportList[index];
+                                  return _buildListTile(report);
+                                },
+                                separatorBuilder: (context, index) => SizedBox(
+                                  height: 10,
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
+                  )),
+                  // Obx(
+                  //   () => customerStatementController.reportList.isEmpty
+                  //       ? Container()
+                  //       : Container(
+                  //           child: Center(
+                  //             child: Padding(
+                  //               padding: const EdgeInsets.symmetric(vertical: 10),
+                  //               child: Column(
+                  //                 mainAxisAlignment: MainAxisAlignment.center,
+                  //                 crossAxisAlignment: CrossAxisAlignment.start,
+                  //                 children: [
+                  //                   Align(
+                  //                     alignment: Alignment.center,
+                  //                     child: AutoSizeText('Customer Statement',
+                  //                         minFontSize: 20,
+                  //                         maxFontSize: 24,
+                  //                         style: TextStyle(
+                  //                             fontWeight: FontWeight.w500,
+                  //                             color: Colors.black)),
+                  //                   ),
+                  //                   SizedBox(
+                  //                     height: 5,
+                  //                   ),
+                  //                   Align(
+                  //                     alignment: Alignment.center,
+                  //                     child: AutoSizeText(
+                  //                         'From Date: ${DateFormatter.dateFormat.format(customerStatementController.fromDate.value).toString()} To Date: ${DateFormatter.dateFormat.format(customerStatementController.toDate.value).toString()}',
+                  //                         minFontSize: 10,
+                  //                         maxFontSize: 15,
+                  //                         style: TextStyle(
+                  //                             fontWeight: FontWeight.w400,
+                  //                             color: AppColors.mutedColor)),
+                  //                   ),
+                  //                   SizedBox(
+                  //                     height: 5,
+                  //                   ),
+                  //                   Row(
+                  //                     children: [
+                  //                       Column(
+                  //                         crossAxisAlignment: CrossAxisAlignment.start,
+                  //                         children: [
+                  //                           _buildHeaderText('Customer'),
+                  //                           SizedBox(
+                  //                             height: 5,
+                  //                           ),
+                  //                           _buildHeaderText('Term Name'),
+                  //                           SizedBox(
+                  //                             height: 5,
+                  //                           ),
+                  //                           _buildHeaderText('Opening Balance'),
+                  //                           SizedBox(
+                  //                             height: 5,
+                  //                           ),
+                  //                           _buildHeaderText('Ending Balance'),
+                  //                           SizedBox(
+                  //                             height: 5,
+                  //                           ),
+                  //                           _buildHeaderText('PDC'),
+                  //                           SizedBox(
+                  //                             height: 5,
+                  //                           ),
+                  //                           _buildHeaderText('Phone'),
+                  //                           SizedBox(
+                  //                             height: 5,
+                  //                           ),
+                  //                           _buildHeaderText('Currency'),
+                  //                           SizedBox(
+                  //                             height: 5,
+                  //                           ),
+                  //                         ],
+                  //                       ),
+                  //                       SizedBox(
+                  //                         width: 10,
+                  //                       ),
+                  //                       Expanded(
+                  //                         child: Column(
+                  //                           crossAxisAlignment:
+                  //                               CrossAxisAlignment.start,
+                  //                           children: [
+                  //                             _buildHeaderText(
+                  //                                 ': ${customerStatementController.reportHeader.value.customerCode} - ${customerStatementController.reportHeader.value.customerName}'),
+                  //                             SizedBox(
+                  //                               height: 5,
+                  //                             ),
+                  //                             _buildHeaderText(
+                  //                                 ': ${customerStatementController.reportHeader.value.termName}'),
+                  //                             SizedBox(
+                  //                               height: 5,
+                  //                             ),
+                  //                             _buildHeaderText(
+                  //                                 ': ${customerStatementController.reportHeader.value.openingBalance}'),
+                  //                             SizedBox(
+                  //                               height: 5,
+                  //                             ),
+                  //                             _buildHeaderText(
+                  //                                 ': ${customerStatementController.reportHeader.value.endingBalance}'),
+                  //                             SizedBox(
+                  //                               height: 5,
+                  //                             ),
+                  //                             _buildHeaderText(
+                  //                                 ': ${customerStatementController.reportHeader.value.pdc}'),
+                  //                             SizedBox(
+                  //                               height: 5,
+                  //                             ),
+                  //                             _buildHeaderText(
+                  //                                 ': ${customerStatementController.reportHeader.value.phone1}'),
+                  //                             SizedBox(
+                  //                               height: 5,
+                  //                             ),
+                  //                             _buildHeaderText(
+                  //                                 ': ${customerStatementController.reportHeader.value.currencyId}'),
+                  //                           ],
+                  //                         ),
+                  //                       )
+                  //                     ],
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  // ),
+                  // Visibility(
+                  //   visible: false,
+                  //   child: Expanded(
+                  //     child: Obx(() {
+                  //       return customerStatementController.reportList.isEmpty
+                  //           ? Container()
+                  //           : CupertinoScrollbar(
+                  //               controller: _scrollController,
+                  //               thicknessWhileDragging: 40,
+                  //               thumbVisibility: true,
+                  //               child: SfDataGrid(
+                  //                 key: _key,
+                  //                 verticalScrollController: _scrollController,
+                  //                 // horizontalScrollPhysics: NeverScrollableScrollPhysics(),
+                  //                 // verticalScrollPhysics: NeverScrollableScrollPhysics(),
+                  //                 isScrollbarAlwaysShown: false,
+                  //                 gridLinesVisibility: GridLinesVisibility.none,
+                  //                 headerGridLinesVisibility: GridLinesVisibility.none,
+                  //                 allowEditing: true,
+                  //                 columnWidthMode: ColumnWidthMode.none,
+                  //                 headerRowHeight: 30,
+                  //                 editingGestureType: EditingGestureType.doubleTap,
+                  //                 source: customerStatementController.reportSource,
+                  //                 columns: [
+                  //                   GridColumn(
+                  //                     columnName: 'Date',
+                  //                     label: _buildGridColumnLabel('Date'),
+                  //                     autoFitPadding: EdgeInsets.zero,
+                  //                   ),
+                  //                   GridColumn(
+                  //                     columnName: 'Number',
+                  //                     label: _buildGridColumnLabel('Number'),
+                  //                   ),
+                  //                   GridColumn(
+                  //                     columnName: 'Type',
+                  //                     label: _buildGridColumnLabel('Type'),
+                  //                   ),
+                  //                   GridColumn(
+                  //                     columnName: 'Description',
+                  //                     label: _buildGridColumnLabel('Description'),
+                  //                   ),
+                  //                   GridColumn(
+                  //                     columnName: 'Debit',
+                  //                     label: _buildGridColumnLabel('Debit'),
+                  //                   ),
+                  //                   GridColumn(
+                  //                     columnName: 'Credit',
+                  //                     label: _buildGridColumnLabel('Credit'),
+                  //                   ),
+                  //                   GridColumn(
+                  //                     columnName: 'Balance',
+                  //                     label: _buildGridColumnLabel('Balance'),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             );
+                  //     }),
+                  //   ),
+                  // )
+                ],
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
@@ -293,21 +379,317 @@ class _CustomerStatementScreenState extends State<CustomerStatementScreen> {
         child: SvgPicture.asset(AppIcons.filter,
             color: Colors.white, height: 20, width: 20),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
-      // floatingActionButton: FabCircularMenu(
-      //   children: <Widget>[
-      //     IconButton(
-      //         icon: Icon(Icons.home),
-      //         onPressed: () {
-      //           print('Home');
-      //         }),
-      //     IconButton(
-      //         icon: Icon(Icons.favorite),
-      //         onPressed: () {
-      //           print('Favorite');
-      //         })
-      //   ],
-      // ),
+    );
+  }
+
+  Card _buildListTile(report) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      elevation: 5,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+        ),
+        child: Row(children: [
+          CircleAvatar(
+            radius: 25,
+            backgroundColor: report.credit == 0.0
+                ? AppColors.success.withOpacity(0.2)
+                : AppColors.error.withOpacity(0.2),
+            child: SvgPicture.asset(
+              report.credit == 0.0 ? AppIcons.debit : AppIcons.credit,
+              height: 20,
+              width: 20,
+              color: report.credit == 0.0
+                  ? AppColors.darkGreen
+                  : AppColors.darkRed,
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AutoSizeText(
+                  report.docNo,
+                  minFontSize: 12,
+                  maxFontSize: 16,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                AutoSizeText(
+                  DateFormatter.dateFormat.format(report.date).toString(),
+                  minFontSize: 10,
+                  maxFontSize: 14,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              AutoSizeText(
+                report.credit == 0.0
+                    ? '${report.debit.toStringAsFixed(2)}'
+                    : '${report.credit.toStringAsFixed(2)}',
+                minFontSize: 12,
+                maxFontSize: 16,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              AutoSizeText(
+                '${report.balance.toStringAsFixed(2)}',
+                minFontSize: 10,
+                maxFontSize: 14,
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.mutedColor,
+                ),
+              ),
+            ],
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Card _buildCusromerCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      elevation: 5,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primary.withOpacity(0.5),
+              AppColors.primary,
+              // AppColors.primary,
+              // AppColors.mutedBlueColor,
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage(
+                      Images.logo_gif,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Obx(
+                          () => AutoSizeText(
+                            customerStatementController
+                                    .reportHeader.value.customerCode ??
+                                '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            minFontSize: 14,
+                            maxFontSize: 18,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Obx(() => AutoSizeText(
+                              customerStatementController
+                                      .reportHeader.value.customerName ??
+                                  '',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              minFontSize: 12,
+                              maxFontSize: 16,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white70,
+                              ),
+                            )),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Obx(() => AutoSizeText(
+                              'Phone : ${customerStatementController.reportHeader.value.phone1 ?? ''}',
+                              minFontSize: 12,
+                              maxFontSize: 16,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white70,
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: 45,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            'Opening Balance',
+                            maxLines: 1,
+                            minFontSize: 14,
+                            maxFontSize: 18,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Obx(() => AutoSizeText(
+                                customerStatementController.reportHeader.value
+                                            .openingBalance ==
+                                        null
+                                    ? ''
+                                    : customerStatementController
+                                        .reportHeader.value.openingBalance
+                                        .toString(),
+                                minFontSize: 14,
+                                maxFontSize: 18,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white70,
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                    VerticalDivider(
+                      thickness: 2,
+                      color: AppColors.mutedColor,
+                      indent: 5,
+                      endIndent: 15,
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            'Ending Balance',
+                            minFontSize: 14,
+                            maxFontSize: 18,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Obx(() => AutoSizeText(
+                                customerStatementController
+                                            .reportHeader.value.endingBalance ==
+                                        null
+                                    ? ''
+                                    : customerStatementController
+                                        .reportHeader.value.endingBalance
+                                        .toString(),
+                                minFontSize: 12,
+                                maxFontSize: 16,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white70,
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                    VerticalDivider(
+                      thickness: 2,
+                      color: AppColors.mutedColor,
+                      indent: 5,
+                      endIndent: 15,
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            'Currency',
+                            minFontSize: 14,
+                            maxFontSize: 18,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Obx(() => AutoSizeText(
+                                customerStatementController
+                                        .reportHeader.value.currencyId ??
+                                    '',
+                                minFontSize: 12,
+                                maxFontSize: 16,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white70,
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

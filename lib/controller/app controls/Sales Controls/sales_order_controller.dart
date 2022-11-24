@@ -15,6 +15,7 @@ import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/constants/snackbar.dart';
+import 'package:axolon_erp/utils/extensions.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/Sales%20Shimmer/pop_up_shimmer.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,8 @@ class SalesOrderController extends GetxController {
   var isToDate = false.obs;
   var isNewRecord = true.obs;
   var isBottomVisible = true.obs;
-  var remarks = ''.obs;
+  var remarks = ' '.obs;
+  var isFirstFocusOnRemarks = true.obs;
 
   selectDateRange(int value, int index) async {
     dateIndex.value = index;
@@ -128,7 +130,7 @@ class SalesOrderController extends GetxController {
     update();
   }
 
-    selectTransactionDates(context, bool isTransaction) async {
+  selectTransactionDates(context, bool isTransaction) async {
     DateTime? newDate = await showDatePicker(
       context: context,
       initialDate: date,
@@ -156,7 +158,7 @@ class SalesOrderController extends GetxController {
   }
 
   getRemarks(String value) {
-    remarks.value = value;   
+    remarks.value = value;
   }
 
   decrementQuantity() {
@@ -422,6 +424,8 @@ class SalesOrderController extends GetxController {
     total.value = result.header[0].total.toDouble();
     discount.value = result.header[0].discount.toDouble();
     calculateDiscount(discount.value.toString(), false);
+    remarks.value = result.detail[0].remarks;
+    developer.log(result.detail[0].remarks, name: 'Sales order remarks');
 
     for (var product in result.detail) {
       salesOrderList.add(
@@ -455,6 +459,8 @@ class SalesOrderController extends GetxController {
     salesOrderList.clear();
     transactionDate.value = DateTime.now();
     dueDate.value = DateTime.now();
+    remarks.value = ' ';
+    isFirstFocusOnRemarks.value = true;
     generateSysDocList();
   }
 
@@ -471,7 +477,7 @@ class SalesOrderController extends GetxController {
                 itemcode: product.model[0].productId,
                 description: product.model[0].description,
                 quantity: product.model[0].updatedQuantity,
-                remarks: '',
+                remarks: remarks.value,
                 rowindex: index,
                 unitid: product.model[0].updatedUnitId,
                 specificationid: '',
@@ -615,6 +621,7 @@ class SalesOrderController extends GetxController {
 
   addOrUpdateProductToSales(Products product, bool isAdding,
       ProductDetailsModel single, int index) async {
+    final TextEditingController priceController = TextEditingController();
     isAdding
         ? quantity.value = 1
         : quantity.value = single.model[0].updatedQuantity;
@@ -640,8 +647,13 @@ class SalesOrderController extends GetxController {
           fontWeight: FontWeight.w500,
           color: Colors.black,
         ),
-        content: Obx(
-          () => isProductLoading.value
+        content: Obx(() {
+          if (isProductLoading.value == false) {
+            priceController.text = isAdding
+                ? singleProduct.value.model[0].price1.toString()
+                : single.model[0].updatedPrice.toString();
+          }
+          return isProductLoading.value
               ? SalesShimmer.popUpShimmer()
               : Column(
                   children: [
@@ -704,6 +716,8 @@ class SalesOrderController extends GetxController {
                                           onChanged: (value) {
                                             setQuantity(value);
                                           },
+                                          onTap: () =>
+                                              quantityControl.selectAll(),
                                         )
                                       : Obx(
                                           () => InkWell(
@@ -817,14 +831,9 @@ class SalesOrderController extends GetxController {
                           ),
                           Flexible(
                             child: TextField(
-                              // controller: na meController,
-                              controller: TextEditingController(
-                                  text: isAdding
-                                      ? singleProduct.value.model[0].price1
-                                          .toString()
-                                      : single.model[0].updatedPrice
-                                          .toString()),
+                              controller: priceController,
                               onChanged: (value) => changePrice(value),
+                              onTap: () => priceController.selectAll(),
                               keyboardType: TextInputType.number,
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
@@ -847,8 +856,8 @@ class SalesOrderController extends GetxController {
                       ),
                     ),
                   ],
-                ),
-        ),
+                );
+        }),
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

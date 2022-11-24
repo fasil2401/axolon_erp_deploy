@@ -34,4 +34,6 @@ class AppIcons {
   static const String up_arrow = '${base}up-arrow.svg';
   static const String down_arrow = '${base}down-arrow.svg';
   static const String openList = '${base}menu.svg';
+  static const String credit = '${base}credit.svg';
+  static const String debit = '${base}debit.svg';
 }
