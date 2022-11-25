@@ -159,7 +159,9 @@ class _DailySalesAnalysisScreenState extends State<DailySalesAnalysisScreen> {
                         gridLinesVisibility: GridLinesVisibility.none,
                         headerGridLinesVisibility: GridLinesVisibility.none,
                         allowEditing: true,
-                        columnWidthMode: ColumnWidthMode.none,
+                        columnWidthMode: MediaQuery.of(context).size.width > 450
+                            ? ColumnWidthMode.fill
+                            : ColumnWidthMode.none,
                         headerRowHeight: 30,
                         editingGestureType: EditingGestureType.doubleTap,
                         source: dailyAnalysisController.dailyAnalysisSource,

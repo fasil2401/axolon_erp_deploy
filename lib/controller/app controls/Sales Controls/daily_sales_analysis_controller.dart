@@ -432,14 +432,18 @@ class DailyAnalysisSource extends DataGridSource {
                             : AppColors.error,
                       ),
                     ),
-                    Text(
+                    AutoSizeText(
                       dataGridCell.value.toString(),
+                      minFontSize: 8,
+                      maxFontSize: 12,
                       // overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 )
-              : Text(
+              : AutoSizeText(
                   dataGridCell.value.toString(),
+                  minFontSize: 8,
+                  maxFontSize: 12,
                   // overflow: TextOverflow.ellipsis,
                 ),
         );

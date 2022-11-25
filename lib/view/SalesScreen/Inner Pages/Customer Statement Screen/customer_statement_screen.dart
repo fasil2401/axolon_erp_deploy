@@ -620,6 +620,7 @@ class _CustomerStatementScreenState extends State<CustomerStatementScreen> {
                             'Ending Balance',
                             minFontSize: 14,
                             maxFontSize: 18,
+                            maxLines: 1,
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Colors.white,

@@ -424,56 +424,64 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     required IconData icon,
     required int logFlag,
   }) {
-    return Card(
-      color: Colors.white,
-      elevation: 3,
-      child: InkWell(
-        splashColor: color.withOpacity(0.2),
-        splashFactory: InkRipple.splashFactory,
-        onTap: () {
-          attendanceController.createAttendanceLog(logFlag, context);
-        },
-        child: Container(
-          height: 15.h,
-          color: Colors.transparent,
-          child: Center(
-            child: Obx(
-              () => Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  attendanceController.isLoadingAttendance.value &&
-                          attendanceController.logFlag.value == logFlag
-                      ? GFLoader(
-                          type: GFLoaderType.circle,
-                          size: 15,
-                          loaderColorOne: color,
-                          loaderColorTwo: color,
-                          loaderColorThree: color,
-                        )
-                      : Icon(
-                          icon,
-                          color: color,
-                          // size: 30,
+    return Obx(() => Card(
+          color: attendanceController.isLogActive.value
+              ? Colors.white
+              : AppColors.mutedColor.withOpacity(0.2),
+          elevation: 3,
+          child: InkWell(
+            splashColor: attendanceController.isLogActive.value
+                ? color.withOpacity(0.2)
+                : AppColors.mutedColor.withOpacity(0.2),
+            splashFactory: InkRipple.splashFactory,
+            onTap: attendanceController.isLogActive.value
+                ? () {
+                    attendanceController.createAttendanceLog(logFlag, context);
+                  }
+                : () {},
+            child: Container(
+              height: 15.h,
+              color: Colors.transparent,
+              child: Center(
+                child: Obx(
+                  () => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      attendanceController.isLoadingAttendance.value &&
+                              attendanceController.logFlag.value == logFlag
+                          ? GFLoader(
+                              type: GFLoaderType.circle,
+                              size: 15,
+                              loaderColorOne: color,
+                              loaderColorTwo: color,
+                              loaderColorThree: color,
+                            )
+                          : Icon(
+                              icon,
+                              color: attendanceController.isLogActive.value
+                                  ? color
+                                  : color.withOpacity(0.2),
+                              // size: 30,
+                            ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        text,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.mutedColor,
+                          fontSize: 14,
                         ),
-                  SizedBox(
-                    height: 8,
+                      ),
+                    ],
                   ),
-                  Text(
-                    text,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.mutedColor,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildTime() {

@@ -29,6 +29,8 @@ class AttendanceController extends GetxController {
     m.value = DateTime.now().minute;
     s.value = DateTime.now().second;
     Timer.periodic(Duration(seconds: 1), (Timer t) => getTime());
+    Timer.periodic(
+        Duration(seconds: 1), (Timer t) => getLogTime(DateTime.now()));
     selectedDateIso.value = DateTime.now().toIso8601String().toString();
     getCurrentLocation();
     getJobList();
@@ -53,7 +55,7 @@ class AttendanceController extends GetxController {
   var errorMessage = ''.obs;
   var logFlag = 0.obs;
   var logTime = DateTime.now().obs;
-
+  var isLogActive = false.obs;
 
   setJobId(JobModel job) {
     jobId.value = job.name!;
@@ -108,12 +110,15 @@ class AttendanceController extends GetxController {
       DateTime previousLogTimeDate = DateTime.parse(previousLogTime);
       var diff = logTime.difference(previousLogTimeDate);
       if (diff.inMinutes >= 5) {
-        return true;
+        // return true;
+        isLogActive.value = true;
       } else {
-        return false;
+        // return false;
+        isLogActive.value = false;
       }
     } else {
-      return true;
+      // return true;
+      isLogActive.value = true;
     }
   }
 
@@ -275,59 +280,54 @@ class AttendanceController extends GetxController {
   }
 
   createAttendanceLog(int logFlag, BuildContext context) async {
-    if (getLogTime(DateTime.now())) {
-      logTime.value = DateTime.now();
-      await UserSimplePreferences.setAttendanceLogTime(
-          logTime.value.toString());
-      this.logFlag.value = logFlag;
-      if (checkForParameters()) {
-        isLoadingAttendance.value = true;
-        await loginController.getToken();
-        final String token = loginController.token.value;
-        final String employeeId = UserSimplePreferences.getEmployeeId() ?? '';
-        final String latitude = UserSimplePreferences.getLatitude() ?? '';
-        final String longitude = UserSimplePreferences.getLongitude() ?? '';
-        final data = jsonEncode({
-          "token": token,
-          "LogID": 0,
-          "EmployeeID": employeeId,
-          "LogDate": DateTime.now().toIso8601String().toString(),
-          "RowIndex": 0,
-          "ShiftID": "",
-          "LocationID": "",
-          "JobID": jobIdCode.value,
-          "LogValue": logFlag,
-          "Latitude": latitude,
-          "Longitude": longitude
-        });
-        print(data);
-        dynamic result;
+    logTime.value = DateTime.now();
+    await UserSimplePreferences.setAttendanceLogTime(logTime.value.toString());
+    this.logFlag.value = logFlag;
+    if (checkForParameters()) {
+      isLoadingAttendance.value = true;
+      await loginController.getToken();
+      final String token = loginController.token.value;
+      final String employeeId = UserSimplePreferences.getEmployeeId() ?? '';
+      final String latitude = UserSimplePreferences.getLatitude() ?? '';
+      final String longitude = UserSimplePreferences.getLongitude() ?? '';
+      final data = jsonEncode({
+        "token": token,
+        "LogID": 0,
+        "EmployeeID": employeeId,
+        "LogDate": DateTime.now().toIso8601String().toString(),
+        "RowIndex": 0,
+        "ShiftID": "",
+        "LocationID": "",
+        "JobID": jobIdCode.value,
+        "LogValue": logFlag,
+        "Latitude": latitude,
+        "Longitude": longitude
+      });
+      print(data);
+      dynamic result;
 
-        try {
-          var feedback = await ApiServices.fetchDataRawBodyEmployee(
-              api: 'CreateAttendanceLog', data: data);
-          if (feedback != null) {
-            result = CommonResponseModel.fromJson(feedback);
-            response.value = result.res;
-          }
-        } finally {
-          isLoadingAttendance.value = false;
-          if (response.value == 1) {
-            GFToast.showToast(getToastMessage(logFlag), context,
-                toastPosition: GFToastPosition.BOTTOM,
-                textStyle: TextStyle(fontSize: 12, color: GFColors.LIGHT),
-                backgroundColor: getToastColor(logFlag),
-                toastBorderRadius: 10.0);
-            getEmployeeAttendanceLog();
-          } else {
-            SnackbarServices.errorSnackbar('Something went wrong');
-          }
+      try {
+        var feedback = await ApiServices.fetchDataRawBodyEmployee(
+            api: 'CreateAttendanceLog', data: data);
+        if (feedback != null) {
+          result = CommonResponseModel.fromJson(feedback);
+          response.value = result.res;
         }
-      } else {
-        SnackbarServices.errorSnackbar(errorMessage.value);
+      } finally {
+        isLoadingAttendance.value = false;
+        if (response.value == 1) {
+          GFToast.showToast(getToastMessage(logFlag), context,
+              toastPosition: GFToastPosition.BOTTOM,
+              textStyle: TextStyle(fontSize: 12, color: GFColors.LIGHT),
+              backgroundColor: getToastColor(logFlag),
+              toastBorderRadius: 10.0);
+          getEmployeeAttendanceLog();
+        } else {
+          SnackbarServices.errorSnackbar('Something went wrong');
+        }
       }
     } else {
-      SnackbarServices.errorSnackbar('You can only log once in 5 minutes');
+      SnackbarServices.errorSnackbar(errorMessage.value);
     }
   }
 }
