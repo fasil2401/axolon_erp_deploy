@@ -1,9 +1,11 @@
 import 'package:axolon_erp/controller/Api%20Controls/login_token_controller.dart';
 import 'package:axolon_erp/model/get_user_detail_model.dart';
 import 'package:axolon_erp/model/get_user_employee_model.dart';
+import 'package:axolon_erp/model/get_user_security_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:axolon_erp/utils/shared_preferences/shared_preferneces.dart';
 import 'package:get/get.dart';
+import 'dart:developer' as developer;
 
 class HomeController extends GetxController {
   @override
@@ -16,6 +18,9 @@ class HomeController extends GetxController {
   var isLoading = false.obs;
   var response = 0.obs;
   var model = [].obs;
+  var menuSecurityList = [].obs;
+  var screenSecurityList = [].obs;
+  var defaultsList = [].obs;
   var employeeId = ''.obs;
   var userImage = ''.obs;
 
@@ -60,7 +65,42 @@ class HomeController extends GetxController {
       if (response.value == 1) {
         userImage.value = model[0].photo;
         print('Image is ${userImage.value}');
+        getUserUserSecurityList();
       }
+    }
+  }
+
+  getUserUserSecurityList() async {
+    await loginController.getToken();
+    final String userName = await UserSimplePreferences.getUsername() ?? '';
+    final String token = loginController.token.value;
+    dynamic result;
+    try {
+      var feedback = await ApiServices.fetchData(
+          api: 'GetUserSecurity?token=${token}&userID=${userName}');
+      if (feedback != null) {
+        result = GetUserSecurityModel.fromJson(feedback);
+        print(result);
+        response.value = result.result;
+        menuSecurityList.value = result.menuSecurityObj;
+      }
+    } finally {
+      if (response.value == 1) {
+        developer.log(menuSecurityList.length.toString(),
+            name: 'Menu Security list');
+      }
+    }
+  }
+
+  bool isUserRightAvailable(String value) {
+    var data = menuSecurityList
+        .where((row) => (row.menuId == value && row.enable == true));
+    if (data.length >= 1) {
+      developer.log('The Data found !!! Successs', name: 'The Data');
+      return true;
+    } else {
+      developer.log('The Data not found', name: 'The Data');
+      return false;
     }
   }
 }

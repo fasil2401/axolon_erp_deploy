@@ -1,12 +1,20 @@
+import 'package:axolon_erp/controller/app%20controls/home_controller.dart';
 import 'package:axolon_erp/model/screen_item_model.dart';
 import 'package:axolon_erp/utils/Routes/route_manger.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
+import 'package:get/get.dart';
+
+final homeController = Get.put(HomeController());
 
 class SalesScreenItems {
+  static const String salesOrderId = 'mcSOrder';
+
   static List<ScreenItemModel> SalesItems = [
     ScreenItemModel(
         title: 'Sales Order',
-        route: '${RouteManager.salesOrder}',
+        route: homeController.isUserRightAvailable(salesOrderId)
+            ? '${RouteManager.salesOrder}'
+            : '${RouteManager.redirect}',
         icon: AppIcons.sales_order),
     ScreenItemModel(
         title: 'Sales Invoice',

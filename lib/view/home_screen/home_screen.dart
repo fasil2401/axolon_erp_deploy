@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-final packageInfoCOntroller = Get.put(PackageInfoController());
+// final packageInfoCOntroller = Get.put(PackageInfoController());
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
@@ -227,6 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
             //     : Stack(),
           ],
         ),
+        
       ),
     );
   }

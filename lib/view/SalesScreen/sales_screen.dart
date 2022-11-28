@@ -1,4 +1,5 @@
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_screen_controller.dart';
+import 'package:axolon_erp/controller/app%20controls/home_controller.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/SalesScreen/components/sales_screen_items.dart';
 import 'package:axolon_erp/view/components/main_screen_template.dart';
@@ -203,6 +204,12 @@ class SalesScreen extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          homeController.isUserRightAvailable('mcSOrder');
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -218,4 +225,3 @@ class SalesScreen extends StatelessWidget {
   //   );
   // }
 }
-
