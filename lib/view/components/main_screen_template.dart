@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:axolon_erp/controller/app%20controls/home_controller.dart';
+import 'package:axolon_erp/utils/Routes/route_manger.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,7 +13,7 @@ class MainScreenTemplate extends StatelessWidget {
     required this.title,
     required this.isFavorite,
   }) : super(key: key);
-
+  final homeController = Get.put(HomeController());
   var list;
   final String title;
   final bool isFavorite;
@@ -68,7 +70,9 @@ class MainScreenTemplate extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    Get.toNamed(list[index].route);
+                    homeController.isUserRightAvailable(list[index].menuId)
+                        ? Get.toNamed(list[index].route)
+                        : Get.toNamed(RouteManager.redirect);
                   },
                   child: Column(
                     children: [

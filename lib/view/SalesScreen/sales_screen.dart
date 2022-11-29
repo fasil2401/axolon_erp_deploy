@@ -198,17 +198,12 @@ class SalesScreen extends StatelessWidget {
             //   ),
             // ),
             MainScreenTemplate(
-                list: SalesScreenItems.SalesReportItems,
-                title: 'Reports',
-                isFavorite: false),
+              list: SalesScreenItems.SalesReportItems,
+              title: 'Reports',
+              isFavorite: false,
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          homeController.isUserRightAvailable('mcSOrder');
-        },
-        child: Icon(Icons.add),
       ),
     );
   }
