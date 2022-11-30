@@ -13,6 +13,7 @@ import 'package:axolon_erp/model/voucher_number_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
+import 'package:axolon_erp/utils/Calculations/tax_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/constants/snackbar.dart';
 import 'package:axolon_erp/utils/extensions.dart';
@@ -60,6 +61,7 @@ class SalesOrderController extends GetxController {
   var discount = 0.0.obs;
   var discountPercentage = 0.0.obs;
   var total = 0.0.obs;
+  var totalTax = 0.0.obs;
   var quantity = 1.0.obs;
   var unit = ''.obs;
   var price = 0.0.obs;
@@ -234,6 +236,11 @@ class SalesOrderController extends GetxController {
   calculateTotal(double price, double quantity) {
     subTotal.value = subTotal.value + (price * quantity);
     total.value = subTotal.value - discount.value;
+  }
+
+  calculateTotalTax(double tax) {
+    totalTax.value += tax;
+    total.value = total.value - totalTax.value;
   }
 
   calculateDiscount(String discountAmount, bool isPercentage) {
@@ -616,6 +623,7 @@ class SalesOrderController extends GetxController {
         (salesOrderList[index].model[0].updatedPrice *
             salesOrderList[index].model[0].updatedQuantity);
     total.value = subTotal.value - discount.value;
+    totalTax.value = totalTax.value - salesOrderList[index].model[0].taxAmount;
     salesOrderList.removeAt(index);
   }
 
@@ -891,7 +899,25 @@ class SalesOrderController extends GetxController {
                   ),
                   onPressed: isAdding
                       ? () async {
+                          double taxAmount = 0.0;
                           if (isProductLoading.value == false) {
+                            var taxList = await TaxHelper.calculateTax(
+                                taxGroupId: singleProduct
+                                    .value.model[0].taxGroupId
+                                    .toString(),
+                                price: isPriceEdited.value
+                                    ? price.value
+                                    : singleProduct.value.model[0].price1,
+                                sysDocId: sysDocId.value,
+                                voucherId: voucherNumber.value,
+                                orderIndex: 1,
+                                isExclusive: true);
+
+                            for (var tax in taxList) {
+                              taxAmount += tax.taxAmount;
+                            }
+
+                            singleProduct.value.model[0].taxAmount = taxAmount;
                             singleProduct.value.model[0].updatedQuantity =
                                 quantity.value;
                             singleProduct.value.model[0].updatedUnitId =
@@ -901,6 +927,7 @@ class SalesOrderController extends GetxController {
                                     ? price.value
                                     : singleProduct.value.model[0].price1;
                             salesOrderList.add(singleProduct.value);
+
                             isPriceEdited.value
                                 ? calculateTotal(
                                     price.value,
@@ -910,6 +937,8 @@ class SalesOrderController extends GetxController {
                                     singleProduct.value.model[0].price1,
                                     singleProduct
                                         .value.model[0].updatedQuantity);
+                            calculateTotalTax(taxAmount);
+
                             quantity.value = 1.0;
                             Get.back();
                             Get.back();
@@ -921,6 +950,18 @@ class SalesOrderController extends GetxController {
                           }
                         }
                       : () async {
+                          double taxAmount = 0.0;
+                          var taxList = await TaxHelper.calculateTax(
+                              taxGroupId: single.model[0].taxGroupId.toString(),
+                              price: price.value,
+                              sysDocId: sysDocId.value,
+                              voucherId: voucherNumber.value,
+                              orderIndex: 1,
+                              isExclusive: true);
+
+                          for (var tax in taxList) {
+                            taxAmount += tax.taxAmount;
+                          }
                           subTotal.value = subTotal.value -
                               (single.model[0].updatedPrice *
                                   single.model[0].updatedQuantity);
@@ -930,10 +971,16 @@ class SalesOrderController extends GetxController {
                           single.model[0].updatedQuantity = quantity.value;
                           single.model[0].updatedUnitId = unit.value;
                           single.model[0].updatedPrice = price.value;
+                          single.model[0].taxAmount = taxAmount;
                           salesOrderList.insert(index, single);
                           salesOrderList.removeAt(index + 1);
+                          totalTax.value =
+                              totalTax.value - single.model[0].taxAmount;
+
                           calculateTotal(
                               price.value, single.model[0].updatedQuantity);
+                          calculateTotalTax(taxAmount);
+
                           Get.back();
                           developer.log(salesOrderList.length.toString(),
                               name: 'salesOrderList.length');

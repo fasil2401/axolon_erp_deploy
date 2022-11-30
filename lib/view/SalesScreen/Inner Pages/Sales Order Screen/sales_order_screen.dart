@@ -771,7 +771,9 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
                                         const SizedBox(
                                           height: 8,
                                         ),
-                                        _buildDetailTextContent('0.00'),
+                                        Obx(() => _buildDetailTextContent(
+                                            salesController.totalTax.value
+                                                .toStringAsFixed(2))),
                                         const SizedBox(
                                           height: 8,
                                         ),

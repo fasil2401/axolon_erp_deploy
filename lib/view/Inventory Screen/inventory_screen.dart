@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:axolon_erp/utils/Calculations/tax_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/view/Inventory%20Screen/components/items.dart';
 import 'package:axolon_erp/view/components/main_screen_template.dart';
@@ -208,6 +209,7 @@ class InventoryScreen extends StatelessWidget {
           ],
         ),
       ),
+     
     );
   }
 

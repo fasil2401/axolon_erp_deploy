@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:axolon_erp/model/Tax%20Model/tax_model.dart';
+
 ProductDetailsModel ProductDetailsModelFromJson(String str) =>
     ProductDetailsModel.fromJson(json.decode(str));
 
@@ -12,6 +14,7 @@ class ProductDetailsModel {
     required this.model,
     required this.unitmodel,
     required this.productlocationmodel,
+    this.taxList,
     required this.msg,
   });
 
@@ -19,12 +22,14 @@ class ProductDetailsModel {
   List<SingleProduct> model;
   List<Unitmodel> unitmodel;
   List<Productlocationmodel> productlocationmodel;
+  List<TaxModel>? taxList;
   String msg;
 
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) =>
       ProductDetailsModel(
         res: json["res"],
-        model: List<SingleProduct>.from(json["model"].map((x) => SingleProduct.fromJson(x))),
+        model: List<SingleProduct>.from(
+            json["model"].map((x) => SingleProduct.fromJson(x))),
         unitmodel: List<Unitmodel>.from(
             json["unitmodel"].map((x) => Unitmodel.fromJson(x))),
         productlocationmodel: List<Productlocationmodel>.from(
@@ -49,7 +54,7 @@ class SingleProduct {
     this.origin,
     this.productId,
     this.productimage,
-     this.isTrackLot,
+    this.isTrackLot,
     this.upc,
     this.unitId,
     this.updatedUnitId,
@@ -57,6 +62,7 @@ class SingleProduct {
     this.locationId,
     this.quantity,
     this.updatedQuantity,
+    this.taxAmount,
     this.specialPrice,
     this.price1,
     this.updatedPrice,
@@ -82,6 +88,7 @@ class SingleProduct {
   String? upc;
   String? unitId;
   String? updatedUnitId;
+  dynamic taxAmount;
   String? taxGroupId;
   String? locationId;
   dynamic quantity;

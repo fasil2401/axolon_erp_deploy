@@ -1,4 +1,5 @@
 import 'package:axolon_erp/controller/Api%20Controls/login_token_controller.dart';
+import 'package:axolon_erp/model/Tax%20Model/tax_group_detail_list_model.dart';
 import 'package:axolon_erp/model/get_user_detail_model.dart';
 import 'package:axolon_erp/model/get_user_employee_model.dart';
 import 'package:axolon_erp/model/get_user_security_model.dart';
@@ -21,6 +22,7 @@ class HomeController extends GetxController {
   var menuSecurityList = [].obs;
   var screenSecurityList = [].obs;
   var defaultsList = [].obs;
+  var taxGroupList = [].obs;
   var employeeId = ''.obs;
   var userImage = ''.obs;
 
@@ -88,6 +90,27 @@ class HomeController extends GetxController {
       if (response.value == 1) {
         developer.log(menuSecurityList.length.toString(),
             name: 'Menu Security list');
+      }
+    }
+  }
+
+  getTaxGroupDetailList() async {
+    developer.log('getting tax detail from server');
+    await loginController.getToken();
+    final String token = loginController.token.value;
+    dynamic result;
+    try {
+      var feedback = await ApiServices.fetchDataInventory(
+          api: 'GetTaxGroupDetailList?token=${token}');
+      if (feedback != null) {
+        result = TaxGroupDetailListModel.fromJson(feedback);
+        print(result);
+        response.value = result.res;
+        taxGroupList.value = result.model;
+      }
+    } finally {
+      if (response.value == 1) {
+        developer.log(taxGroupList.length.toString(), name: 'TaxGroup list');
       }
     }
   }
