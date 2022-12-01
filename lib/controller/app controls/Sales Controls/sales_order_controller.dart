@@ -7,6 +7,7 @@ import 'package:axolon_erp/model/Sales%20Model/ceate_sales_order_response.dart';
 import 'package:axolon_erp/model/Sales%20Model/create_sales_order_detail_model.dart';
 import 'package:axolon_erp/model/Sales%20Model/sales_order_by_id_model.dart';
 import 'package:axolon_erp/model/Sales%20Model/sales_order_open_list_model.dart';
+import 'package:axolon_erp/model/Tax%20Model/tax_model.dart';
 import 'package:axolon_erp/model/all_customer_model.dart';
 import 'package:axolon_erp/model/error_response_model.dart';
 import 'package:axolon_erp/model/voucher_number_model.dart';
@@ -430,11 +431,35 @@ class SalesOrderController extends GetxController {
     subTotal.value = result.header[0].total.toDouble();
     total.value = result.header[0].total.toDouble();
     discount.value = result.header[0].discount.toDouble();
+    totalTax.value = result.header[0].taxAmount != null
+        ? result.header[0].taxAmount.toDouble()
+        : 0.0;
     calculateDiscount(discount.value.toString(), false);
     remarks.value = result.detail[0].remarks;
     developer.log(result.detail[0].remarks, name: 'Sales order remarks');
 
     for (var product in result.detail) {
+      List<TaxModel> taxList = [];
+      for (var tax in result.taxDetail) {
+        if (tax.orderIndex == product.rowIndex) {
+          taxList.add(TaxModel(
+            sysDocId: tax.sysDocId,
+            voucherId: tax.voucherId,
+            taxLevel: tax.taxLevel,
+            taxGroupId: tax.taxGroupId,
+            calculationMethod: tax.calculationMethod.toString(),
+            taxItemName: tax.taxItemName,
+            taxItemId: tax.taxItemId,
+            taxRate: tax.taxRate.toDouble(),
+            taxAmount: tax.taxAmount.toDouble(),
+            currencyId: tax.currencyId,
+            currencyRate: tax.currencyRate.toDouble(),
+            orderIndex: tax.orderIndex,
+            rowIndex: tax.rowIndex,
+            accountId: tax.accountId,
+          ));
+        }
+      }
       salesOrderList.add(
         ProductDetailsModel(
             res: 1,
@@ -448,10 +473,12 @@ class SalesOrderController extends GetxController {
                 updatedPrice: product.unitPrice.toDouble(),
                 price1: product.unitPrice.toDouble(),
                 locationId: product.locationId,
+                taxAmount: product.taxAmount ?? 0.0,
               )
             ],
             unitmodel: [],
             productlocationmodel: [],
+            taxList: taxList,
             msg: ''),
       );
     }
@@ -461,6 +488,7 @@ class SalesOrderController extends GetxController {
     customerId.value = '';
     subTotal.value = 0.0;
     discount.value = 0.0;
+    totalTax.value = 0.0;
     discountPercentage.value = 0.0;
     total.value = 0.0;
     salesOrderList.clear();
@@ -477,33 +505,52 @@ class SalesOrderController extends GetxController {
         if (customerId.value != '') {
           isSaving.value = true;
           var list = [];
+          var taxList = [];
           int index = 0;
 
           for (var product in salesOrderList) {
-            list.add(CreateSalesOrderDetailModel(
-                itemcode: product.model[0].productId,
-                description: product.model[0].description,
-                quantity: product.model[0].updatedQuantity,
-                remarks: remarks.value,
-                rowindex: index,
-                unitid: product.model[0].updatedUnitId,
-                specificationid: '',
-                styleid: '',
-                equipmentid: '',
-                itemtype: 0,
-                locationid: '',
-                jobid: '',
-                costcategoryid: '',
-                sourcesysdocid: '',
-                sourcevoucherid: '',
-                sourcerowindex: '',
-                unitprice: product.model[0].updatedPrice,
-                cost: product.model[0].price1,
-                amount: product.model[0].updatedPrice *
-                    product.model[0].updatedQuantity,
-                taxoption: null,
-                taxamount: 0,
-                taxgroupid: ''));
+            list.add(
+              CreateSalesOrderDetailModel(
+                  itemcode: product.model[0].productId,
+                  description: product.model[0].description,
+                  quantity: product.model[0].updatedQuantity,
+                  remarks: remarks.value,
+                  rowindex: index,
+                  unitid: product.model[0].updatedUnitId,
+                  specificationid: '',
+                  styleid: '',
+                  equipmentid: '',
+                  itemtype: 0,
+                  locationid: '',
+                  jobid: '',
+                  costcategoryid: '',
+                  sourcesysdocid: '',
+                  sourcevoucherid: '',
+                  sourcerowindex: '',
+                  unitprice: product.model[0].updatedPrice,
+                  cost: product.model[0].price1,
+                  amount: product.model[0].updatedPrice *
+                      product.model[0].updatedQuantity,
+                  taxoption: null,
+                  taxamount: 0,
+                  taxgroupid: ''),
+            );
+
+            int taxIndex = 0;
+            for (var tax in product.taxList) {
+              tax.orderIndex = index;
+              tax.token = '';
+              tax.sysDocId = sysDocId.value;
+              tax.voucherId = voucherNumber.value;
+              tax.rowIndex = taxIndex;
+              tax.taxItemName = '';
+              tax.accountId = '';
+              tax.currencyId = '';
+              tax.currencyRate = 1;
+              tax.taxLevel = 2;
+              taxList.add(tax);
+              taxIndex++;
+            }
             index++;
           }
 
@@ -541,7 +588,7 @@ class SalesOrderController extends GetxController {
             "Isvoid": false,
             "Discount": discount.value,
             "Total": subTotal.value,
-            "Taxamount": 0,
+            "Taxamount": totalTax.value,
             "Sourcedoctype": 0,
             "Jobid": "",
             "Costcategoryid": "",
@@ -550,7 +597,8 @@ class SalesOrderController extends GetxController {
             "Roundoff": 0,
             "Ordertype": 0,
             "Isnewrecord": isNewRecord.value,
-            "SalesOrderDetails": list
+            "SalesOrderDetails": list,
+            "TaxDetails": taxList
           });
           dynamic result;
           try {
@@ -908,15 +956,13 @@ class SalesOrderController extends GetxController {
                                 price: isPriceEdited.value
                                     ? price.value
                                     : singleProduct.value.model[0].price1,
-                                sysDocId: sysDocId.value,
-                                voucherId: voucherNumber.value,
-                                orderIndex: 1,
                                 isExclusive: true);
 
                             for (var tax in taxList) {
                               taxAmount += tax.taxAmount;
                             }
 
+                            singleProduct.value.taxList = taxList;
                             singleProduct.value.model[0].taxAmount = taxAmount;
                             singleProduct.value.model[0].updatedQuantity =
                                 quantity.value;
@@ -954,9 +1000,6 @@ class SalesOrderController extends GetxController {
                           var taxList = await TaxHelper.calculateTax(
                               taxGroupId: single.model[0].taxGroupId.toString(),
                               price: price.value,
-                              sysDocId: sysDocId.value,
-                              voucherId: voucherNumber.value,
-                              orderIndex: 1,
                               isExclusive: true);
 
                           for (var tax in taxList) {
@@ -968,6 +1011,7 @@ class SalesOrderController extends GetxController {
                           total.value = total.value -
                               (single.model[0].updatedPrice *
                                   single.model[0].updatedQuantity);
+                          single.taxList = taxList;
                           single.model[0].updatedQuantity = quantity.value;
                           single.model[0].updatedUnitId = unit.value;
                           single.model[0].updatedPrice = price.value;

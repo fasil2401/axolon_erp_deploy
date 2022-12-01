@@ -9,9 +9,6 @@ class TaxHelper {
   static calculateTax(
       {required String taxGroupId,
       required double price,
-      required String sysDocId,
-      required String voucherId,
-      required dynamic orderIndex,
       required bool isExclusive}) async {
     List<TaxModel> list = [];
     if (homeController.taxGroupList.isEmpty) {
@@ -23,13 +20,12 @@ class TaxHelper {
     for (var element in currentTaxGroupList) {
       double itemTax = (price * element.taxRate) / 100;
       TaxModel tax = TaxModel(
-          sysDocId: sysDocId,
-          voucherId: voucherId,
-          taxGroupId: element.taxGroupId,
-          taxItemId: element.taxCode,
-          taxRate: element.taxRate,
-          taxAmount: itemTax,
-          orderIndex: orderIndex);
+        taxGroupId: element.taxGroupId,
+        taxItemId: element.taxCode,
+        taxRate: element.taxRate,
+        calculationMethod: element.calculationMethod.toString(),
+        taxAmount: itemTax,
+      );
       list.add(tax);
     }
     developer.log(currentTaxGroupList.length.toString(),
@@ -37,5 +33,3 @@ class TaxHelper {
     return list;
   }
 }
-
-
