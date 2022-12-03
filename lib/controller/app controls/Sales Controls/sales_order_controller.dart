@@ -7,11 +7,13 @@ import 'package:axolon_erp/model/Sales%20Model/ceate_sales_order_response.dart';
 import 'package:axolon_erp/model/Sales%20Model/create_sales_order_detail_model.dart';
 import 'package:axolon_erp/model/Sales%20Model/sales_order_by_id_model.dart';
 import 'package:axolon_erp/model/Sales%20Model/sales_order_open_list_model.dart';
+import 'package:axolon_erp/model/Sales%20Model/sales_order_print_model.dart';
 import 'package:axolon_erp/model/Tax%20Model/tax_model.dart';
 import 'package:axolon_erp/model/all_customer_model.dart';
 import 'package:axolon_erp/model/error_response_model.dart';
 import 'package:axolon_erp/model/voucher_number_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';
+import 'package:axolon_erp/services/pdf%20services/pdf_api.dart';
 import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/Calculations/tax_calculations.dart';
@@ -23,6 +25,8 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:developer' as developer;
+
+import 'package:open_filex/open_filex.dart';
 
 class SalesOrderController extends GetxController {
   @override
@@ -615,9 +619,9 @@ class SalesOrderController extends GetxController {
               }
             }
           } finally {
-            isSaving.value = false;
             if (response.value == 1) {
-              developer.log('Saving Success', name: '${result.docNo}');
+              getSalesOrderPrint(result.docNo);
+              developer.log('Saving Success', name: '${result.docNo ?? ''}');
               clearData();
               getVoucherNumber(sysDocId.value, sysDocName.value);
               SnackbarServices.successSnackbar(
@@ -634,6 +638,33 @@ class SalesOrderController extends GetxController {
       }
     } else {
       SnackbarServices.errorSnackbar('Please add Products first !');
+    }
+  }
+
+  getSalesOrderPrint(String voucherId) async {
+    // await loginController.getToken();
+    final String token = loginController.token.value;
+    final String sysDoc = sysDocId.value;
+    dynamic result;
+    try {
+      var feedback = await ApiServices.fetchData(
+          api:
+              'GetSalesOrderToPrint?token=${token}&sysDocID=${sysDoc}&voucherID=${voucherId}');
+      if (feedback != null) {
+        developer.log(feedback.toString());
+        result = SalesOrderPrintModel.fromJson(feedback);
+
+        response.value = result.result;
+        developer.log(result.header[0].customerName.toString(),
+            name: 'customer name');
+      }
+    } finally {
+      if (response.value == 1) {
+        final file = await PdfApi.generatePdf(result);
+        await OpenFilex.open(file.path);
+        isSaving.value = false;
+        // developer.log('Printing Success', name: '${result.docNo ?? ''}');
+      }
     }
   }
 

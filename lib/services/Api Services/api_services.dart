@@ -16,7 +16,6 @@ class ApiServices {
     );
     if (responses.statusCode == 200) {
       var jsonResponse = jsonDecode(responses.body);
-      print(jsonResponse);
       return jsonResponse;
     } else {
       throw Exception('Failed to load data');

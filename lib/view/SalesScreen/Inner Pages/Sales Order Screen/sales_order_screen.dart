@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_order_controller.dart';
 import 'package:axolon_erp/controller/app%20controls/Sales%20Controls/sales_screen_controller.dart';
 import 'package:axolon_erp/model/Inventory%20Model/get_all_products_model.dart';
+import 'package:axolon_erp/services/pdf%20services/pdf_api.dart';
 import 'package:axolon_erp/utils/Calculations/date_range_selector.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
 import 'package:axolon_erp/utils/constants/asset_paths.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:open_filex/open_filex.dart';
 
 class SalesOrderScreen extends StatefulWidget {
   SalesOrderScreen({super.key});
@@ -894,6 +896,12 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
               ),
             ),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            salesController.getSalesOrderPrint('00032');
+          },
+          child: const Icon(Icons.print),
         ),
       ),
     );

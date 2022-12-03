@@ -1,87 +1,154 @@
-{
-   "token": "9d72746203ee4f03a322a6e7225d0857",
-   "Sysdocid": "SO",
-   "Voucherid": "00042",
-   "Companyid": "",
-   "Divisionid": "",
-   "Customerid": "B-ALH001",
-   "Transactiondate": "2022-11-30T15:25:24.718328",
-   "Salespersonid": "",
-   "Salesflow": 0,
-   "Isexport": true,
-   "Requireddate": "2022-11-30T15:31:18.383717",
-   "Duedate": "2022-11-30T15:25:24.719259",
-   "ETD": "2022-11-30T15:31:18.385337",
-   "Shippingaddress": "",
-   "Shiptoaddress": "",
-   "Billingaddress": "",
-   "Customeraddress": "",
-   "Priceincludetax": true,
-   "Status": 0,
-   "Currencyid": "",
-   "Currencyrate": 1,
-   "Currencyname": "",
-   "Termid": "",
-   "Shippingmethodid": "",
-   "Reference": "",
-   "Reference2": "",
-   "Note": "",
-   "POnumber": "",
-   "Isvoid": false,
-   "Discount": 0,
-   "Total": 2000,
-   "Taxamount": 100,
-   "Sourcedoctype": 0,
-   "Jobid": "",
-   "Costcategoryid": "",
-   "Payeetaxgroupid": "",
-   "Taxoption": 0,
-   "Roundoff": 0,
-   "Ordertype": 0,
-   "Isnewrecord": true,
-   "SalesOrderDetails": [
-      {
-         "Itemcode": "1000041268",
-         "Description": "ONION RED/PINK 1x10Kg [FARZANA/IN]",
-         "Quantity": 1,
-         "Remarks": " ",
-         "Rowindex": 0,
-         "Unitid": "KGS",
-         "Specificationid": "",
-         "Styleid": "",
-         "Equipmentid": "",
-         "Itemtype": 0,
-         "Locationid": "",
-         "Jobid": "",
-         "Costcategoryid": "",
-         "Sourcesysdocid": "",
-         "Sourcevoucherid": "",
-         "Sourcerowindex": "",
-         "Unitprice": 2000,
-         "Cost": 2,
-         "Amount": 2000,
-         "Taxoption": null,
-         "Taxamount": 0,
-         "Taxgroupid": ""
-      }
-   ],
-   "TaxDetails": [
-      {
-         "token": "",
-         "SysDocID": "SO",
-         "VoucherID": "00042",
-         "TaxLevel": null,
-         "TaxGroupID": "TAX01",
-         "TaxItemID": "VAT5",
-         "TaxItemName": "",
-         "TaxRate": 5,
-         "CalculationMethod": 1,
-         "TaxAmount": 100,
-         "OrderIndex": 0,
-         "RowIndex": 0,
-         "AccountID": "",
-         "CurrencyID": "",
-         "CurrencyRate": null
-      }
-   ]
-}
+body: Padding(
+          padding: const EdgeInsets.fromLTRB(12,8,12,4),
+          child: Column(
+            children: [
+              Obx(
+                () => deliveryListController.filterList.isEmpty
+                    ? Center(
+                        child: Text('No Data'),
+                      )
+                    : Expanded(
+                               child: ListView.separated(  itemBuilder: (context, index) {
+                            var product = deliveryListController.filterList[index];
+                       return InkWell(
+                        child: Container(
+                          decoration: (
+                             const BoxDecoration(
+                        color: Color(0xFFF2F2F2),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                          )),
+                          child: Theme(
+                            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              
+                              title: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(6.0),
+                                            child: Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 130,
+                                                  child: HeadText(
+                                                      txt: "Order No."),
+                                                ),
+                                                Expanded(
+                                                    child:
+                                                        Text(product.orderno)),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(6.0),
+                                            child: Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 130,
+                                                  child: HeadText(
+                                                      txt: "Customer Name"),
+                                                ),
+                                                Expanded(
+                                                    child: Text(product.name)),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(6.0),
+                                            child: Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 130,
+                                                  child: HeadText(
+                                                      txt: "Contact No"),
+                                                ),
+                                                Expanded(
+                                                    child: Row(
+                                                  children: [
+                                                    Icon(Icons
+                                                        .phone_android_outlined),
+                                                    Text(product.contactNo),
+                                                  ],
+                                                )),
+                                              ],
+                                            ),
+                                          ),
+Padding(
+                                            padding: const EdgeInsets.all(6.0),
+                                            child: Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 130,
+                                                  child: HeadText(
+                                                      txt: "Date/Time"),
+                                                ),
+                                                Expanded(
+                                                    child:
+                                                        Text(product.orderno)),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(6.0),
+                                            child: Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 130,
+                                                  child: HeadText(txt: "Slot"),
+                                                ),
+                                                Expanded(
+                                                    child:
+                                                        Text(product.orderno)),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(6.0),
+                                            child: Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 130,
+                                                  child:
+                                                      HeadText(txt: "Address"),
+                                                ),
+                                                Expanded(
+                                                    child:
+                                                        Text(product.address)),
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: Icon(Icons.directions))
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )
+      ,children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(0,0,16,8),
+                                          child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: CommonButon(
+                                                  buttonColor: Color(0xFF014296),
+                                                  textColor:Colors.white,
+                                                  text: 'Start',
+                                                  onPressed: () =>
+                                                      deliveryListController.startDelivery()),
+                                          ),
+                                        )
+                                      ],
+                       ),
+                          ),
+                        ),
+                       );
+                          },
+                         
+              separatorBuilder: (context, index) => SizedBox(
+                            height: 12,
+                          ),
+
+itemCount: deliveryListController.filterList.length),
+      
+                    ),
+              )
+            ],
+          ),
+        ),
