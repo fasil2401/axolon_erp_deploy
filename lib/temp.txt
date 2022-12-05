@@ -1,154 +1,87 @@
-body: Padding(
-          padding: const EdgeInsets.fromLTRB(12,8,12,4),
-          child: Column(
-            children: [
-              Obx(
-                () => deliveryListController.filterList.isEmpty
-                    ? Center(
-                        child: Text('No Data'),
-                      )
-                    : Expanded(
-                               child: ListView.separated(  itemBuilder: (context, index) {
-                            var product = deliveryListController.filterList[index];
-                       return InkWell(
-                        child: Container(
-                          decoration: (
-                             const BoxDecoration(
-                        color: Color(0xFFF2F2F2),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                          )),
-                          child: Theme(
-                            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              
-                              title: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 130,
-                                                  child: HeadText(
-                                                      txt: "Order No."),
-                                                ),
-                                                Expanded(
-                                                    child:
-                                                        Text(product.orderno)),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 130,
-                                                  child: HeadText(
-                                                      txt: "Customer Name"),
-                                                ),
-                                                Expanded(
-                                                    child: Text(product.name)),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 130,
-                                                  child: HeadText(
-                                                      txt: "Contact No"),
-                                                ),
-                                                Expanded(
-                                                    child: Row(
-                                                  children: [
-                                                    Icon(Icons
-                                                        .phone_android_outlined),
-                                                    Text(product.contactNo),
-                                                  ],
-                                                )),
-                                              ],
-                                            ),
-                                          ),
-Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 130,
-                                                  child: HeadText(
-                                                      txt: "Date/Time"),
-                                                ),
-                                                Expanded(
-                                                    child:
-                                                        Text(product.orderno)),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 130,
-                                                  child: HeadText(txt: "Slot"),
-                                                ),
-                                                Expanded(
-                                                    child:
-                                                        Text(product.orderno)),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 130,
-                                                  child:
-                                                      HeadText(txt: "Address"),
-                                                ),
-                                                Expanded(
-                                                    child:
-                                                        Text(product.address)),
-                                                Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: Icon(Icons.directions))
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      )
-      ,children: [
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(0,0,16,8),
-                                          child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: CommonButon(
-                                                  buttonColor: Color(0xFF014296),
-                                                  textColor:Colors.white,
-                                                  text: 'Start',
-                                                  onPressed: () =>
-                                                      deliveryListController.startDelivery()),
-                                          ),
-                                        )
-                                      ],
-                       ),
-                          ),
-                        ),
-                       );
-                          },
-                         
-              separatorBuilder: (context, index) => SizedBox(
-                            height: 12,
-                          ),
-
-itemCount: deliveryListController.filterList.length),
-      
-                    ),
-              )
-            ],
-          ),
-        ),
+{
+   "token": "4cc73a2772fc4b54a5edc059019a5b8e",
+   "Sysdocid": "SO",
+   "Voucherid": "00044",
+   "Companyid": "",
+   "Divisionid": "",
+   "Customerid": "B-ROU001",
+   "Transactiondate": "2022-12-05T12:01:03.412062",
+   "Salespersonid": "",
+   "Salesflow": 0,
+   "Isexport": true,
+   "Requireddate": "2022-12-05T12:01:51.156148",
+   "Duedate": "2022-12-05T12:01:03.412842",
+   "ETD": "2022-12-05T12:01:51.156675",
+   "Shippingaddress": "",
+   "Shiptoaddress": "",
+   "Billingaddress": "",
+   "Customeraddress": "",
+   "Priceincludetax": true,
+   "Status": 0,
+   "Currencyid": "",
+   "Currencyrate": 1,
+   "Currencyname": "",
+   "Termid": "",
+   "Shippingmethodid": "",
+   "Reference": "",
+   "Reference2": "",
+   "Note": "",
+   "POnumber": "",
+   "Isvoid": false,
+   "Discount": 0,
+   "Total": 50,
+   "Taxamount": 2.5,
+   "Sourcedoctype": 0,
+   "Jobid": "",
+   "Costcategoryid": "",
+   "Payeetaxgroupid": "",
+   "Taxoption": 0,
+   "Roundoff": 0,
+   "Ordertype": 0,
+   "Isnewrecord": true,
+   "SalesOrderDetails": [
+      {
+         "Itemcode": "1000041271",
+         "Description": "KIWI FRUIT 1x3Kg [FARZANA/CL]",
+         "Quantity": 1,
+         "Remarks": "fggg",
+         "Rowindex": 0,
+         "Unitid": "CTN",
+         "Specificationid": "",
+         "Styleid": "",
+         "Equipmentid": "",
+         "Itemtype": 0,
+         "Locationid": "",
+         "Jobid": "",
+         "Costcategoryid": "",
+         "Sourcesysdocid": "",
+         "Sourcevoucherid": "",
+         "Sourcerowindex": "",
+         "Unitprice": 50,
+         "Cost": 50,
+         "Amount": 50,
+         "Taxoption": null,
+         "Taxamount": 0,
+         "Taxgroupid": ""
+      }
+   ],
+   "TaxDetails": [
+      {
+         "token": "",
+         "SysDocID": "SO",
+         "VoucherID": "00044",
+         "TaxLevel": 2,
+         "TaxGroupID": "TAX01",
+         "TaxItemID": "VAT5",
+         "TaxItemName": "",
+         "TaxRate": 5,
+         "CalculationMethod": "1",
+         "TaxAmount": 2.5,
+         "OrderIndex": 0,
+         "RowIndex": 0,
+         "AccountID": "",
+         "CurrencyID": "",
+         "CurrencyRate": 1
+      }
+   ]
+}

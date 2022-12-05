@@ -80,7 +80,7 @@ class PdfApi {
 //Draws the date by using drawString method
     graphics.drawString('Sales Order', subHeadingFont,
         brush: element.brush,
-        bounds: Offset(graphics.clientSize.width - textSize.width - 45,
+        bounds: Offset(graphics.clientSize.width - textSize.width - 50,
                 result.bounds.top) &
             Size(textSize.width + 2, 20));
     page.graphics.drawRectangle(
@@ -408,17 +408,44 @@ class PdfApi {
         brush: PdfSolidBrush(PdfColor(0, 0, 0)),
         bounds: Rect.fromLTWH(graphics.clientSize.width * 0.6 + 5,
             gridResult.bounds.bottom + 13, 0, 0));
+    Size subTotalTextSize =
+        subHeadingFont.measureString(object.header![0].total.toString());
+    gridResult.page.graphics.drawString(object.header![0].total.toString(),
+        PdfStandardFont(PdfFontFamily.helvetica, 8, style: PdfFontStyle.bold),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+        bounds: Rect.fromLTWH(
+            graphics.clientSize.width - subTotalTextSize.width,
+            gridResult.bounds.bottom + 13,
+            0,
+            0));
 
     gridResult.page.graphics.drawString('Discount :',
         PdfStandardFont(PdfFontFamily.helvetica, 8, style: PdfFontStyle.bold),
         brush: PdfSolidBrush(PdfColor(0, 0, 0)),
         bounds: Rect.fromLTWH(graphics.clientSize.width * 0.6 + 5,
             gridResult.bounds.bottom + 28, 0, 0));
+    Size discountTextSize =
+        subHeadingFont.measureString(object.header![0].discount.toString());
+    gridResult.page.graphics.drawString(object.header![0].discount.toString(),
+        PdfStandardFont(PdfFontFamily.helvetica, 8, style: PdfFontStyle.bold),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+        bounds: Rect.fromLTWH(
+            graphics.clientSize.width - discountTextSize.width,
+            gridResult.bounds.bottom + 28,
+            0,
+            0));
 
     gridResult.page.graphics.drawString('Vat 5% :',
         PdfStandardFont(PdfFontFamily.helvetica, 8, style: PdfFontStyle.bold),
         brush: PdfSolidBrush(PdfColor(0, 0, 0)),
         bounds: Rect.fromLTWH(graphics.clientSize.width * 0.6 + 5,
+            gridResult.bounds.bottom + 43, 0, 0));
+    Size taxTextSize =
+        subHeadingFont.measureString(object.header![0].tax.toString());
+    gridResult.page.graphics.drawString(object.header![0].tax.toString(),
+        PdfStandardFont(PdfFontFamily.helvetica, 8, style: PdfFontStyle.bold),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+        bounds: Rect.fromLTWH(graphics.clientSize.width - taxTextSize.width,
             gridResult.bounds.bottom + 43, 0, 0));
 
     gridResult.page.graphics.drawString('Total :',
@@ -426,6 +453,16 @@ class PdfApi {
         brush: PdfSolidBrush(PdfColor(0, 0, 0)),
         bounds: Rect.fromLTWH(graphics.clientSize.width * 0.6 + 5,
             gridResult.bounds.bottom + 58, 0, 0));
+    Size grandTotalTextSize =
+        subHeadingFont.measureString(object.header![0].grandTotal.toString());
+    gridResult.page.graphics.drawString(object.header![0].grandTotal.toString(),
+        PdfStandardFont(PdfFontFamily.helvetica, 8, style: PdfFontStyle.bold),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+        bounds: Rect.fromLTWH(
+            graphics.clientSize.width - grandTotalTextSize.width,
+            gridResult.bounds.bottom + 58,
+            0,
+            0));
 
     gridResult.page.graphics.drawString(
         'Remarks :',

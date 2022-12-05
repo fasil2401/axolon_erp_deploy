@@ -245,26 +245,27 @@ class _SalesInvoiceScreenState extends State<SalesInvoiceScreen> {
                   child: Obx(() => ListView.builder(
                         shrinkWrap: true,
                         physics: BouncingScrollPhysics(),
-                        itemCount: salesController.salesOrderList.length,
+                        itemCount: salesController.salesInvoiceList.length,
                         itemBuilder: (context, index) {
                           var salesOrder =
-                              salesController.salesOrderList[index].model[0];
+                              salesController.salesInvoiceList[index].model[0];
                           return Slidable(
                             key: const Key('sales_order_list'),
                             startActionPane: ActionPane(
                               motion: const DrawerMotion(),
                               children: [
                                 SlidableAction(
-                                    backgroundColor: Colors.transparent,
-                                    foregroundColor: Colors.green,
-                                    icon: Icons.mode_edit_outlined,
-                                    onPressed: (_) => salesController
-                                        .addOrUpdateProductToSales(
-                                            Products(),
-                                            false,
-                                            salesController
-                                                .salesOrderList[index],
-                                            index)),
+                                  backgroundColor: Colors.transparent,
+                                  foregroundColor: Colors.green,
+                                  icon: Icons.mode_edit_outlined,
+                                  onPressed: (_) =>
+                                      salesController.addOrUpdateProductToSales(
+                                    Products(),
+                                    false,
+                                    salesController.salesInvoiceList[index],
+                                    index,
+                                  ),
+                                ),
                               ],
                             ),
                             endActionPane: ActionPane(
@@ -288,13 +289,13 @@ class _SalesInvoiceScreenState extends State<SalesInvoiceScreen> {
                                   SizedBox(
                                       width: width * 0.15,
                                       child: Text(
-                                        salesController.salesOrderList[index]
+                                        salesController.salesInvoiceList[index]
                                             .model[0].productId,
                                       )),
                                   SizedBox(
                                       width: width * 0.4,
                                       child: AutoSizeText(
-                                        salesController.salesOrderList[index]
+                                        salesController.salesInvoiceList[index]
                                             .model[0].description,
                                         maxFontSize: 16,
                                         minFontSize: 12,
@@ -306,7 +307,7 @@ class _SalesInvoiceScreenState extends State<SalesInvoiceScreen> {
                                           InventoryCalculations
                                               .roundOffQuantity(
                                             quantity: salesController
-                                                .salesOrderList[index]
+                                                .salesInvoiceList[index]
                                                 .model[0]
                                                 .updatedQuantity,
                                           ),
@@ -316,8 +317,10 @@ class _SalesInvoiceScreenState extends State<SalesInvoiceScreen> {
                                   SizedBox(
                                     width: width * 0.13,
                                     child: Obx(() => Text(
-                                          salesController.salesOrderList[index]
-                                              .model[0].updatedPrice
+                                          salesController
+                                              .salesInvoiceList[index]
+                                              .model[0]
+                                              .updatedPrice
                                               .toString(),
                                           textAlign: TextAlign.center,
                                         )),
@@ -377,17 +380,21 @@ class _SalesInvoiceScreenState extends State<SalesInvoiceScreen> {
                                   const SizedBox(
                                     height: 8,
                                   ),
-                                  _buildDetailTextContent('0.00'),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  _buildDetailTextContent('0.00'),
+                                  Obx(() => _buildDetailTextContent(
+                                      salesController.discount.value
+                                          .toStringAsFixed(2))),
                                   const SizedBox(
                                     height: 8,
                                   ),
                                   Obx(() => _buildDetailTextContent(
-                                      salesController.subTotal.value
-                                          .toString())),
+                                      salesController.totalTax.value
+                                          .toStringAsFixed(2))),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Obx(() => _buildDetailTextContent(
+                                      salesController.total.value
+                                          .toStringAsFixed(2))),
                                 ],
                               ),
                             )
@@ -402,7 +409,7 @@ class _SalesInvoiceScreenState extends State<SalesInvoiceScreen> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                salesController.salesOrderList.clear();
+                                salesController.salesInvoiceList.clear();
                                 salesController.subTotal.value = 0.00;
                               },
                               style: ElevatedButton.styleFrom(

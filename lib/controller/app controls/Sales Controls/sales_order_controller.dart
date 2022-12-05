@@ -245,7 +245,7 @@ class SalesOrderController extends GetxController {
 
   calculateTotalTax(double tax) {
     totalTax.value += tax;
-    total.value = total.value - totalTax.value;
+    total.value = subTotal.value - totalTax.value - discount.value;
   }
 
   calculateDiscount(String discountAmount, bool isPercentage) {
@@ -259,7 +259,7 @@ class SalesOrderController extends GetxController {
       this.discount.value = discount;
       discountPercentage.value = (discount * 100) / subTotal.value;
     }
-    total.value = subTotal.value - this.discount.value;
+    total.value = subTotal.value - totalTax.value - this.discount.value;
   }
 
   changeUnit(String value) {
@@ -536,7 +536,7 @@ class SalesOrderController extends GetxController {
                   amount: product.model[0].updatedPrice *
                       product.model[0].updatedQuantity,
                   taxoption: null,
-                  taxamount: 0,
+                  taxamount: product.model[0].taxAmount ?? 0.0,
                   taxgroupid: ''),
             );
 
@@ -701,8 +701,9 @@ class SalesOrderController extends GetxController {
     subTotal.value = subTotal.value -
         (salesOrderList[index].model[0].updatedPrice *
             salesOrderList[index].model[0].updatedQuantity);
-    total.value = subTotal.value - discount.value;
+
     totalTax.value = totalTax.value - salesOrderList[index].model[0].taxAmount;
+    total.value = subTotal.value - discount.value - totalTax.value;
     salesOrderList.removeAt(index);
   }
 
@@ -988,7 +989,6 @@ class SalesOrderController extends GetxController {
                                     ? price.value
                                     : singleProduct.value.model[0].price1,
                                 isExclusive: true);
-
                             for (var tax in taxList) {
                               taxAmount += tax.taxAmount;
                             }

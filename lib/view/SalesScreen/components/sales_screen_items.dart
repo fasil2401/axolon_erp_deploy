@@ -27,27 +27,27 @@ class SalesScreenItems {
     ScreenItemModel(
         title: 'Sales Order',
         menuId: salesOrderId,
-        route:'${RouteManager.salesOrder}',
+        route: '${RouteManager.salesOrder}',
         icon: AppIcons.sales_order),
     ScreenItemModel(
         title: 'Sales Invoice',
         menuId: salesInvoiceId,
-        route: '${RouteManager.redirect}',
+        route: '${RouteManager.salesInvoice}',
         icon: AppIcons.invoice),
     ScreenItemModel(
         title: 'Salesman Activity',
         menuId: salesManActivityId,
-        route:'${RouteManager.redirect}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.salesman),
     ScreenItemModel(
         title: 'Receipts',
         menuId: receiptsId,
-        route:'${RouteManager.redirect}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.receipt),
     ScreenItemModel(
         title: 'Customer Statement',
         menuId: customerStatementId,
-        route:'${RouteManager.customerStatement}',
+        route: '${RouteManager.customerStatement}',
         icon: AppIcons.statement),
   ];
 
@@ -55,32 +55,32 @@ class SalesScreenItems {
     ScreenItemModel(
         title: 'Daily Sales Analysis',
         menuId: dailySalesAnalysisId,
-        route:'${RouteManager.dailySalesAnalysis}',
+        route: '${RouteManager.dailySalesAnalysis}',
         icon: AppIcons.report),
     ScreenItemModel(
         title: 'Sales Profitability',
         menuId: salesProfitabilityId,
-        route:'${RouteManager.redirect}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.report),
     ScreenItemModel(
         title: 'Sales Purchase Analysis',
         menuId: salesPurchaseId,
-        route:'${RouteManager.redirect}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.report),
     ScreenItemModel(
         title: 'Monthly Sales',
         menuId: monthlySalesId,
-        route:'${RouteManager.redirect}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.report),
     ScreenItemModel(
         title: 'Sales Comparison',
         menuId: salesComparisonId,
-        route:'${RouteManager.redirect}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.report),
     ScreenItemModel(
         title: 'Sales Person Commission',
         menuId: salesPersonCommissionId,
-        route:'${RouteManager.redirect}',
+        route: '${RouteManager.redirect}',
         icon: AppIcons.report),
     ScreenItemModel(
         title: 'Sales By Customer',

@@ -7,8 +7,10 @@ import 'package:axolon_erp/model/all_customer_model.dart';
 import 'package:axolon_erp/model/voucher_number_model.dart';
 import 'package:axolon_erp/services/Api%20Services/api_services.dart';
 import 'package:axolon_erp/utils/Calculations/inventory_calculations.dart';
+import 'package:axolon_erp/utils/Calculations/tax_calculations.dart';
 import 'package:axolon_erp/utils/constants/colors.dart';
 import 'package:axolon_erp/utils/constants/snackbar.dart';
+import 'package:axolon_erp/utils/extensions.dart';
 import 'package:axolon_erp/view/SalesScreen/Inner%20Pages/Components/Sales%20Shimmer/pop_up_shimmer.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -37,13 +39,17 @@ class SalesInvoiceController extends GetxController {
   var productList = [].obs;
   var customerList = [].obs;
   var filterList = [].obs;
-  var salesOrderList = [].obs;
+  var salesInvoiceList = [].obs;
   var singleProduct = ProductDetailsModel(
           res: 1, model: [], unitmodel: [], productlocationmodel: [], msg: '')
       .obs;
   var unitList = [].obs;
   var productLocationList = [].obs;
   var subTotal = 0.0.obs;
+    var discount = 0.0.obs;
+  var discountPercentage = 0.0.obs;
+  var total = 0.0.obs;
+  var totalTax = 0.0.obs;
   var quantity = 1.0.obs;
   var unit = ''.obs;
   var price = 0.0.obs;
@@ -90,8 +96,16 @@ class SalesInvoiceController extends GetxController {
     filterList.value = productList;
   }
 
-  calculateTotal(double price) {
-    subTotal.value = subTotal.value + price;
+  // calculateTotal(double price) {
+  //   subTotal.value = subTotal.value + price;
+  // }
+   calculateTotal(double price, double quantity) {
+    subTotal.value = subTotal.value + (price * quantity);
+    total.value = subTotal.value - discount.value;
+  }
+  calculateTotalTax(double tax) {
+    totalTax.value += tax;
+    total.value = subTotal.value - totalTax.value - discount.value;
   }
 
   changeUnit(String value) {
@@ -221,12 +235,13 @@ class SalesInvoiceController extends GetxController {
 
   removeItem(int index) {
     subTotal.value =
-        subTotal.value - salesOrderList[index].model[0].updatedPrice;
-    salesOrderList.removeAt(index);
+        subTotal.value - salesInvoiceList[index].model[0].updatedPrice;
+    salesInvoiceList.removeAt(index);
   }
 
   addOrUpdateProductToSales(Products product, bool isAdding,
       ProductDetailsModel single, int index) async {
+    final TextEditingController priceController = TextEditingController();
     isAdding
         ? quantity.value = 1
         : quantity.value = single.model[0].updatedQuantity;
@@ -234,10 +249,12 @@ class SalesInvoiceController extends GetxController {
       unit.value = single.model[0].updatedUnitId!;
       unitList.value = single.unitmodel;
       price.value = single.model[0].updatedPrice!;
+      quantityControl.text = quantity.value.toString();
     }
     if (isAdding == true) {
       getProductDetails(product.productId!);
-      price.value = singleProduct.value.model[0].price1;
+      // price.value = singleProduct.value.model[0].price1;
+      quantityControl.text = quantity.value.toString();
     }
     isPriceEdited.value = false;
 
@@ -250,8 +267,13 @@ class SalesInvoiceController extends GetxController {
           fontWeight: FontWeight.w500,
           color: Colors.black,
         ),
-        content: Obx(
-          () => isProductLoading.value
+        content: Obx(() {
+          if (isProductLoading.value == false) {
+            priceController.text = isAdding
+                ? singleProduct.value.model[0].price1.toString()
+                : single.model[0].updatedPrice.toString();
+          }
+          return isProductLoading.value
               ? SalesShimmer.popUpShimmer()
               : Column(
                   children: [
@@ -298,12 +320,6 @@ class SalesInvoiceController extends GetxController {
                                 ),
                               ),
                               Obx(() {
-                                // quantityControl.text =
-                                //     quantity.value.toString();
-                                if (edit.value == false) {
-                                  quantityControl.text =
-                                      quantity.value.toString();
-                                }
                                 quantityControl.selection =
                                     TextSelection.fromPosition(TextPosition(
                                         offset: quantityControl.text.length));
@@ -320,6 +336,8 @@ class SalesInvoiceController extends GetxController {
                                           onChanged: (value) {
                                             setQuantity(value);
                                           },
+                                          onTap: () =>
+                                              quantityControl.selectAll(),
                                         )
                                       : Obx(
                                           () => InkWell(
@@ -433,14 +451,9 @@ class SalesInvoiceController extends GetxController {
                           ),
                           Flexible(
                             child: TextField(
-                              // controller: na meController,
-                              controller: TextEditingController(
-                                  text: isAdding
-                                      ? singleProduct.value.model[0].price1
-                                          .toString()
-                                      : single.model[0].updatedPrice
-                                          .toString()),
+                              controller: priceController,
                               onChanged: (value) => changePrice(value),
+                              onTap: () => priceController.selectAll(),
                               keyboardType: TextInputType.number,
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
@@ -463,63 +476,12 @@ class SalesInvoiceController extends GetxController {
                       ),
                     ),
                   ],
-                ),
-        ),
+                );
+        }),
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                  ),
-                  child: Text(
-                    isAdding ? 'Add' : 'Update',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white),
-                  ),
-                  onPressed: isAdding
-                      ? () async {
-                          if (isProductLoading.value == false) {
-                            singleProduct.value.model[0].updatedQuantity =
-                                quantity.value;
-                            singleProduct.value.model[0].updatedUnitId =
-                                unit.value;
-                            singleProduct.value.model[0].updatedPrice =
-                                isPriceEdited.value
-                                    ? price.value
-                                    : singleProduct.value.model[0].price1;
-                            salesOrderList.add(singleProduct.value);
-                            isPriceEdited.value
-                                ? calculateTotal(price.value)
-                                : calculateTotal(
-                                    singleProduct.value.model[0].price1);
-                            quantity.value = 1.0;
-                            Get.back();
-                            Get.back();
-                            developer.log(salesOrderList.length.toString(),
-                                name: 'salesOrderList.length');
-                          } else {
-                            SnackbarServices.errorSnackbar(
-                                'Quantity is not available');
-                          }
-                        }
-                      : () async {
-                          subTotal.value =
-                              subTotal.value - single.model[0].updatedPrice;
-                          single.model[0].updatedQuantity = quantity.value;
-                          single.model[0].updatedUnitId = unit.value;
-                          single.model[0].updatedPrice = price.value;
-                          salesOrderList.insert(index, single);
-                          salesOrderList.removeAt(index + 1);
-                          calculateTotal(price.value);
-                          Get.back();
-                          developer.log(salesOrderList.length.toString(),
-                              name: 'salesOrderList.length');
-                          // refresh();
-                        }),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.mutedBlueColor,
@@ -536,6 +498,101 @@ class SalesInvoiceController extends GetxController {
                   Get.back();
                 },
               ),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                  ),
+                  child: Text(
+                    isAdding ? 'Add' : 'Update',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white),
+                  ),
+                  onPressed: isAdding
+                      ? () async {
+                          double taxAmount = 0.0;
+                          if (isProductLoading.value == false) {
+                            var taxList = await TaxHelper.calculateTax(
+                                taxGroupId: singleProduct
+                                    .value.model[0].taxGroupId
+                                    .toString(),
+                                price: isPriceEdited.value
+                                    ? price.value
+                                    : singleProduct.value.model[0].price1,
+                                isExclusive: true);
+                            for (var tax in taxList) {
+                              taxAmount += tax.taxAmount;
+                            }
+
+                            singleProduct.value.taxList = taxList;
+                            singleProduct.value.model[0].taxAmount = taxAmount;
+                            singleProduct.value.model[0].updatedQuantity =
+                                quantity.value;
+                            singleProduct.value.model[0].updatedUnitId =
+                                unit.value;
+                            singleProduct.value.model[0].updatedPrice =
+                                isPriceEdited.value
+                                    ? price.value
+                                    : singleProduct.value.model[0].price1;
+                            salesInvoiceList.add(singleProduct.value);
+
+                            isPriceEdited.value
+                                ? calculateTotal(
+                                    price.value,
+                                    singleProduct
+                                        .value.model[0].updatedQuantity)
+                                : calculateTotal(
+                                    singleProduct.value.model[0].price1,
+                                    singleProduct
+                                        .value.model[0].updatedQuantity);
+                            calculateTotalTax(taxAmount);
+
+                            quantity.value = 1.0;
+                            Get.back();
+                            Get.back();
+                            developer.log(salesInvoiceList.length.toString(),
+                                name: 'salesInvoiceList.length');
+                          } else {
+                            SnackbarServices.errorSnackbar(
+                                'Quantity is not available');
+                          }
+                        }
+                      : () async {
+                          double taxAmount = 0.0;
+                          var taxList = await TaxHelper.calculateTax(
+                              taxGroupId: single.model[0].taxGroupId.toString(),
+                              price: price.value,
+                              isExclusive: true);
+
+                          for (var tax in taxList) {
+                            taxAmount += tax.taxAmount;
+                          }
+                          subTotal.value = subTotal.value -
+                              (single.model[0].updatedPrice *
+                                  single.model[0].updatedQuantity);
+                          total.value = total.value -
+                              (single.model[0].updatedPrice *
+                                  single.model[0].updatedQuantity);
+                          single.taxList = taxList;
+                          single.model[0].updatedQuantity = quantity.value;
+                          single.model[0].updatedUnitId = unit.value;
+                          single.model[0].updatedPrice = price.value;
+                          single.model[0].taxAmount = taxAmount;
+                          salesInvoiceList.insert(index, single);
+                          salesInvoiceList.removeAt(index + 1);
+                          totalTax.value =
+                              totalTax.value - single.model[0].taxAmount;
+
+                          calculateTotal(
+                              price.value, single.model[0].updatedQuantity);
+                          calculateTotalTax(taxAmount);
+
+                          Get.back();
+                          developer.log(salesInvoiceList.length.toString(),
+                              name: 'salesInvoiceList.length');
+                          // refresh();
+                        }),
             ],
           ),
         ]);
