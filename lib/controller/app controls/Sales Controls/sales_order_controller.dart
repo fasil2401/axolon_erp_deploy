@@ -641,6 +641,7 @@ class SalesOrderController extends GetxController {
     }
   }
 
+
   getSalesOrderPrint(String voucherId) async {
     // await loginController.getToken();
     final String token = loginController.token.value;

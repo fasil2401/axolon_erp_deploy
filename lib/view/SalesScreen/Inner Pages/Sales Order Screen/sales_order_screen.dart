@@ -897,12 +897,12 @@ class _SalesOrderScreenState extends State<SalesOrderScreen> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            salesController.getSalesOrderPrint('00032');
-          },
-          child: const Icon(Icons.print),
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     salesController.getSalesOrderPrint('00032');
+        //   },
+        //   child: const Icon(Icons.print),
+        // ),
       ),
     );
   }
